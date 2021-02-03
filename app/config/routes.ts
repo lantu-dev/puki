@@ -4,4 +4,9 @@ export default [
     path: '/',
     component: '@/pages/index',
   },
+  {
+    exact: true,
+    path: '/a',
+    component: '@/pages/a',
+  },
 ];
