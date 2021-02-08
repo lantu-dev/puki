@@ -6,7 +6,12 @@ export default [
   },
   {
     exact: true,
-    path: '/a',
-    component: '@/pages/a',
+    path: '/add',
+    component: '@/pages/add',
+  },
+  {
+    exact: true,
+    path: '/topic',
+    component: '@/pages/topic',
   },
 ];

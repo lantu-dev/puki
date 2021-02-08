@@ -1,7 +1,8 @@
-import React from 'react';
 import { Button } from 'antd';
-import { useAsyncFn } from 'react-use';
 import fly from 'flyio';
+import React from 'react';
+import { useAsyncFn } from 'react-use';
+import { Link } from 'umi';
 export default function () {
   const [state, add] = useAsyncFn(async () => {
     await fly.post('/jsonrpc/', {
@@ -20,7 +21,9 @@ export default function () {
   });
   return (
     <div>
-      {JSON.stringify(state)}
+      <Link to="/">back</Link>
+      <br />
+      <p>{JSON.stringify(state)}</p>
       <Button type="primary" onClick={add}>
         Add
       </Button>
