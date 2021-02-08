@@ -1,23 +1,33 @@
 import avatar from '@/assets/avatar.png';
 import {
+  ArrowLeftOutlined,
   EllipsisOutlined,
   LikeOutlined,
   MessageOutlined,
   PlusOutlined,
-  ArrowLeftOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Divider, Image, Menu, Affix, Typography } from 'antd';
+import {
+  Affix,
+  Alert,
+  Avatar,
+  Button,
+  Divider,
+  Image,
+  Menu,
+  Typography,
+} from 'antd';
+import moment from 'moment';
 import React, { useState } from 'react';
 const { Title, Paragraph, Text } = Typography;
 
 interface PageProps {
-  iconSrc: string;
+  avatarUrl: string;
   title: string;
   threads: ThreadProps[];
 }
 
 interface ThreadProps {
-  iconSrc: string;
+  avatarUrl: string;
   name: string;
   userTags: string[];
   tags: string[];
@@ -25,12 +35,12 @@ interface ThreadProps {
   content?: string;
   images: string[];
   comments: string[];
-  voteNumber: number;
-  commentsNumber: number;
+  votesCount: number;
+  commentsCount: number;
 }
 
 const thread = {
-  iconSrc: avatar,
+  avatarUrl: avatar,
   name: '王某某',
   userTags: ['已认证'],
   tags: ['活动', '精选'],
@@ -42,11 +52,11 @@ const thread = {
     'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   ],
   comments: ['张三: 这个好', '李四: 这个不好'],
-  voteNumber: 100,
-  commentsNumber: 100,
+  votesCount: 100,
+  commentsCount: 100,
 };
 const data: PageProps = {
-  iconSrc: avatar,
+  avatarUrl: avatar,
   title: '前端学习计划',
   threads: [thread, thread, thread, thread],
 };
@@ -94,7 +104,7 @@ function Page(props: PageProps) {
           >
             <Avatar
               shape="circle"
-              src={props.iconSrc}
+              src={props.avatarUrl}
               style={{
                 marginRight: '10px',
               }}
@@ -154,7 +164,7 @@ function Thread(props: ThreadProps) {
       >
         <Avatar
           style={{ alignSelf: 'center', marginRight: '10px' }}
-          src={props.iconSrc}
+          src={props.avatarUrl}
         ></Avatar>
         <div>
           <Text
@@ -176,13 +186,7 @@ function Thread(props: ThreadProps) {
                 textAlign: 'center',
               }}
             >
-              {props.time.toTimeString().substr(0, 5) +
-                ' ' +
-                props.time
-                  .toLocaleDateString()
-                  .split('/')
-                  .map((v) => v.padStart(2, '0'))
-                  .join('-')}
+              {moment(props.time).format('HH:mm YYYY-MM-DD')}
             </Text>
           </div>
         </div>
@@ -228,19 +232,13 @@ function Thread(props: ThreadProps) {
           }}
         >
           {props.comments.map((v, i) => (
-            <div
-              key={i}
+            <Alert
+              message={v}
+              type="warning"
               style={{
-                backgroundColor: '#FFFBE7',
-                borderRadius: '5px',
-                border: 'solid #FCEEB7 2px',
-                padding: '5px',
-                fontSize: 'small',
                 margin: '5px 0',
               }}
-            >
-              <Text>{v}</Text>
-            </div>
+            />
           ))}
         </div>
         <div
@@ -255,11 +253,11 @@ function Thread(props: ThreadProps) {
             }}
           >
             <LikeOutlined />
-            {props.voteNumber}
+            {props.votesCount}
           </div>
           <div>
             <MessageOutlined />
-            {props.commentsNumber}
+            {props.commentsCount}
           </div>
           <div style={{ flexGrow: 1 }}></div>
           <EllipsisOutlined style={{ marginRight: '10px' }} />
