@@ -52,12 +52,13 @@ func FindOrCreateUserByPhoneNumber(tx *gorm.DB, phoneNumber int64) *User {
 	var user User
 	user.PhoneNumber = phoneNumber
 	if err := tx.Model(&User{}).Where(&user).First(&user).Error; err == nil {
+		//已有该用户
 		return &user
 	} else {
 		log.Debug(err)
 	}
-
-	user.ID = base.GenerateID()
+	//注册新用户
+	user.ID = base.GenerateID() //需要手动生成ID
 	if err := tx.Model(&User{}).Save(&user); err != nil {
 		log.Panic(err)
 	}
