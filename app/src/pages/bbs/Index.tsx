@@ -233,6 +233,7 @@ function Thread(props: ThreadProps) {
         >
           {props.comments.map((v, i) => (
             <Alert
+              key={i}
               message={v}
               type="warning"
               style={{
