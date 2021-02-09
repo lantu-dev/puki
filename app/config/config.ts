@@ -3,8 +3,8 @@ import routes from './routes';
 
 export default defineConfig({
   proxy: {
-    '/jsonrpc': {
-      target: 'http://127.0.0.1:8001/jsonrpc/',
+    '/api': {
+      target: 'http://127.0.0.1:8001/api',
       changeOrigin: true,
     },
   },
@@ -14,4 +14,7 @@ export default defineConfig({
   routes,
   fastRefresh: {},
   antd: {},
+  define: {
+    BUNDLE_FLAVOR: 'webapp',
+  },
 });
