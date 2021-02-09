@@ -14,4 +14,9 @@ export default [
     path: '/topic',
     component: '@/pages/bbs/Index',
   },
+  {
+    exact: true,
+    path: '/login',
+    component: '@/pages/auth/PhoneLogin',
+  },
 ];
