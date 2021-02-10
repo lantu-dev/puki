@@ -6,6 +6,16 @@ import Register from './components/Register';
 
 const DEBUG = true;
 
+interface UserInfo {
+  nickname: string;
+  password: string;
+  phoneNumber: string;
+  school: string;
+  studentNumber: string;
+  userName: string;
+  userID: string;
+}
+
 enum STEP {
   phoneNumberInput,
   captchaInput,
@@ -39,7 +49,8 @@ export default function PhoneLogin() {
     }
   }
 
-  function registerConfirmed() {
+  function registerConfirmed(values: UserInfo) {
+    console.log(values);
     history.replace('./topic');
   }
 
@@ -52,7 +63,12 @@ export default function PhoneLogin() {
           case STEP.captchaInput:
             return <Captcha onConfirm={captchaConfirmed}></Captcha>;
           case STEP.registerInput:
-            return <Register onConfirm={registerConfirmed}></Register>;
+            return (
+              <Register
+                onConfirm={registerConfirmed}
+                phoneNumber={phoneNumber}
+              ></Register>
+            );
         }
       })()}
     </>
