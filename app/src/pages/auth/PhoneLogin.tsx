@@ -60,7 +60,14 @@ export default function PhoneLogin() {
           case STEP.phoneNumberInput:
             return <Phone onConfirm={phoneNumberConfirmed}></Phone>;
           case STEP.captchaInput:
-            return <Captcha onConfirm={captchaConfirmed}></Captcha>;
+            return (
+              <Captcha
+                onConfirm={captchaConfirmed}
+                goback={() => {
+                  setStep(STEP.phoneNumberInput);
+                }}
+              ></Captcha>
+            );
           case STEP.registerInput:
             return (
               <Register
