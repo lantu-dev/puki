@@ -65,13 +65,23 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          -d '{"body":'"$(printf "**Code style**\nPlease format your code via \`go fmt ../.\`.\n\`\`\`diff\n$(cat /tmp/gofmtdiff)\`\`\`" | jq  -aRs .)"'}' \
+          -d '{"body":'"$(printf "**❌ Code style checking failed**\nPlease format your code via \`go fmt ./...\`.\n\`\`\`diff\n$(cat /tmp/gofmtdiff)\`\`\`" | jq  -aRs .)"'}' \
           && exit 1
 
       - run: cd app && yarn
       - name: Fontend code style check
-        run: cd app && yarn prettier:check
+        run: cd app && yarn prettier:check > /tmp/prettierout
 
+      - name: Prettier code style post message
+        if: ${{ failure() }}
+        run: |
+          curl \
+          -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          -d '{"body":'"$(printf "**❌ Code style checking failed**\nPlease format your code via \`yarn prettier\`.\n\`\`\`diff\n$(cat /tmp/prettierout)\`\`\`" | jq  -aRs .)"'}' \
+          && exit 1
       - run: go mod download
 
       - name: Build frontend
