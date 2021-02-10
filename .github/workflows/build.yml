@@ -1,0 +1,38 @@
+name: Build
+on:
+  pull_request:
+        branches:
+          - master
+
+jobs:
+  checkout:
+    name: Checkout
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '15'
+      - name: Setup go
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.15.6'
+
+      - run: go mod download
+      - name: Golang code style check
+        run: diff -u <(echo -n) <(gofmt -d ./)
+
+      - run: cd app && yarn
+      - name: Fontend code style check
+        run: cd app && yarn prettier:check
+
+
+      - name: Build frontend
+        run: cd app && yarn build && mv dist ..
+
+      - name: Build backend
+        run:  go build -o dist/server  github.com/lantu-dev/puki/cmd/main

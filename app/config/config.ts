@@ -17,4 +17,7 @@ export default defineConfig({
   define: {
     BUNDLE_FLAVOR: 'webapp',
   },
+  ssr: {},
+  exportStatic: {},
+  dynamicImport: {},
 });

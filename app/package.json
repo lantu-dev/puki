@@ -4,7 +4,8 @@
     "start": "umi dev",
     "build": "umi build",
     "postinstall": "umi generate tmp",
-    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "prettier": "prettier --write '../app/**/*.{js,jsx,tsx,ts,less,md,json}' '../miniapp/**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "prettier:check": "prettier --check '../app/**/*.{js,jsx,tsx,ts,less,md,json}' '../miniapp/**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
   },
