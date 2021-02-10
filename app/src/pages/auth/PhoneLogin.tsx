@@ -7,13 +7,12 @@ import Register from './components/Register';
 const DEBUG = true;
 
 interface UserInfo {
-  nickname: string;
-  password: string;
-  phoneNumber: string;
-  school: string;
-  studentNumber: string;
-  userName: string;
-  userID: string;
+  Nickname: string;
+  Password: string;
+  PhoneNumber: string;
+  ID: string;
+  RealName: string;
+  Name: string;
 }
 
 enum STEP {
@@ -24,12 +23,12 @@ enum STEP {
 
 export default function PhoneLogin() {
   const [step, setStep] = useState(STEP.phoneNumberInput);
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [PhoneNumber, setPhoneNumber] = useState('');
 
-  function phoneNumberConfirmed(phoneNumber: string) {
-    DEBUG && console.log(phoneNumber);
+  async function phoneNumberConfirmed(PhoneNumber: string) {
+    DEBUG && console.log(PhoneNumber);
 
-    setPhoneNumber(phoneNumber);
+    setPhoneNumber(PhoneNumber);
     setStep(STEP.captchaInput);
   }
 
@@ -49,7 +48,7 @@ export default function PhoneLogin() {
     }
   }
 
-  function registerConfirmed(values: UserInfo) {
+  async function registerConfirmed(values: UserInfo) {
     DEBUG && console.log(values);
     history.replace('./topic');
   }
@@ -66,7 +65,7 @@ export default function PhoneLogin() {
             return (
               <Register
                 onConfirm={registerConfirmed}
-                phoneNumber={phoneNumber}
+                PhoneNumber={PhoneNumber}
               ></Register>
             );
         }

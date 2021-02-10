@@ -1,4 +1,13 @@
-import { Button, Checkbox, Col, Form, Input, Row, Typography } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Col,
+  Form,
+  Input,
+  Row,
+  Typography,
+  Space,
+} from 'antd';
 import React, { useState } from 'react';
 const { Title } = Typography;
 
@@ -6,31 +15,15 @@ const DEBUG = true;
 
 interface RegisterProps {
   onConfirm: (values: any) => void;
-  phoneNumber: string;
+  PhoneNumber: string;
 }
 interface UserInfo {
-  nickname: string;
-  password: string;
-  phoneNumber: string;
-  school: string;
-  studentNumber: string;
-  userName: string;
-  userID: string;
-}
-
-interface InputInfo {
-  name: string;
-  initialValue: string;
-  label: string;
-  required?: boolean;
-  disabled?: boolean;
-  rules?: [
-    {
-      required?: boolean;
-      message?: string;
-    },
-  ];
-  isPassword?: boolean;
+  Nickname: string;
+  Password: string;
+  PhoneNumber: string;
+  ID: string;
+  RealName: string;
+  Name: string;
 }
 
 const labelCol = 4;
@@ -38,136 +31,26 @@ const wrapperCol = 18;
 const checkoutOffset = 4;
 
 export default function Register(props: RegisterProps) {
-  const [useStuInfo, setUseStuInfo] = useState(true);
-  const [useUserID, setUseUserID] = useState(true);
+  const [useID, setUseID] = useState(true);
+  const [useName, setUseName] = useState(true);
   const [usePassword, setUsePassword] = useState(true);
 
-  const basicInfo: InputInfo[] = [
-    {
-      name: 'phoneNumber',
-      initialValue: props.phoneNumber,
-      label: '手机号',
-      disabled: true,
-    },
-    {
-      name: 'userName',
-      initialValue: '',
-      label: '姓名',
-      required: true,
-      rules: [
-        {
-          required: true,
-          message: '请填写姓名',
-          // TODO 姓名校验
-        },
-      ],
-    },
-    {
-      name: 'nickname',
-      initialValue: '',
-      label: '昵称',
-      rules: [
-        {
-          // TODO 昵称校验
-        },
-      ],
-    },
-  ];
-
-  const stuInfo: InputInfo[] = [
-    {
-      name: 'studentNumber',
-      initialValue: '',
-      label: '学号',
-      required: true,
-      rules: [
-        {
-          required: true,
-          message: '请填写学号',
-          // TODO 学号校验
-        },
-      ],
-    },
-    {
-      name: 'school',
-      initialValue: '',
-      label: '学院',
-      disabled: true,
-    },
-  ];
-
-  const userID: InputInfo = {
-    label: '用户名',
-    required: true,
-    name: 'userid',
-    initialValue: '',
-    rules: [
-      {
-        required: true,
-        message: '请填写用户名',
-        // TODO 用户名校验
-      },
-    ],
-  };
-
-  const password: InputInfo = {
-    label: '密码',
-    required: true,
-    name: 'password',
-    initialValue: '',
-    rules: [
-      {
-        required: true,
-        message: '请填写密码',
-        // TODO 密码校验
-      },
-    ],
-    isPassword: true,
-  };
-
-  function onFieldsChange(changedFields: any, allFields: any) {
+  const onFieldsChange = (changedFields: any, allFields: any) => {
     DEBUG && console.log('onFieldsChange:', changedFields, allFields);
-  }
+  };
 
-  function onValuesChange(changedValues: any, allValues: any) {
+  const onValuesChange = (changedValues: any, allValues: any) => {
     DEBUG && console.log('onValuesChange:', changedValues, allValues);
-    setUseStuInfo(allValues.useStuInfo);
-    setUseUserID(allValues.useUserID);
-    setUsePassword(allValues.usePassword);
-  }
+  };
 
-  function onFinish(values: UserInfo) {
+  const onFinish = (values: UserInfo) => {
     DEBUG && console.log('onFinish:', values);
     props.onConfirm(values);
-  }
+  };
 
-  function onFinishFailed(errorInfo: any) {
+  const onFinishFailed = (errorInfo: any) => {
     DEBUG && console.log('onFinishFailed:', errorInfo);
-  }
-
-  function renderInput(inputInfo: InputInfo) {
-    return (
-      <Row key={inputInfo.name}>
-        <Col span={labelCol} style={{ textAlign: 'right' }}>
-          {inputInfo.required ? <span style={{ color: 'red' }}>*</span> : null}
-          <span style={{ lineHeight: '31.6px' }}>{inputInfo.label}：</span>
-        </Col>
-        <Col span={wrapperCol}>
-          <Form.Item
-            name={inputInfo.name}
-            initialValue={inputInfo.initialValue}
-            rules={inputInfo.rules}
-          >
-            {inputInfo.isPassword ? (
-              <Input.Password disabled={inputInfo.disabled} />
-            ) : (
-              <Input disabled={inputInfo.disabled} />
-            )}
-          </Form.Item>
-        </Col>
-      </Row>
-    );
-  }
+  };
 
   return (
     <>
@@ -183,73 +66,202 @@ export default function Register(props: RegisterProps) {
         onFinishFailed={onFinishFailed}
         onValuesChange={onValuesChange}
       >
-        {basicInfo.map((v) => renderInput(v))}
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Row>
+            <Col span={labelCol} style={{ textAlign: 'right' }}>
+              <span style={{ lineHeight: '31.6px' }}>手机号：</span>
+            </Col>
+            <Col span={wrapperCol}>
+              <Form.Item
+                name="PhoneNumber"
+                initialValue={props.PhoneNumber}
+                rules={[{}]}
+              >
+                <Input disabled />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={labelCol} style={{ textAlign: 'right' }}>
+              <span style={{ color: 'red' }}>*</span>
+              <span style={{ lineHeight: '31.6px' }}>姓名：</span>
+            </Col>
+            <Col span={wrapperCol}>
+              <Form.Item
+                name="RealName"
+                initialValue=""
+                rules={[
+                  {
+                    required: true,
+                    message: '请填写姓名',
+                    // TODO 姓名校验
+                  },
+                ]}
+              >
+                <Input placeholder="请输入" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={labelCol} style={{ textAlign: 'right' }}>
+              <span style={{ lineHeight: '31.6px' }}>昵称：</span>
+            </Col>
+            <Col span={wrapperCol}>
+              <Form.Item name="Nickname" initialValue="" rules={[{}]}>
+                <Input placeholder="请输入" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col offset={checkoutOffset}>
+              <Checkbox
+                defaultChecked={true}
+                checked={useID}
+                onChange={(e: any) => {
+                  setUseID(e.target.checked);
+                }}
+              >
+                完善学生信息
+              </Checkbox>
+            </Col>
+          </Row>
+          {useID ? (
+            <>
+              <Row>
+                <Col span={labelCol} style={{ textAlign: 'right' }}>
+                  <span style={{ color: 'red' }}>*</span>
+                  <span style={{ lineHeight: '31.6px' }}>学号：</span>
+                </Col>
+                <Col span={wrapperCol}>
+                  <Form.Item
+                    name="ID"
+                    initialValue=""
+                    rules={[
+                      {
+                        required: true,
+                        message: '请填写学号',
+                        // TODO 学号校验
+                      },
+                    ]}
+                  >
+                    <Input placeholder="请输入" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={labelCol} style={{ textAlign: 'right' }}>
+                  <span style={{ lineHeight: '31.6px' }}>学院：</span>
+                </Col>
+                <Col span={wrapperCol}>
+                  <Form.Item name="School" initialValue="" rules={[{}]}>
+                    <Input disabled placeholder="计算机学院" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </>
+          ) : null}
 
-        <Row>
-          <Col offset={checkoutOffset}>
-            <Form.Item
-              name="useStuInfo"
-              valuePropName="checked"
-              initialValue={useStuInfo}
-            >
-              <Checkbox>完善学生信息</Checkbox>
-            </Form.Item>
-          </Col>
-        </Row>
-        {useStuInfo ? stuInfo.map((v) => renderInput(v)) : null}
+          <Row>
+            <Col offset={checkoutOffset}>
+              <Checkbox
+                defaultChecked={true}
+                checked={useName}
+                onChange={(e: any) => {
+                  setUseName(e.target.checked);
+                }}
+              >
+                设置用户名
+              </Checkbox>
+            </Col>
+          </Row>
+          {useName ? (
+            <Row>
+              <Col span={labelCol} style={{ textAlign: 'right' }}>
+                <span style={{ color: 'red' }}>*</span>
+                <span style={{ lineHeight: '31.6px' }}>用户名：</span>
+              </Col>
+              <Col span={wrapperCol}>
+                <Form.Item
+                  name="Name"
+                  initialValue=""
+                  rules={[
+                    {
+                      required: true,
+                      message: '请填写用户名',
+                      // TODO 学号校验
+                    },
+                  ]}
+                >
+                  <Input placeholder="请输入" />
+                </Form.Item>
+              </Col>
+            </Row>
+          ) : null}
 
-        <Row>
-          <Col offset={checkoutOffset}>
-            <Form.Item
-              name="useUserID"
-              valuePropName="checked"
-              initialValue={useUserID}
-            >
-              <Checkbox>设置用户名</Checkbox>
-            </Form.Item>
-          </Col>
-        </Row>
-        {useUserID ? renderInput(userID) : null}
+          <Row>
+            <Col offset={checkoutOffset}>
+              <Checkbox
+                defaultChecked={true}
+                checked={usePassword}
+                onChange={(e: any) => {
+                  setUsePassword(e.target.checked);
+                }}
+              >
+                设置密码
+              </Checkbox>
+            </Col>
+          </Row>
+          {usePassword ? (
+            <Row>
+              <Col span={labelCol} style={{ textAlign: 'right' }}>
+                <span style={{ color: 'red' }}>*</span>
+                <span style={{ lineHeight: '31.6px' }}>密码：</span>
+              </Col>
+              <Col span={wrapperCol}>
+                <Form.Item
+                  name="Password"
+                  initialValue=""
+                  rules={[
+                    {
+                      required: true,
+                      message: '请填写密码',
+                      // TODO 学号校验
+                    },
+                  ]}
+                >
+                  <Input.Password placeholder="请输入" />
+                </Form.Item>
+              </Col>
+            </Row>
+          ) : null}
 
-        <Row>
-          <Col offset={checkoutOffset}>
-            <Form.Item
-              name="usePassword"
-              valuePropName="checked"
-              initialValue={usePassword}
-            >
-              <Checkbox>设置密码</Checkbox>
-            </Form.Item>
-          </Col>
-        </Row>
-        {usePassword ? renderInput(password) : null}
+          <Row>
+            <Col offset={checkoutOffset}>
+              <Form.Item
+                name="agreement"
+                valuePropName="checked"
+                rules={[
+                  {
+                    required: true,
+                    message: '请阅读并同意《用户服务协议》',
+                  },
+                ]}
+              >
+                <Checkbox>同意《用户服务协议》</Checkbox>
+              </Form.Item>
+            </Col>
+          </Row>
 
-        <Row>
-          <Col offset={checkoutOffset}>
-            {' '}
-            <Form.Item
-              name="agreement"
-              valuePropName="checked"
-              rules={[
-                {
-                  required: true,
-                  message: '请同意《用户服务协议》',
-                },
-              ]}
-            >
-              <Checkbox>同意《用户服务协议》</Checkbox>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row justify="center">
-          <Col>
-            <Form.Item>
-              <Button type="primary" size="large" htmlType="submit">
-                注册
-              </Button>
-            </Form.Item>
-          </Col>
-        </Row>
+          <Row justify="center">
+            <Col>
+              <Form.Item>
+                <Button type="primary" size="large" htmlType="submit">
+                  注册
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Space>
       </Form>
     </>
   );
