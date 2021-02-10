@@ -11,21 +11,53 @@ jobs:
 
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Setup go
         uses: actions/setup-go@v1
         with:
           go-version: '1.15.6'
 
-      - name: Golang code style check
-        run: diff -u <(echo -n) <(gofmt -d ./)
-
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: '15'
+
+
+      - id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-${{  hashFiles('**/yarn.lock') }}-
+            ${{ runner.os }}-modules-
+            ${{ runner.os }}-
+
+      - name: Go Build Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+
+      - name: Go Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+
+      - name: Golang code style check
+        run: diff -u <(echo -n) <(gofmt -d ./)
+
+
 
       - run: cd app && yarn
       - name: Fontend code style check

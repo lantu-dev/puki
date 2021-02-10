@@ -2,12 +2,12 @@ export default [
   {
     exact: true,
     path: '/',
-    component: '@/pages/Index',
+    component: '@/pages/index',
   },
   {
     exact: true,
     path: '/add',
-    component: '@/pages/Add',
+    component: '@/pages/add',
   },
   {
     exact: true,
