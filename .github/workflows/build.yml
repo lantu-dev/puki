@@ -20,7 +20,7 @@ jobs:
           go-version: '1.15.6'
 
       - name: Golang code style check
-          run: diff -u <(echo -n) <(gofmt -d ./)
+        run: diff -u <(echo -n) <(gofmt -d ./)
 
       - name: Setup node
         uses: actions/setup-node@v1
