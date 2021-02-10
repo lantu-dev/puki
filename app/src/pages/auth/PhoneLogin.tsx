@@ -50,7 +50,7 @@ export default function PhoneLogin() {
   }
 
   function registerConfirmed(values: UserInfo) {
-    console.log(values);
+    DEBUG && console.log(values);
     history.replace('./topic');
   }
 

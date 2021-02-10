@@ -1,6 +1,9 @@
 import { Button, Checkbox, Col, Form, Input, Row, Typography } from 'antd';
 import React, { useState } from 'react';
 const { Title } = Typography;
+
+const DEBUG = true;
+
 interface RegisterProps {
   onConfirm: (values: any) => void;
   phoneNumber: string;
@@ -123,23 +126,23 @@ export default function Register(props: RegisterProps) {
   };
 
   function onFieldsChange(changedFields: any, allFields: any) {
-    console.log('onFieldsChange:', changedFields, allFields);
+    DEBUG && console.log('onFieldsChange:', changedFields, allFields);
   }
 
   function onValuesChange(changedValues: any, allValues: any) {
-    console.log('onValuesChange:', changedValues, allValues);
+    DEBUG && console.log('onValuesChange:', changedValues, allValues);
     setUseStuInfo(allValues.useStuInfo);
     setUseUserID(allValues.useUserID);
     setUsePassword(allValues.usePassword);
   }
 
   function onFinish(values: UserInfo) {
-    console.log('onFinish:', values);
+    DEBUG && console.log('onFinish:', values);
     props.onConfirm(values);
   }
 
   function onFinishFailed(errorInfo: any) {
-    console.log('onFinishFailed:', errorInfo);
+    DEBUG && console.log('onFinishFailed:', errorInfo);
   }
 
   function renderInput(inputInfo: InputInfo) {
