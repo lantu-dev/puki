@@ -19,4 +19,9 @@ export default [
     path: '/login',
     component: '@/pages/auth/PhoneLogin',
   },
+  {
+    exact: true,
+    path: '/test',
+    component: '@/pages/Test',
+  },
 ];

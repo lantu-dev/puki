@@ -10,6 +10,8 @@ export default function IndexPage() {
       <Link to="topic">topic</Link>
       <Divider />
       <Link to="login">login</Link>
+      <Divider />
+      <Link to="test">test</Link>
     </div>
   );
 }
