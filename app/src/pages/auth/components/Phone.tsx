@@ -8,10 +8,6 @@ interface PhoneProps {
   onConfirm: (phoneNumber: string) => void;
 }
 
-
-// BUG  居中问题
-
-
 export default function Phone(props: PhoneProps) {
   return (
     <>
@@ -25,22 +21,22 @@ export default function Phone(props: PhoneProps) {
       </Button>
     </>
     <div>
-      <Space direction = {"vertical"} size = {[100,0]} >
+      <Space style = {{width:"100%"}} direction = {"vertical"} size = {[100,0]} >
         <Row >
           <Col offset = {1}>
             <Title level={3}>蓝图未来</Title>
           </Col>
-        </Row>  
-        <Space direction = {'vertical'} size = {[10,0]}>
+        </Row>
+        <Space style = {{width:"100%"}} direction = {'vertical'} size = {[10,0]}>
           <Row>
-            <Col offset = {1}>
+            <Col offset = {4}>
               <Paragraph>手机号：</Paragraph>
-            </Col> 
-          </Row>  
+            </Col>
+          </Row>
           <Row justify = {'center'}>
             <Col>
-              <Input 
-                addonBefore={<Select defaultValue="86" className="select-before"><Option value="86">+86</Option></Select>} 
+              <Input
+                addonBefore={<Select defaultValue="86" className="select-before"><Option value="86">+86</Option></Select>}
                 defaultValue=""
                 bordered = {true}/>
             </Col>
@@ -48,9 +44,9 @@ export default function Phone(props: PhoneProps) {
         </Space>
         <Row justify = {'center'}>
           <Col>
-            <Button>发送验证码</Button> 
+            <Button>发送验证码</Button>
           </Col>
-        </Row>  
+        </Row>
       </Space>
     </div>
   );
