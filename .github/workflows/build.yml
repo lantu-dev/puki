@@ -55,7 +55,6 @@ jobs:
 
 
       - name: Golang code style check
-        continue-on-error: true
         run: diff -u <(echo -n) <(gofmt -d ./) > /tmp/gofmtdiff
 
       - name: Golang code style post message
