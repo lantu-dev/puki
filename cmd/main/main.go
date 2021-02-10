@@ -25,7 +25,7 @@ func main() {
 
 	rds := redis.NewClient(&redis.Options{Addr: mrds.Addr()})
 
-	db, err := gorm.Open(sqlite.Open("dev.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("dev.db"),     &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)
