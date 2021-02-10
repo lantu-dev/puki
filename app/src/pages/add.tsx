@@ -11,7 +11,7 @@ export default function () {
       params: { delta: 1 },
       id: 2,
     });
-    let resp = await fly.post(    '/jsonrpc/', {
+    let resp = await fly.post('/jsonrpc/', {
       jsonrpc: '2.0',
       method: 'Counter.Get',
       params: {},
