@@ -5,8 +5,8 @@ import {
   Form,
   Input,
   Row,
-  Typography,
   Space,
+  Typography,
 } from 'antd';
 import React, { useState } from 'react';
 const { Title } = Typography;
@@ -26,9 +26,9 @@ interface UserInfo {
   Name: string;
 }
 
-const labelCol = 4;
-const wrapperCol = 18;
-const checkoutOffset = 4;
+const labelCol = 5;
+const wrapperCol = 16;
+const checkoutOffset = 5;
 
 export default function Register(props: RegisterProps) {
   const [useID, setUseID] = useState(true);
@@ -58,13 +58,14 @@ export default function Register(props: RegisterProps) {
       <br />
       <Form
         name="register"
+        scrollToFirstError
         initialValues={{
-          remember: true,
+          PhoneNumber: props.PhoneNumber,
         }}
+        onValuesChange={onValuesChange}
         onFieldsChange={onFieldsChange}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        onValuesChange={onValuesChange}
       >
         <Space direction="vertical" style={{ width: '100%' }}>
           <Row>
@@ -72,11 +73,7 @@ export default function Register(props: RegisterProps) {
               <span style={{ lineHeight: '31.6px' }}>手机号：</span>
             </Col>
             <Col span={wrapperCol}>
-              <Form.Item
-                name="PhoneNumber"
-                initialValue={props.PhoneNumber}
-                rules={[{}]}
-              >
+              <Form.Item name="PhoneNumber">
                 <Input disabled />
               </Form.Item>
             </Col>
@@ -89,12 +86,20 @@ export default function Register(props: RegisterProps) {
             <Col span={wrapperCol}>
               <Form.Item
                 name="RealName"
-                initialValue=""
+                validateFirst
+                hasFeedback
                 rules={[
                   {
-                    required: true,
                     message: '请填写姓名',
-                    // TODO 姓名校验
+                    required: true,
+                  },
+                  {
+                    validator: (_, value) =>
+                      /^[\u4E00-\u9FA5\·]+$/.test(value)
+                        ? Promise.resolve()
+                        : Promise.reject(
+                            '请填写真实姓名(如有问题请联系管理员)',
+                          ),
                   },
                 ]}
               >
@@ -107,7 +112,25 @@ export default function Register(props: RegisterProps) {
               <span style={{ lineHeight: '31.6px' }}>昵称：</span>
             </Col>
             <Col span={wrapperCol}>
-              <Form.Item name="Nickname" initialValue="" rules={[{}]}>
+              <Form.Item
+                name="Nickname"
+                validateFirst
+                hasFeedback
+                rules={[
+                  {
+                    validator: (_, value) =>
+                      /^[0-9a-zA-Z\u4e00-\u9fa5]*$/.test(value)
+                        ? Promise.resolve()
+                        : Promise.reject('昵称仅支持中英文与数字'),
+                  },
+                  {
+                    message: '昵称长度在2-10位之间',
+                    type: 'string',
+                    min: 2,
+                    max: 10,
+                  },
+                ]}
+              >
                 <Input placeholder="请输入" />
               </Form.Item>
             </Col>
@@ -135,16 +158,20 @@ export default function Register(props: RegisterProps) {
                 <Col span={wrapperCol}>
                   <Form.Item
                     name="ID"
-                    initialValue=""
+                    validateFirst
+                    hasFeedback
                     rules={[
                       {
-                        required: true,
                         message: '请填写学号',
-                        // TODO 学号校验
+                        required: true,
+                      },
+                      {
+                        message: '例: 2019123456',
+                        len: 10,
                       },
                     ]}
                   >
-                    <Input placeholder="请输入" />
+                    <Input placeholder="请输入" type="number" />
                   </Form.Item>
                 </Col>
               </Row>
@@ -153,8 +180,8 @@ export default function Register(props: RegisterProps) {
                   <span style={{ lineHeight: '31.6px' }}>学院：</span>
                 </Col>
                 <Col span={wrapperCol}>
-                  <Form.Item name="School" initialValue="" rules={[{}]}>
-                    <Input disabled placeholder="计算机学院" />
+                  <Form.Item name="School">
+                    <Input disabled />
                   </Form.Item>
                 </Col>
               </Row>
@@ -183,12 +210,24 @@ export default function Register(props: RegisterProps) {
               <Col span={wrapperCol}>
                 <Form.Item
                   name="Name"
-                  initialValue=""
+                  validateFirst
+                  hasFeedback
                   rules={[
                     {
-                      required: true,
                       message: '请填写用户名',
-                      // TODO 学号校验
+                      required: true,
+                    },
+                    {
+                      validator: (_, value) =>
+                        /^[0-9a-zA-Z\u4e00-\u9fa5]*$/.test(value)
+                          ? Promise.resolve()
+                          : Promise.reject('用户名仅支持中英文与数字'),
+                    },
+                    {
+                      message: '用户名长度在6-12位之间',
+                      type: 'string',
+                      min: 6,
+                      max: 12,
                     },
                   ]}
                 >
@@ -220,12 +259,26 @@ export default function Register(props: RegisterProps) {
               <Col span={wrapperCol}>
                 <Form.Item
                   name="Password"
-                  initialValue=""
+                  validateFirst
+                  hasFeedback
                   rules={[
                     {
-                      required: true,
                       message: '请填写密码',
-                      // TODO 学号校验
+                      required: true,
+                    },
+                    {
+                      validator: (_, value) =>
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]*$/.test(
+                          value,
+                        )
+                          ? Promise.resolve()
+                          : Promise.reject('密码必须包含大小写字母和数字'),
+                    },
+                    {
+                      message: '密码长度在8-20位之间',
+                      type: 'string',
+                      min: 8,
+                      max: 20,
                     },
                   ]}
                 >
@@ -242,8 +295,8 @@ export default function Register(props: RegisterProps) {
                 valuePropName="checked"
                 rules={[
                   {
-                    required: true,
                     message: '请阅读并同意《用户服务协议》',
+                    required: true,
                   },
                 ]}
               >
