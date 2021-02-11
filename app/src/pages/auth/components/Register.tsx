@@ -165,10 +165,16 @@ export default function Register(props: RegisterProps) {
                         message: '请填写学号',
                         required: true,
                       },
-                      {
-                        message: '例: 2019123456',
-                        len: 10,
-                      },
+                      ({ setFieldsValue }) => ({
+                        validator(_, value) {
+                          if (value.length === 10) {
+                            // TODO 查找学院
+                            setFieldsValue({ School: '计算机学院' });
+                            return Promise.resolve();
+                          }
+                          return Promise.reject('例: 2019123456');
+                        },
+                      }),
                     ]}
                   >
                     <Input placeholder="请输入" type="number" />
@@ -268,9 +274,7 @@ export default function Register(props: RegisterProps) {
                     },
                     {
                       validator: (_, value) =>
-                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]*$/.test(
-                          value,
-                        )
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[\s\S]*$/.test(value)
                           ? Promise.resolve()
                           : Promise.reject('密码必须包含大小写字母和数字'),
                     },
