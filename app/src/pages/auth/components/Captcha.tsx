@@ -13,7 +13,7 @@ export default function Captcha(props: CaptchaProps) {
       <Button onClick={props.goback}>返回</Button>
       <Button
         onClick={() => {
-          props.onConfirm('1234');
+          props.onConfirm('123456');
         }}
       >
         确认

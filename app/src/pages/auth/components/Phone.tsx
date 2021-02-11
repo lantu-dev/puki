@@ -11,7 +11,7 @@ export default function Phone(props: PhoneProps) {
       <div>填写手机号</div>
       <Button
         onClick={() => {
-          props.onConfirm('8612345678912');
+          props.onConfirm('+8612345678912');
         }}
       >
         确认
