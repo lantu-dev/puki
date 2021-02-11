@@ -1,23 +1,94 @@
-import { Button } from 'antd';
-import React from 'react';
+import { Button, Col, Form, Input, Row, Space, Typography } from 'antd';
+import React, { useState } from 'react';
+import { useAsyncFn } from 'react-use';
+const { Title } = Typography;
 
 interface CaptchaProps {
-  onConfirm: (captcha: string) => void;
+  onConfirm: (Captcha: string) => void;
   goback: () => void;
 }
 
 export default function Captcha(props: CaptchaProps) {
+  const [tick, setTick] = useState(0);
+
+  const [state, goTick] = useAsyncFn(async () => {
+    return new Promise((resolve, reject) => {
+      let count = 60;
+      let timer = setInterval(() => {
+        setTick(count--);
+        if (count < 0) {
+          clearInterval(timer);
+          resolve('');
+        }
+      }, 1000);
+    });
+  });
+
+  const reCaptcha = () => {
+    if (state.loading) {
+      return;
+    }
+    goTick();
+    // TODO 发送验证码
+  };
+
   return (
     <>
-      <div>填写验证码</div>
-      <Button onClick={props.goback}>返回</Button>
-      <Button
-        onClick={() => {
-          props.onConfirm('123456');
+      <Title level={3}>蓝图未来</Title>
+      <Form
+        name="Captcha"
+        onFinish={({ Captcha }) => {
+          console.log(Captcha);
+          props.onConfirm(Captcha);
         }}
       >
-        确认
-      </Button>
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+          <Row justify="center">
+            <Col span={20}>
+              <Form.Item
+                name="Captcha"
+                label="验证码"
+                rules={[
+                  {
+                    message: '请输入验证码',
+                    required: true,
+                  },
+                  {
+                    message: '验证码必须为6位数字',
+                    type: 'string',
+                    len: 6,
+                  },
+                ]}
+              >
+                <Input
+                  maxLength={6}
+                  suffix={
+                    <Button
+                      type="link"
+                      style={{ padding: '0' }}
+                      onClick={reCaptcha}
+                    >
+                      {tick || '重新发送'}
+                    </Button>
+                  }
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row justify="center" style={{ textAlign: 'center' }}>
+            <Col span={8}>
+              <Button size="large" onClick={props.goback}>
+                修改手机号
+              </Button>
+            </Col>
+            <Col span={8}>
+              <Button type="primary" size="large" htmlType="submit">
+                下一步
+              </Button>
+            </Col>
+          </Row>
+        </Space>
+      </Form>
     </>
   );
 }
