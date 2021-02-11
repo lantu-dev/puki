@@ -11,8 +11,6 @@ import {
 import React, { useState } from 'react';
 const { Title } = Typography;
 
-const DEBUG = true;
-
 interface RegisterProps {
   onConfirm: (values: any) => void;
   PhoneNumber: string;
@@ -36,20 +34,20 @@ export default function Register(props: RegisterProps) {
   const [usePassword, setUsePassword] = useState(true);
 
   const onFieldsChange = (changedFields: any, allFields: any) => {
-    DEBUG && console.log('onFieldsChange:', changedFields, allFields);
+    console.log('onFieldsChange:', changedFields, allFields);
   };
 
   const onValuesChange = (changedValues: any, allValues: any) => {
-    DEBUG && console.log('onValuesChange:', changedValues, allValues);
+    console.log('onValuesChange:', changedValues, allValues);
   };
 
   const onFinish = (values: UserInfo) => {
-    DEBUG && console.log('onFinish:', values);
+    console.log('onFinish:', values);
     props.onConfirm(values);
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    DEBUG && console.log('onFinishFailed:', errorInfo);
+    console.log('onFinishFailed:', errorInfo);
   };
 
   return (
@@ -57,7 +55,7 @@ export default function Register(props: RegisterProps) {
       <Title level={3}>用户注册</Title>
       <br />
       <Form
-        name="register"
+        name="Register"
         scrollToFirstError
         initialValues={{
           PhoneNumber: props.PhoneNumber,

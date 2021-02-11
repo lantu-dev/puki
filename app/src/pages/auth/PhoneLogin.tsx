@@ -1,10 +1,10 @@
+import { call } from '@/api-client/index';
 import { Button, Divider } from 'antd';
 import React, { useState } from 'react';
 import { history } from 'umi';
 import Captcha from './components/Captcha';
 import Phone from './components/Phone';
 import Register from './components/Register';
-import { call } from '@/api-client/index';
 
 interface UserInfo {
   Nickname: string;
@@ -43,7 +43,7 @@ interface TokenUser {
 
 enum STEP {
   phoneNumberInput,
-  captchaInput,
+  CaptchaInput,
   registerInput,
 }
 
@@ -67,7 +67,7 @@ export default function PhoneLogin() {
       );
       console.log('res: ', res);
       setSession(res.result.Session);
-      setStep(STEP.captchaInput);
+      setStep(STEP.CaptchaInput);
     } catch (err) {
       console.log('err: ', err);
     }
@@ -75,17 +75,17 @@ export default function PhoneLogin() {
     console.groupEnd();
   }
 
-  async function captchaConfirmed(captcha: string) {
-    console.group('captchaConfirmed');
+  async function CaptchaConfirmed(Captcha: string) {
+    console.group('CaptchaConfirmed');
 
-    console.log('captcha: ', captcha);
+    console.log('Captcha: ', Captcha);
 
     try {
       let res = await call<SMSCodeLoginReq, SMSCodeLoginRes>(
         'auth/UserService.SMSCodeLogin',
         {
           PhoneNumber,
-          Code: captcha,
+          Code: Captcha,
           Session,
         },
       );
@@ -120,7 +120,7 @@ export default function PhoneLogin() {
         [
           <Phone onConfirm={phoneNumberConfirmed}></Phone>,
           <Captcha
-            onConfirm={captchaConfirmed}
+            onConfirm={CaptchaConfirmed}
             goback={() => {
               setStep(STEP.phoneNumberInput);
             }}
