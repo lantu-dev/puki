@@ -1,37 +1,15 @@
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd';
-import React, { useState } from 'react';
-import { useAsyncFn } from 'react-use';
+import React from 'react';
 const { Title } = Typography;
 
 interface CaptchaProps {
   onConfirm: (Captcha: string) => void;
   goback: () => void;
+  reCaptcha: () => void;
+  tick: number;
 }
 
 export default function Captcha(props: CaptchaProps) {
-  const [tick, setTick] = useState(0);
-
-  const [state, goTick] = useAsyncFn(async () => {
-    return new Promise((resolve, reject) => {
-      let count = 60;
-      let timer = setInterval(() => {
-        setTick(count--);
-        if (count < 0) {
-          clearInterval(timer);
-          resolve('');
-        }
-      }, 1000);
-    });
-  });
-
-  const reCaptcha = () => {
-    if (state.loading) {
-      return;
-    }
-    goTick();
-    // TODO 发送验证码
-  };
-
   return (
     <>
       <Title level={3}>蓝图未来</Title>
@@ -66,9 +44,9 @@ export default function Captcha(props: CaptchaProps) {
                     <Button
                       type="link"
                       style={{ padding: '0' }}
-                      onClick={reCaptcha}
+                      onClick={props.reCaptcha}
                     >
-                      {tick || '重新发送'}
+                      {props.tick || '重新发送'}
                     </Button>
                   }
                 />

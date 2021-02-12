@@ -1,6 +1,7 @@
 import { call } from '@/api-client/index';
 import { Button, Divider } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useAsyncFn } from 'react-use';
 import { history } from 'umi';
 import Captcha from './components/Captcha';
 import Phone from './components/Phone';
@@ -51,12 +52,22 @@ export default function PhoneLogin() {
   const [step, setStep] = useState(STEP.phoneNumberInput);
   const [PhoneNumber, setPhoneNumber] = useState('');
   const [Session, setSession] = useState('');
+  const [tick, setTick] = useState(0);
+  const [sended, goTick] = useAsyncFn(async () => {
+    return new Promise((resolve, reject) => {
+      let count = 60;
+      let timer = setInterval(() => {
+        setTick(count--);
+        if (count < 0) {
+          clearInterval(timer);
+          resolve('');
+        }
+      }, 1000);
+    });
+  });
 
-  async function phoneNumberConfirmed(PhoneNumber: string) {
-    console.group('phoneNumberConfirmed');
-
-    console.log('PhoneNumber: ', PhoneNumber);
-    setPhoneNumber(PhoneNumber);
+  const sendCaptcha = async () => {
+    console.group('sendCaptcha');
 
     try {
       let res = await call<SMSSendCodeReq, SMSSendCodeRes>(
@@ -67,15 +78,34 @@ export default function PhoneLogin() {
       );
       console.log('res: ', res);
       setSession(res.result.Session);
-      setStep(STEP.CaptchaInput);
     } catch (err) {
       console.log('err: ', err);
     }
 
     console.groupEnd();
-  }
+  };
 
-  async function CaptchaConfirmed(Captcha: string) {
+  const reCaptcha = () => {
+    if (sended.loading) {
+      return;
+    }
+    goTick();
+    sendCaptcha();
+  };
+
+  const phoneNumberConfirmed = (PhoneNumber: string) => {
+    console.group('phoneNumberConfirmed');
+
+    console.log('PhoneNumber: ', PhoneNumber);
+    setPhoneNumber(PhoneNumber);
+    setStep(STEP.CaptchaInput);
+
+    reCaptcha();
+
+    console.groupEnd();
+  };
+
+  const CaptchaConfirmed = async (Captcha: string) => {
     console.group('CaptchaConfirmed');
 
     console.log('Captcha: ', Captcha);
@@ -104,15 +134,15 @@ export default function PhoneLogin() {
     }
 
     console.groupEnd();
-  }
+  };
 
-  async function registerConfirmed(values: UserInfo) {
+  const registerConfirmed = async (values: UserInfo) => {
     console.group('registerConfirmed');
 
     // TODO 注册
 
     console.groupEnd();
-  }
+  };
 
   return (
     <>
@@ -124,6 +154,8 @@ export default function PhoneLogin() {
             goback={() => {
               setStep(STEP.phoneNumberInput);
             }}
+            reCaptcha={reCaptcha}
+            tick={tick}
           ></Captcha>,
           <Register
             onConfirm={registerConfirmed}
