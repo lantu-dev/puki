@@ -146,7 +146,7 @@ export default function Register(props: RegisterProps) {
               </Checkbox>
             </Col>
           </Row>
-          {useID ? (
+          {useID && (
             <>
               <Row>
                 <Col span={labelCol} style={{ textAlign: 'right' }}>
@@ -190,7 +190,7 @@ export default function Register(props: RegisterProps) {
                 </Col>
               </Row>
             </>
-          ) : null}
+          )}
 
           <Row>
             <Col offset={checkoutOffset}>
@@ -205,7 +205,7 @@ export default function Register(props: RegisterProps) {
               </Checkbox>
             </Col>
           </Row>
-          {useName ? (
+          {useName && (
             <Row>
               <Col span={labelCol} style={{ textAlign: 'right' }}>
                 <span style={{ color: 'red' }}>*</span>
@@ -239,7 +239,7 @@ export default function Register(props: RegisterProps) {
                 </Form.Item>
               </Col>
             </Row>
-          ) : null}
+          )}
 
           <Row>
             <Col offset={checkoutOffset}>
@@ -254,7 +254,7 @@ export default function Register(props: RegisterProps) {
               </Checkbox>
             </Col>
           </Row>
-          {usePassword ? (
+          {usePassword && (
             <Row>
               <Col span={labelCol} style={{ textAlign: 'right' }}>
                 <span style={{ color: 'red' }}>*</span>
@@ -288,7 +288,7 @@ export default function Register(props: RegisterProps) {
                 </Form.Item>
               </Col>
             </Row>
-          ) : null}
+          )}
 
           <Row>
             <Col offset={checkoutOffset}>

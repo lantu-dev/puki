@@ -1,7 +1,6 @@
 import { call } from '@/api-client/index';
 import { Button, Divider } from 'antd';
 import { useState } from 'react';
-import { useAsyncFn } from 'react-use';
 import { history } from 'umi';
 import Captcha from './components/Captcha';
 import Phone from './components/Phone';
@@ -53,18 +52,16 @@ export default function PhoneLogin() {
   const [PhoneNumber, setPhoneNumber] = useState('');
   const [Session, setSession] = useState('');
   const [tick, setTick] = useState(0);
-  const [sended, goTick] = useAsyncFn(async () => {
-    return new Promise((resolve, reject) => {
-      let count = 60;
-      let timer = setInterval(() => {
-        setTick(count--);
-        if (count < 0) {
-          clearInterval(timer);
-          resolve('');
-        }
-      }, 1000);
-    });
-  });
+
+  const goTick = () => {
+    let cnt = 60;
+    let timer = setInterval(() => {
+      setTick(cnt--);
+      if (cnt < 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+  };
 
   const sendCaptcha = async () => {
     console.group('sendCaptcha');
@@ -86,7 +83,7 @@ export default function PhoneLogin() {
   };
 
   const reCaptcha = () => {
-    if (sended.loading) {
+    if (tick > 0) {
       return;
     }
     goTick();
