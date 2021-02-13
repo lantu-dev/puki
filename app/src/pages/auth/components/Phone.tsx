@@ -1,25 +1,30 @@
-import { Button } from 'antd';
 import {Space, Alert, Row, Button, Typography,Input,Select,Col} from 'antd';
 import React from 'react';
 
 const {Title,Paragraph } = Typography;
 const {Option} = Select;
+
 interface PhoneProps {
   onConfirm: (phoneNumber: string) => void;
 }
 
+let phoneProps : PhoneProps;
+
+function phoneCheck(){
+    let phoneInput = document.getElementById("PhoneInput");
+    let suffixselect = document.getElementById("selectBefore");
+    // @ts-ignore
+    let phoneNumber = phoneInput.value;
+    // @ts-ignore
+    let suffix = suffixselect.value;
+    if((/^1[3456789]\d{9}$/.test(phoneNumber))) {
+      phoneProps.onConfirm(suffix + phoneNumber);
+    }
+}
+
 export default function Phone(props: PhoneProps) {
+  phoneProps = props;
   return (
-    <>
-      <div>填写手机号</div>
-      <Button
-        onClick={() => {
-          props.onConfirm('8612345678912');
-        }}
-      >
-        确认
-      </Button>
-    </>
     <div>
       <Space style = {{width:"100%"}} direction = {"vertical"} size = {[100,0]} >
         <Row >
@@ -36,7 +41,13 @@ export default function Phone(props: PhoneProps) {
           <Row justify = {'center'}>
             <Col>
               <Input
-                addonBefore={<Select defaultValue="86" className="select-before"><Option value="86">+86</Option></Select>}
+                id = {"PhoneInput"}
+                addonBefore={
+                  <Select
+                    defaultValue="+86"
+                    id ="selectBefore">
+                    <Option value="+86">+86</Option>
+                  </Select>}
                 defaultValue=""
                 bordered = {true}/>
             </Col>
@@ -44,7 +55,7 @@ export default function Phone(props: PhoneProps) {
         </Space>
         <Row justify = {'center'}>
           <Col>
-            <Button>发送验证码</Button>
+            <Button onClick={phoneCheck}>发送验证码</Button>
           </Col>
         </Row>
       </Space>
