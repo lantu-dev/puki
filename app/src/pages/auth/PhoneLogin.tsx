@@ -1,6 +1,7 @@
 import { call } from '@/api-client/index';
 import { Button, Divider } from 'antd';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useUnmount } from 'react-use';
 import { history } from 'umi';
 import Captcha from './components/Captcha';
 import Phone from './components/Phone';
@@ -53,12 +54,17 @@ export default function PhoneLogin() {
   const [Session, setSession] = useState('');
   const [tick, setTick] = useState(0);
 
+  let timer = useRef<number>(0);
+  useUnmount(() => {
+    window.clearInterval(timer.current);
+  });
+
   const goTick = () => {
     let cnt = 60;
-    let timer = setInterval(() => {
+    timer.current = window.setInterval(() => {
       setTick(cnt--);
       if (cnt < 0) {
-        clearInterval(timer);
+        window.clearInterval(timer.current);
       }
     }, 1000);
   };
@@ -124,7 +130,7 @@ export default function PhoneLogin() {
       if (!TokenUser.ID) {
         setStep(STEP.registerInput);
       } else {
-        history.replace('./topic');
+        history.replace('/');
       }
     } catch (err) {
       console.log('err: ', err);
@@ -136,7 +142,8 @@ export default function PhoneLogin() {
   const registerConfirmed = async (values: UserInfo) => {
     console.group('registerConfirmed');
 
-    // TODO 注册
+    // TODO 等后端注册api
+    history.replace('/');
 
     console.groupEnd();
   };
