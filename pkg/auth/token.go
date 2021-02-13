@@ -31,7 +31,7 @@ type TokenUser struct {
 	ExpiresAt int64
 
 	// 用户角色
-	//Roles     []int64
+	// Roles []int64
 
 	IsStaff bool
 	IsSuper bool
@@ -46,7 +46,7 @@ func (u *TokenUser) IsAnon() bool {
 func (u *TokenUser) User(tx *gorm.DB) (user models.User) {
 	err := tx.First(&user, u.ID).Error
 	if err != nil {
-		log.Fatalf("bad TokenUser", err)
+		log.Fatal("bad TokenUser: ", err)
 	}
 	return
 }
