@@ -9,6 +9,9 @@
 *.dll
 *.so
 *.dylib
+*.mod
+*.sum
+*.json
 
 # Test binary, built with `go test -c`
 *.test
