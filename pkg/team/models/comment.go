@@ -2,7 +2,6 @@ package models
 
 import (
 	"gorm.io/gorm"
-	"time"
 )
 
 type Comment struct {
@@ -14,8 +13,6 @@ type Comment struct {
 	ProjectID int64
 	//评论内容
 	Content string
-	//评论发表时间
-	Time time.Time
 	//评论点赞数
 	LinkNum int64
 }

@@ -17,7 +17,7 @@ type Project struct {
 
 	//比赛/活动：【在此系统中，比赛与活动视作一个类，下方将仅用“比赛”词代替“比赛/活动”】
 	//注意此处功能设计上需要有：点击项目卡片上的比赛标签 => 进入带有设置了该比赛筛选的首屏
-	Competitions []Competition `gorm:"many2many:competition_projects"`
+	Competitions []*Competition `gorm:"many2many:competition_projects"`
 
 	//类别:
 	//注意：此类别区别于”比赛“属性，其内容为：如：“校企合作”，“导师科研”，“学生自研”等
@@ -39,9 +39,9 @@ type Project struct {
 	//项目招募结束时间，可作为首屏项目卡片排序的参照属性之一
 	EndTime time.Time
 
-	//项目需要的岗位
-	Posts []Post
-	//项目评论
+	//项目需要的岗位，一对多关系
+	Positions []Position
+	//项目评论，一个项目可以有多个评论
 	Comments []Comment
 
 	//项目Star数

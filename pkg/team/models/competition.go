@@ -21,4 +21,6 @@ type Competition struct {
 	//相关资料下载; 填写File的ID; 若有多个资料则用英文分号隔开
 	//注意：由于无需通过文件查找有关比赛，因此不用定义反向引用
 	Files []File
+	//比赛下属项目，比赛与项目为多对多关系，可由此通过比赛进行项目的筛选
+	Projects []*Project `gorm:"many2many:competition_projects"`
 }
