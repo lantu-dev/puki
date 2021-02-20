@@ -24,4 +24,9 @@ export default [
     path: '/test',
     component: '@/pages/Test',
   },
+  {
+    exact: true,
+    path: '/setting',
+    component: '@/pages/me/Setting',
+  },
 ];
