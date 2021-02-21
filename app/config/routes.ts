@@ -11,8 +11,8 @@ export default [
   },
   {
     exact: true,
-    path: '/topic',
-    component: '@/pages/bbs/Index',
+    path: '/info',
+    component: '@/pages/me/Index',
   },
   {
     exact: true,
@@ -21,12 +21,17 @@ export default [
   },
   {
     exact: true,
+    path: '/setting',
+    component: '@/pages/me/Setting',
+  },
+  {
+    exact: true,
     path: '/test',
     component: '@/pages/Test',
   },
   {
     exact: true,
-    path: '/setting',
-    component: '@/pages/me/Setting',
+    path: '/topic',
+    component: '@/pages/bbs/Index',
   },
 ];

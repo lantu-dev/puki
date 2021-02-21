@@ -1,9 +1,7 @@
 import { RightOutlined } from '@ant-design/icons';
-import { Col, Row, Typography } from 'antd';
+import { Col, Row } from 'antd';
 import { history } from 'umi';
 import style from './Item.less';
-
-const { Text } = Typography;
 
 interface ItemProps {
   children?: any;
@@ -21,10 +19,10 @@ export default function Item(props: ItemProps) {
     >
       <Row justify="space-between">
         <Col offset={1}>
-          <Text>{props.label}</Text>
+          <span>{props.label}</span>
         </Col>
         <Col>
-          <Text style={{ height: '100%' }}>
+          <span style={{ height: '100%' }}>
             {props.children}
             <RightOutlined
               style={{
@@ -33,7 +31,7 @@ export default function Item(props: ItemProps) {
                 transform: 'translateX(0.5em)',
               }}
             />
-          </Text>
+          </span>
         </Col>
       </Row>
     </div>

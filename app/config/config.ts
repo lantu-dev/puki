@@ -2,7 +2,6 @@ import { defineConfig } from 'umi';
 import routes from './routes';
 
 export default defineConfig({
-  antd: {},
   define: {
     BUNDLE_FLAVOR: 'webapp',
   },
