@@ -1,5 +1,5 @@
-import Item from './component/Item';
 import { Avatar } from 'antd';
+import Item from './component/Item';
 
 let SvgMale = (
   <svg

@@ -11,6 +11,11 @@ export default [
   },
   {
     exact: true,
+    path: '/activity',
+    component: '@/pages/me/Activity',
+  },
+  {
+    exact: true,
     path: '/add',
     component: '@/pages/Add',
   },

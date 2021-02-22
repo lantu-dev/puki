@@ -118,7 +118,7 @@ export default function Me() {
           <Row
             align="middle"
             onClick={() => {
-              history.push('account');
+              history.push('/account');
             }}
           >
             <Col>
@@ -169,7 +169,7 @@ export default function Me() {
             12345678912
           </Item>
         </div>
-        <Item label="我的活动">
+        <Item label="我的活动" route="/activity">
           <span
             style={{
               backgroundColor: 'red',
@@ -182,7 +182,7 @@ export default function Me() {
             new
           </span>
         </Item>
-        <Item label="设置" route="setting">
+        <Item label="设置" route="/setting">
           <Badge dot offset={[-5, 3]}></Badge>
         </Item>
       </Space>
