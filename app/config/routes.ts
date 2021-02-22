@@ -6,36 +6,6 @@ export default [
   },
   {
     exact: true,
-    path: '/account',
-    component: '@/pages/me/Account',
-  },
-  {
-    exact: true,
-    path: '/activity',
-    component: '@/pages/me/Activity',
-  },
-  {
-    exact: true,
-    path: '/add',
-    component: '@/pages/Add',
-  },
-  {
-    exact: true,
-    path: '/contact',
-    component: '@/pages/me/Contact',
-  },
-  {
-    exact: true,
-    path: '/identify',
-    component: '@/pages/me/Identify',
-  },
-  {
-    exact: true,
-    path: '/info',
-    component: '@/pages/me/Index',
-  },
-  {
-    exact: true,
     path: '/auth/phone-login',
     component: '@/pages/auth/phone-login',
   },
@@ -46,7 +16,32 @@ export default [
   },
   {
     exact: true,
-    path: '/setting',
+    path: '/me',
+    component: '@/pages/me/Index',
+  },
+  {
+    exact: true,
+    path: '/me/account',
+    component: '@/pages/me/Account',
+  },
+  {
+    exact: true,
+    path: '/me/activity',
+    component: '@/pages/me/Activity',
+  },
+  {
+    exact: true,
+    path: '/me/contact',
+    component: '@/pages/me/Contact',
+  },
+  {
+    exact: true,
+    path: '/me/identify',
+    component: '@/pages/me/Identify',
+  },
+  {
+    exact: true,
+    path: '/me/setting',
     component: '@/pages/me/Setting',
   },
   {

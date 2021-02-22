@@ -16,7 +16,7 @@ export default function Identify() {
           size="large"
           type="primary"
           onClick={() => {
-            history.back();
+            // TODO
           }}
         >
           申请学生身份认证

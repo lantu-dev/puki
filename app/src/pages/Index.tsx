@@ -5,15 +5,15 @@ import { Link } from 'umi';
 export default function IndexPage() {
   return (
     <div>
-      <Link to="add">add</Link>
+      <Link to="/auth/phone-login">login</Link>
       <Divider />
-      <Link to="topic">topic</Link>
+      <Link to="/auth/register">register</Link>
       <Divider />
-      <Link to="login">login</Link>
+      <Link to="/me">me</Link>
       <Divider />
-      <Link to="test">test</Link>
+      <Link to="/test">test</Link>
       <Divider />
-      <Link to="info">info</Link>
+      <Link to="/topic">topic</Link>
     </div>
   );
 }

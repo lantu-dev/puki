@@ -9,7 +9,7 @@ export default defineConfig({
   dynamicImport: {},
   exportStatic: {},
   fastRefresh: {},
-  // mock: {},
+  mock: false,
   nodeModulesTransform: {
     type: 'none',
   },

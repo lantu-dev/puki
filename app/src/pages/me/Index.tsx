@@ -17,6 +17,7 @@ export default function Me() {
   const [gender, setGender] = useState(Gender.Male);
   const [quiting, setQuiting] = useState(false);
   const [identified, setIdentified] = useState(false);
+  // TODO WhoAmI 接口
 
   return (
     <>
@@ -34,7 +35,7 @@ export default function Me() {
           <Row
             align="middle"
             onClick={() => {
-              history.push('/account');
+              history.push('/me/account');
             }}
           >
             <Col>
@@ -80,16 +81,16 @@ export default function Me() {
             </>
           ) : (
             <>
-              <Item label="学生身份" route="/identify">
+              <Item label="学生身份" route="/me/identify">
                 <img src={Identification} alt="未认证" />
               </Item>
             </>
           )}
-          <Item label="联系方式" route="/contact">
+          <Item label="联系方式" route="/me/contact">
             12345678912
           </Item>
         </div>
-        <Item label="我的活动" route="/activity">
+        <Item label="我的活动" route="/me/activity">
           <span
             style={{
               backgroundColor: 'red',
@@ -102,7 +103,7 @@ export default function Me() {
             new
           </span>
         </Item>
-        <Item label="设置" route="/setting">
+        <Item label="设置" route="/me/setting">
           <Badge dot offset={[-5, 3]}></Badge>
         </Item>
       </Space>
