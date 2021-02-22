@@ -1,10 +1,8 @@
 import React from 'react';
-import {Col, Row, Select, Card, Typography,Tag } from "antd";
-import {call} from "@/api-client";
+import {Col, Row, Typography,Tag } from "antd";
 import {Link} from 'umi'
 import style from '../wwwroot/css/expand.css'
 import {MoreOutlined} from "@ant-design/icons";
-const { Option } = Select;
 const { Title } = Typography;
 const { Paragraph, Text } = Typography;
 
@@ -17,12 +15,12 @@ interface ProjectCardState {
 export default class ProjectCard extends React.Component{
   state:ProjectCardState = {
     ProjectName:"项目名称",
-    ProjectDescribeSimple:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar",
+    ProjectDescribeSimple:"项目介绍",
     ProjectID:1
   }
   render(){
     const Para = () => {
-      const [ellipsis, setEllipsis] = React.useState(true);
+      const [ellipsis] = React.useState(true);
       return (
         <Paragraph ellipsis={ellipsis ? { rows: 2, expandable: true, symbol: '查看更多' } : false}>
           <Text strong>项目介绍：</Text>{this.state.ProjectDescribeSimple}
