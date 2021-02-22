@@ -44,8 +44,6 @@ type Project struct {
 	//项目评论，一个项目可以有多个评论
 	Comments []Comment
 
-	//项目评论数
-	CommentsNum int64
 	//项目Star数
 	StarNum int64
 }
