@@ -47,6 +47,11 @@ export default defineConfig({
     },
     {
       exact: true,
+      path: '/team/ProjectDetail',
+      component: '@/pages/team/pages/ProjectDetail',
+    },
+    {
+      exact: true,
       path: '/team',
       component: '@/pages/team'
     },
