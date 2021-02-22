@@ -21,13 +21,15 @@ export default function Item(props: ItemProps) {
         <Col offset={1}>{props.label}</Col>
         <Col>
           {props.children}
-          <RightOutlined
-            style={{
-              fontSize: '0.8em',
-              color: '#bbb',
-              transform: 'translateX(0.5em)',
-            }}
-          />
+          {props.route && (
+            <RightOutlined
+              style={{
+                fontSize: '0.8em',
+                color: '#bbb',
+                transform: 'translateX(0.5em)',
+              }}
+            />
+          )}
         </Col>
       </Row>
     </div>

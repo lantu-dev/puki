@@ -155,7 +155,9 @@ export default function Me() {
               </Item>
             </>
           )}
-          <Item label="联系方式">12345678912</Item>
+          <Item label="联系方式" route="/contact">
+            12345678912
+          </Item>
         </div>
         <Item label="我的活动">
           <span

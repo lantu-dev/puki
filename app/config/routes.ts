@@ -11,6 +11,11 @@ export default [
   },
   {
     exact: true,
+    path: '/contact',
+    component: '@/pages/me/Contact',
+  },
+  {
+    exact: true,
     path: '/identify',
     component: '@/pages/me/Identify',
   },
