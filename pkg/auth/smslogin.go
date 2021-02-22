@@ -62,7 +62,7 @@ func smsVerifyTimesKey(phoneNumber int64) string {
 func (c *smsLogin) SendCode(ctx context.Context, phoneNumber int64) (session string, err error) {
 
 	rateKey := smsRateLimitKey(phoneNumber)
-	if err := c.cache.Get(ctx, rateKey).Err(); err == nil {
+	if ts, err := c.cache.Get(ctx, rateKey).Int64(); err == nil && time.Now().Unix()-ts < 10 {
 		return "", errors.QuotaLimitExceededf("only one code per minute")
 	}
 
@@ -83,7 +83,7 @@ func (c *smsLogin) SendCode(ctx context.Context, phoneNumber int64) (session str
 		log.Infof("SMSLogin send code %s to %d", code, phoneNumber)
 	}
 
-	if err := c.cache.Set(ctx, rateKey, 1, 59*time.Second).Err(); err != nil {
+	if err := c.cache.Set(ctx, rateKey, time.Now().Unix(), 1*time.Second).Err(); err != nil {
 		return "", errors.Trace(err)
 	}
 	if err := c.cache.Set(ctx, codeKey, sessionAndCode, 5*time.Minute).Err(); err != nil {

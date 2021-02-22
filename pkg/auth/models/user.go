@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/lantu-dev/puki/pkg/base"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"time"
@@ -48,6 +49,40 @@ type User struct {
 	CreatedAt time.Time `gorm:"not null"`
 }
 
+func (u *User) SetName(name string) string {
+	// TODO: remove non-ascii & length limit
+	u.Name = null.StringFrom(name)
+	return name
+}
+
+func (u *User) CheckPassword(pass string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(pass))
+	return err == nil
+}
+
+func (u *User) SetPassword(pass string) {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(pass), 14)
+	if err != nil {
+		log.Fatal(err)
+	}
+	u.Password = string(hashed)
+}
+
+func (u *User) SetNickName(name string) {
+	u.NickName = name
+}
+func (u *User) SetRealName(name string) {
+	u.RealName = name
+}
+func (u *User) SetUserName(tx *gorm.DB, name string) bool {
+	anotherUser := FindUserByUserName(tx, name)
+	if anotherUser != nil {
+		return false
+	}
+	u.RealName = name
+	return true
+}
+
 func FindOrCreateUserByPhoneNumber(tx *gorm.DB, phoneNumber int64) *User {
 	var user User
 	user.PhoneNumber = phoneNumber
@@ -59,8 +94,8 @@ func FindOrCreateUserByPhoneNumber(tx *gorm.DB, phoneNumber int64) *User {
 	}
 	// 注册新用户
 	user.ID = base.GenerateID() // 需要手动生成ID
-	if err := tx.Model(&User{}).Save(&user); err != nil {
-		log.Panic(err)
+	if err := tx.Model(&User{}).Create(&user).Error; err != nil {
+		log.Panicf("%+v", err)
 	}
 
 	return &user
@@ -69,6 +104,16 @@ func FindOrCreateUserByPhoneNumber(tx *gorm.DB, phoneNumber int64) *User {
 func FindUserById(tx *gorm.DB, id int64) *User {
 	var user User
 	if err := tx.Model(&User{}).First(&user, id).Error; err == nil {
+		return &user
+	} else {
+		log.Debug(err)
+		return nil
+	}
+}
+
+func FindUserByUserName(tx *gorm.DB, un string) *User {
+	var user User
+	if err := tx.Model(&User{}).First(&user, "name = ?", un).Error; err == nil {
 		return &user
 	} else {
 		log.Debug(err)

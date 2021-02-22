@@ -2,6 +2,14 @@ import fly, { FlyResponse } from 'flyio';
 
 export interface Endpoint<P, R> extends String {}
 
+export async function setToken(token: string) {
+  localStorage.setItem('token', token);
+}
+
+export async function hasLogged() {
+  !!localStorage.getItem('token');
+}
+
 export async function call<P, R>(
   endpoint: Endpoint<P, R>,
   params: P,
@@ -11,7 +19,7 @@ export async function call<P, R>(
     const token = localStorage.getItem('token');
     resp = fly
       .post(
-        'api',
+        '/api/',
         {
           jsonrpc: '2.0',
           method: endpoint,
@@ -37,6 +45,7 @@ export async function call<P, R>(
         if (error) {
           return Promise.reject({ status: error.code, message: error.message });
         }
+        resp.data = result;
         return resp;
       }) as any;
   }

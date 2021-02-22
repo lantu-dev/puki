@@ -16,8 +16,13 @@ export default [
   },
   {
     exact: true,
-    path: '/login',
-    component: '@/pages/auth/PhoneLogin',
+    path: '/auth/phone-login',
+    component: '@/pages/auth/phone-login',
+  },
+  {
+    exact: true,
+    path: '/auth/register',
+    component: '@/pages/auth/register',
   },
   {
     exact: true,

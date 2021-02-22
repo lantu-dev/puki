@@ -1,30 +1,53 @@
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd';
 import React from 'react';
+import { auth, call } from '@/api-client';
+import { setToken } from '@/api-client/client';
+
 const { Title } = Typography;
 
-interface CaptchaProps {
-  onConfirm: (Captcha: string) => void;
-  goback: () => void;
-  reCaptcha: () => void;
-  tick: number;
+interface InputVerifyCodeProps {
+  onLogged: (next: 'register' | 'redirect') => void;
+  onBack: () => void;
+  onResent: (session: string) => void;
+  phoneNumber: string;
+  session: string;
+  tick: number | null;
 }
 
-export default function Captcha(props: CaptchaProps) {
+export default function InputVerifyCode(props: InputVerifyCodeProps) {
+  const onFinish = async ({ verifyCode }: any) => {
+    console.log(props);
+    const { Token, User } = await call(auth.UserService.SMSCodeLogin, {
+      PhoneNumber: props.phoneNumber,
+      Session: props.session,
+      Code: verifyCode,
+    });
+
+    console.log(`logged ${Token}`);
+    setToken(Token);
+    if (User.RealName.length > 0) {
+      props.onLogged('redirect');
+    } else {
+      props.onLogged('register');
+    }
+  };
+
+  const onResend = async () => {
+    const { Session } = await call(auth.UserService.SMSSendCode, {
+      PhoneNumber: props.phoneNumber,
+    });
+    props.onResent(Session);
+  };
+
   return (
     <>
       <Title level={3}>蓝图未来</Title>
-      <Form
-        name="Captcha"
-        onFinish={({ Captcha }) => {
-          console.log(Captcha);
-          props.onConfirm(Captcha);
-        }}
-      >
+      <Form onFinish={onFinish}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Row justify="center">
             <Col span={20}>
               <Form.Item
-                name="Captcha"
+                name="verifyCode"
                 label="验证码"
                 rules={[
                   {
@@ -44,9 +67,10 @@ export default function Captcha(props: CaptchaProps) {
                     <Button
                       type="link"
                       style={{ padding: '0' }}
-                      onClick={props.reCaptcha}
+                      disabled={!!props.tick}
+                      onClick={onResend}
                     >
-                      {props.tick || '重新发送'}
+                      {`${props.tick}s` || '重新发送'}
                     </Button>
                   }
                 />
@@ -55,7 +79,7 @@ export default function Captcha(props: CaptchaProps) {
           </Row>
           <Row justify="center" style={{ textAlign: 'center' }}>
             <Col span={8}>
-              <Button size="large" onClick={props.goback}>
+              <Button size="large" onClick={props.onBack}>
                 修改手机号
               </Button>
             </Col>

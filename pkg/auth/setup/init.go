@@ -13,7 +13,7 @@ const MOD_NAME = "auth"
 
 // 模块初始化
 func Setup(reg *base.ServiceRegistry, db *gorm.DB) (err error) {
-	err = errors.Trace(db.AutoMigrate(&models.User{}))
+	err = errors.Trace(db.AutoMigrate(&models.User{}, &models.Student{}))
 	if err != nil {
 		return
 	}

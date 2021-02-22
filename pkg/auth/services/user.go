@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/base"
@@ -63,6 +62,7 @@ type SMSCodeLoginReq struct {
 }
 type SMSCodeLoginRes struct {
 	TokenUser *auth.TokenUser
+	User      *models.User
 	Token     string
 }
 
@@ -89,7 +89,7 @@ func (s *UserService) SMSCodeLogin(r *http.Request, req *SMSCodeLoginReq, res *S
 	}
 
 	res.Token = res.TokenUser.Sign(7 * 24 * time.Hour)
-	r.Response.Header.Set("Set-Authorization", fmt.Sprintf("Token %s", res.Token))
+	res.User = user
 
 	err = tx.Commit().Error // 数据库事务
 	return
@@ -112,6 +112,74 @@ func (s *UserService) WhoAmI(r *http.Request, req *WhoAmIReq, res *WhoAmIRes) (e
 	if !tu.IsAnon() {
 		res.User = tu.User(tx)
 	}
+
+	err = tx.Commit().Error
+	return
+}
+
+type RegisterReq struct {
+	RealName string
+	NickName string
+
+	UserName string
+	Password string
+
+	StudentID string
+	School    string
+}
+type RegisterRes struct {
+	Registered bool
+}
+
+// 这里的 Register 更有完善用户资料的意味，因为此时数据库中 User 已经创建好了
+func (s *UserService) Register(r *http.Request, req *RegisterReq, res *RegisterRes) (err error) {
+	tu, err := auth.ExtractTokenUser(r)
+	if err != nil {
+		return err
+	}
+
+	tx := s.db.Begin()
+
+	if tu.IsAnon() {
+		return base.UserErrorf("login required")
+	}
+
+	user := tu.User(tx)
+
+	if user.RealName != "" {
+		return base.UserErrorf("registered already")
+	}
+
+	user.SetRealName(req.RealName)
+	user.SetNickName(req.NickName)
+
+	if req.UserName != "" {
+		if user.SetUserName(tx, req.UserName) != true {
+			return base.UserErrorf("username exists")
+		}
+	}
+
+	if req.Password != "" {
+		user.SetPassword(req.Password)
+	}
+
+	if req.StudentID != "" {
+		stu, err := models.FindOrCreateStudentFromUser(tx, &user)
+		if err != nil {
+			return err
+		}
+		stu.UntrustedID = req.StudentID
+		stu.School = req.School
+		if err := tx.Save(stu).Error; err != nil {
+			return err
+		}
+	}
+
+	if err := tx.Save(&user).Error; err != nil {
+		return err
+	}
+
+	res.Registered = true
 
 	err = tx.Commit().Error
 	return
