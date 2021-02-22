@@ -70,7 +70,7 @@ export default function InputVerifyCode(props: InputVerifyCodeProps) {
                       disabled={!!props.tick}
                       onClick={onResend}
                     >
-                      {`${props.tick}s` || '重新发送'}
+                      {props.tick ? `${props.tick}s` : '重新发送'}
                     </Button>
                   }
                 />

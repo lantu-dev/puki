@@ -9,18 +9,14 @@ enum Step {
 
 export default function Index() {
   const [step, setStep] = useState(Step.inputPhoneNumber);
-  const [tick, setTick] = useState<number | null>(null);
+  const [tick, setTick] = useState(0);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [session, setSession] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (tick) {
-        if (tick > 0) {
-          setTick(tick - 1);
-        } else {
-          setTick(null);
-        }
+      if (tick > 0) {
+        setTick(tick - 1);
       }
     }, 1000);
     return () => clearTimeout(timer);
