@@ -18,7 +18,9 @@ export default function Item(props: ItemProps) {
       className={style.myButton}
     >
       <Row justify="space-between">
-        <Col offset={1}>{props.label}</Col>
+        <Col offset={1} style={{ display: 'flex', alignItems: 'center' }}>
+          {props.label}
+        </Col>
         <Col>
           {props.children}
           {props.route && (

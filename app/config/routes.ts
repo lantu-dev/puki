@@ -6,6 +6,11 @@ export default [
   },
   {
     exact: true,
+    path: '/account',
+    component: '@/pages/me/Account',
+  },
+  {
+    exact: true,
     path: '/add',
     component: '@/pages/Add',
   },

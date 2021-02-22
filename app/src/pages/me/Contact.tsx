@@ -1,4 +1,3 @@
-import { Space } from 'antd';
 import Item from './component/Item';
 
 let Wechat = (

@@ -1,7 +1,8 @@
-import { Avatar, Col, Row, Space, Badge, Drawer, Button } from 'antd';
-import Item from './component/Item';
 import { RightOutlined } from '@ant-design/icons';
+import { Avatar, Badge, Button, Col, Drawer, Row, Space } from 'antd';
 import { useState } from 'react';
+import { history } from 'umi';
+import Item from './component/Item';
 
 let SvgMale = (
   <svg
@@ -114,13 +115,22 @@ export default function Me() {
         wrap={false}
       >
         <Col>
-          <Avatar size={64}></Avatar>
-        </Col>
-        <Col>
-          <span style={{ fontSize: '1.5em', padding: '0.1em' }}>
-            Future_000
-          </span>
-          {gender === Gender.Male ? SvgMale : SvgFemale}
+          <Row
+            align="middle"
+            onClick={() => {
+              history.push('account');
+            }}
+          >
+            <Col>
+              <Avatar size={64}></Avatar>
+            </Col>
+            <Col>
+              <span style={{ fontSize: '1.5em', padding: '0.1em' }}>
+                Future_000
+              </span>
+              {gender === Gender.Male ? SvgMale : SvgFemale}
+            </Col>
+          </Row>
         </Col>
         <Col style={{ marginLeft: 'auto', transform: 'translateY(0.3em)' }}>
           {QRCode}
