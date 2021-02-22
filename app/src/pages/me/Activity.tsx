@@ -1,5 +1,5 @@
-import { Button, Empty, Typography } from 'antd';
 import { DoubleLeftOutlined } from '@ant-design/icons';
+import { Button, Empty, Typography } from 'antd';
 const { Title, Text } = Typography;
 
 export default function Activity() {
