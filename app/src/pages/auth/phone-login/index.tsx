@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSetState } from 'react-use';
 import InputPhoneNumber from './components/input-phone-number';
 import InputVerifyCode from './components/input-verify-code';
 
@@ -8,15 +9,17 @@ enum Step {
 }
 
 export default function Index() {
-  const [step, setStep] = useState(Step.inputPhoneNumber);
-  const [tick, setTick] = useState(0);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [session, setSession] = useState('');
+  const [state, setState] = useSetState({
+    phoneNumber: '',
+    session: '',
+    step: Step.inputPhoneNumber,
+    tick: 0,
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (tick > 0) {
-        setTick(tick - 1);
+      if (state.tick > 0) {
+        setState({ tick: state.tick - 1 });
       }
     }, 1000);
     return () => clearTimeout(timer);
@@ -27,27 +30,28 @@ export default function Index() {
       {
         [
           <InputPhoneNumber
-            currentCodeSentPhoneNumber={phoneNumber}
-            onNothingChanged={() => setStep(Step.inputVerifyCode)}
+            currentCodeSentPhoneNumber={state.phoneNumber}
+            onNothingChanged={() => setState({ step: Step.inputVerifyCode })}
             onVerifyCodeSent={(phoneNumber, session) => {
-              setPhoneNumber(phoneNumber);
-              setSession(session);
-              setTick(60);
-              setStep(Step.inputVerifyCode);
+              setState({
+                phoneNumber: phoneNumber,
+                session: session,
+                step: Step.inputVerifyCode,
+                tick: 60,
+              });
             }}
           />,
           <InputVerifyCode
-            tick={tick}
+            tick={state.tick}
             onLogged={console.log}
-            onBack={() => setStep(Step.inputPhoneNumber)}
+            onBack={() => setState({ step: Step.inputPhoneNumber })}
             onResent={(session) => {
-              setSession(session);
-              setTick(60);
+              setState({ session: session, tick: 60 });
             }}
-            phoneNumber={phoneNumber}
-            session={session}
+            phoneNumber={state.phoneNumber}
+            session={state.session}
           />,
-        ][step]
+        ][state.step]
       }
     </>
   );
