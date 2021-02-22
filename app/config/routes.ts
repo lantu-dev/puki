@@ -11,6 +11,11 @@ export default [
   },
   {
     exact: true,
+    path: '/identify',
+    component: '@/pages/me/Identify',
+  },
+  {
+    exact: true,
     path: '/info',
     component: '@/pages/me/Index',
   },
