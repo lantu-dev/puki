@@ -28,31 +28,31 @@ export default function Index() {
 
   return (
     <>
-      {step === Step.inputPhoneNumber ? (
-        <InputPhoneNumber
-          currentCodeSentPhoneNumber={phoneNumber}
-          onNothingChanged={() => setStep(Step.inputVerifyCode)}
-          onVerifyCodeSent={(phoneNumber, session) => {
-            setPhoneNumber(phoneNumber);
-            setSession(session);
-            setTick(60);
-            setStep(Step.inputVerifyCode);
-          }}
-        />
-      ) : null}
-      {step === Step.inputVerifyCode ? (
-        <InputVerifyCode
-          tick={tick}
-          onLogged={console.log}
-          onBack={() => setStep(Step.inputPhoneNumber)}
-          onResent={(session) => {
-            setSession(session);
-            setTick(60);
-          }}
-          phoneNumber={phoneNumber}
-          session={session}
-        />
-      ) : null}
+      {
+        [
+          <InputPhoneNumber
+            currentCodeSentPhoneNumber={phoneNumber}
+            onNothingChanged={() => setStep(Step.inputVerifyCode)}
+            onVerifyCodeSent={(phoneNumber, session) => {
+              setPhoneNumber(phoneNumber);
+              setSession(session);
+              setTick(60);
+              setStep(Step.inputVerifyCode);
+            }}
+          />,
+          <InputVerifyCode
+            tick={tick}
+            onLogged={console.log}
+            onBack={() => setStep(Step.inputPhoneNumber)}
+            onResent={(session) => {
+              setSession(session);
+              setTick(60);
+            }}
+            phoneNumber={phoneNumber}
+            session={session}
+          />,
+        ][step]
+      }
     </>
   );
 }
