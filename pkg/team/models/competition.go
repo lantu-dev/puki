@@ -8,7 +8,7 @@ import (
 type Competition struct {
 	gorm.Model
 	//比赛名称;
-	Name string
+	Name string `gorm:"unique"`
 	//比赛介绍
 	Description string
 	//比赛图片, 一般为比赛的宣传海报；填写该图片的URL
@@ -23,4 +23,13 @@ type Competition struct {
 	Files []File
 	//比赛下属项目，比赛与项目为多对多关系，可由此通过比赛进行项目的筛选
 	Projects []*Project `gorm:"many2many:competition_projects"`
+}
+
+//比赛类型，此类别区别于”比赛“属性，其内容为：如：“校企合作”，“导师科研”，“学生自研”等
+type Type struct {
+	gorm.Model
+	//类别名称
+	Name string
+	//类别介绍
+	Describe string
 }

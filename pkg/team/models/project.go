@@ -47,12 +47,3 @@ type Project struct {
 	//项目Star数
 	StarNum int64
 }
-
-//比赛类型，此类别区别于”比赛“属性，其内容为：如：“校企合作”，“导师科研”，“学生自研”等
-type Type struct {
-	gorm.Model
-	//类别名称
-	Name string
-	//类别介绍
-	Describe string
-}

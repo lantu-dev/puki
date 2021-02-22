@@ -37,6 +37,16 @@ export default defineConfig({
     },
     {
       exact: true,
+      path: '/team/CreateCompetition',
+      component: '@/pages/team/pages/CreateCompetition',
+    },
+    {
+      exact: true,
+      path: '/team/CreateCompetitionType',
+      component: '@/pages/team/pages/CreateCompetitionType',
+    },
+    {
+      exact: true,
       path: '/team',
       component: '@/pages/team'
     },

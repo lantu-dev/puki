@@ -16,13 +16,13 @@ func main() {
 	//gorm
 	dsn := "sqlserver://sa:Cwh2001128,.@39.97.211.86/instance?database=zdxt&port=1433"
 	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
-
 	if err != nil {
 		panic("failed to connect database")
 	}
 	// 迁移 schema, 需要添加所有model
 	db.AutoMigrate(&models.Comment{})
 	db.AutoMigrate(&models.Competition{})
+	db.AutoMigrate(&models.Type{})
 	db.AutoMigrate(&models.Conversation{})
 	db.AutoMigrate(&models.File{})
 	db.AutoMigrate(&models.Position{})
