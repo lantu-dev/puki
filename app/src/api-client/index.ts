@@ -1,3 +1,3 @@
-export { call } from './client';
+export { call, setToken } from './client';
 
 export { auth } from './auth';

@@ -31,7 +31,11 @@ export default function Index() {
         [
           <InputPhoneNumber
             currentCodeSentPhoneNumber={state.phoneNumber}
-            onNothingChanged={() => setState({ step: Step.inputVerifyCode })}
+            onNothingChanged={() =>
+              setState({
+                step: Step.inputVerifyCode,
+              })
+            }
             onVerifyCodeSent={(phoneNumber, session) => {
               setState({
                 phoneNumber: phoneNumber,
@@ -42,14 +46,14 @@ export default function Index() {
             }}
           />,
           <InputVerifyCode
-            tick={state.tick}
-            onLogged={console.log}
             onBack={() => setState({ step: Step.inputPhoneNumber })}
+            onLogged={console.log}
             onResent={(session) => {
               setState({ session: session, tick: 60 });
             }}
             phoneNumber={state.phoneNumber}
             session={state.session}
+            tick={state.tick}
           />,
         ][state.step]
       }

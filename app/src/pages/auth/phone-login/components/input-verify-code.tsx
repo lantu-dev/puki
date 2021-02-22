@@ -1,17 +1,15 @@
+import { auth, call, setToken } from '@/api-client';
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd';
-import React from 'react';
-import { auth, call } from '@/api-client';
-import { setToken } from '@/api-client/client';
 
 const { Title } = Typography;
 
 interface InputVerifyCodeProps {
-  onLogged: (next: 'register' | 'redirect') => void;
   onBack: () => void;
+  onLogged: (next: 'register' | 'redirect') => void;
   onResent: (session: string) => void;
   phoneNumber: string;
   session: string;
-  tick: number | null;
+  tick: number;
 }
 
 export default function InputVerifyCode(props: InputVerifyCodeProps) {

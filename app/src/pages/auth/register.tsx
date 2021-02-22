@@ -1,3 +1,4 @@
+import { auth, call } from '@/api-client';
 import {
   Button,
   Checkbox,
@@ -11,7 +12,6 @@ import {
 } from 'antd';
 import React from 'react';
 import { useAsync } from 'react-use';
-import { auth, call } from '@/api-client';
 
 const { Title } = Typography;
 
@@ -20,7 +20,7 @@ interface IForm {
   realName: string;
   nickName: string;
   fillStudentInfo: boolean;
-  studentId?: string;
+  studentID?: string;
   school?: string;
   fillUserName: boolean;
   userName?: string;
@@ -29,12 +29,9 @@ interface IForm {
   agreement: boolean;
 }
 
-const labelCol = 5;
-const wrapperCol = 16;
-const checkoutOffset = 5;
-
 export default function Register() {
   const [form] = Form.useForm<IForm>();
+
   const phoneNumberState = useAsync(async () => {
     const { User } = await call(auth.UserService.WhoAmI, {});
     if (User.RealName && User.RealName.length > 0) {
@@ -50,7 +47,7 @@ export default function Register() {
       NickName: values.nickName || '',
       UserName: values.userName || '',
       Password: values.password || '',
-      StudentID: values.studentId || '',
+      StudentID: values.studentID || '',
       School: values.school || '',
     });
 
@@ -58,17 +55,18 @@ export default function Register() {
       message.success({ content: '注册成功！' });
     }
   };
+
   return (
     <>
       <Title level={3}>用户注册</Title>
-      <br />
       <Form
         form={form}
         scrollToFirstError
         onFinish={onFinish}
         initialValues={{
-          fillStudentInfo: true,
           fillPassword: true,
+          fillStudentInfo: true,
+          fillUserName: true,
         }}
       >
         <Space direction="vertical" style={{ width: '100%', padding: '25px' }}>
@@ -77,7 +75,7 @@ export default function Register() {
           </Form.Item>
 
           <Form.Item
-            name="RealName"
+            name="realName"
             label="姓名"
             validateFirst
             hasFeedback
@@ -119,10 +117,10 @@ export default function Register() {
           >
             <Input placeholder="请输入" />
           </Form.Item>
+
           <Form.Item name="fillStudentInfo" valuePropName="checked" noStyle>
             <Checkbox>完善学生信息</Checkbox>
           </Form.Item>
-
           <Form.Item
             noStyle
             shouldUpdate={(before, after) =>
@@ -130,12 +128,11 @@ export default function Register() {
             }
           >
             {() =>
-              form.getFieldValue('fillStudentInfo') == true && (
+              form.getFieldValue('fillStudentInfo') && (
                 <>
                   <Form.Item
-                    shouldUpdate
                     label="学号"
-                    name="studentId"
+                    name="studentID"
                     validateFirst
                     hasFeedback
                     rules={[
@@ -147,8 +144,13 @@ export default function Register() {
                         validator(_, value) {
                           if (value.length === 10) {
                             // TODO 查找学院
-                            setFieldsValue({ school: '计算机学院' });
-                            return Promise.resolve();
+                            let school = '计算机学院';
+                            if (school) {
+                              setFieldsValue({ school });
+                              return Promise.resolve();
+                            } else {
+                              return Promise.reject('该学号不存在');
+                            }
                           }
                           return Promise.reject('例: 2019123456');
                         },
@@ -169,7 +171,6 @@ export default function Register() {
           <Form.Item name="fillUserName" valuePropName="checked" noStyle>
             <Checkbox>设置用户名</Checkbox>
           </Form.Item>
-
           <Form.Item
             noStyle
             shouldUpdate={(before, after) =>
@@ -177,9 +178,8 @@ export default function Register() {
             }
           >
             {() =>
-              form.getFieldValue('fillUserName') == true && (
+              form.getFieldValue('fillUserName') && (
                 <Form.Item
-                  shouldUpdate
                   name="userName"
                   validateFirst
                   hasFeedback
@@ -221,7 +221,7 @@ export default function Register() {
             }
           >
             {() =>
-              form.getFieldValue('fillPassword') == true && (
+              form.getFieldValue('fillPassword') && (
                 <Form.Item
                   name="password"
                   validateFirst

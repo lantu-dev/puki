@@ -2,14 +2,14 @@ import { defineConfig } from 'umi';
 import routes from './routes';
 
 export default defineConfig({
+  base: process.env.PUBLIC_PATH || '/',
   define: {
     BUNDLE_FLAVOR: 'webapp',
   },
-  publicPath: process.env.PUBLIC_PATH || '/',
-  base: process.env.PUBLIC_PATH || '/',
   dynamicImport: {},
   exportStatic: {},
   fastRefresh: {},
+  // mock: {},
   nodeModulesTransform: {
     type: 'none',
   },
@@ -23,6 +23,7 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
+  publicPath: process.env.PUBLIC_PATH || '/',
   routes,
   ssr: {},
 });

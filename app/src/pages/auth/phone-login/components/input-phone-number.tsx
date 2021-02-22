@@ -1,9 +1,7 @@
-import { Button, Col, Form, Input, Row, Select, Space, Typography } from 'antd';
-import React from 'react';
 import { auth, call } from '@/api-client';
+import { Button, Col, Form, Input, Row, Select, Space, Typography } from 'antd';
 
 const { Title } = Typography;
-const { Option } = Select;
 
 interface PhoneProps {
   currentCodeSentPhoneNumber?: string;
@@ -26,10 +24,11 @@ export default function InputPhoneNumber(props: PhoneProps) {
     });
     props.onVerifyCodeSent(phoneNumberWithPrefix, Session);
   };
+
   return (
     <>
       <Title level={3}>注册或登录</Title>
-      <Form size="large" onFinish={onFinish} initialValues={{ prefix: '+86' }}>
+      <Form onFinish={onFinish} initialValues={{ prefix: '+86' }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Row justify="center">
             <Col span={20}>
