@@ -2,12 +2,7 @@
 import React from 'react';
 import Header from "./component/Header";
 import Filter from "./component/Filter";
-import {Link} from 'umi';
-import {Button} from "antd";
-import {call} from "@/api-client";
 import ProjectCard from "@/pages/team/component/ProjectCard";
-import style from './wwwroot/css/expand.css'
-
 
 export default function (){
   return (

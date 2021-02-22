@@ -1,9 +1,9 @@
-import {Avatar, Col, Image, Row, Space, Input} from "antd";
+import {Col, Row, Space, Input} from "antd";
 import logo from "@/pages/team/wwwroot/img/logo.png";
 import React from "react";
 import {Link} from "umi";
 import {PlusCircleOutlined} from "@ant-design/icons";
-import style from '../wwwroot/css/expand.css';
+
 const { Search } = Input;
 
 
@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <Row align={"middle"}>
       <Col flex={"50px"}>
-        <Link to={"team"}><img width={"50"} src={logo}/></Link>
+        <Link to={"team"}><img alt={logo} width={"50"} src={logo}/></Link>
       </Col>
       <Col flex={"auto"} >
         <div style={{width:"100%", textAlign:"center", }}>

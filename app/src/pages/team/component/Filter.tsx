@@ -32,7 +32,7 @@ function onFocusCompetition() {
 }
 //搜索
 function onSearchCompetition(val:string) {
-
+  console.log(val)
 }
 
 
@@ -48,7 +48,7 @@ function onFocusCompetitionType() {
 }
 //搜索
 function onSearchCompetitionType(val:string) {
-
+  console.log(val)
 }
 
 //----------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ function onFocusPosition() {
 }
 //搜索
 function onSearchPosition(val:string) {
-
+  console.log(val)
 }
 
 
