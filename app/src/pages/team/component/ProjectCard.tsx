@@ -7,12 +7,14 @@ const { Title } = Typography;
 const { Paragraph, Text } = Typography;
 
 interface ProjectCardProps {
+  ProjectID: number;
   ProjectName: string;
   ProjectDescribeSimple: string;
 }
 
 export default class ProjectCard extends React.Component {
   props: ProjectCardProps = {
+    ProjectID: this.props.ProjectID,
     ProjectName: this.props.ProjectName,
     ProjectDescribeSimple: this.props.ProjectDescribeSimple,
   };
@@ -51,7 +53,11 @@ export default class ProjectCard extends React.Component {
             <Link
               to={{
                 pathname: '/team/ProjectDetail',
-                state: { ProjectID: 1 },
+                state: {
+                  ProjectID: this.props.ProjectName,
+                  ProjectName: this.props.ProjectName,
+                  ProjectDescribeSimple: this.props.ProjectDescribeSimple,
+                },
               }}
             >
               <Title level={4}>{this.props.ProjectName}</Title>

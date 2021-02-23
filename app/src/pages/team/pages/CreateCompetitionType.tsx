@@ -2,9 +2,9 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { Typography } from 'antd';
+const { Title } = Typography;
 import { call } from '@/api-client';
 
-const { Title } = Typography;
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },

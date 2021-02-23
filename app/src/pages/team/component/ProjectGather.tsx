@@ -3,6 +3,7 @@ import { call } from '@/api-client';
 import ProjectCard from '@/pages/team/component/ProjectCard';
 
 interface Project {
+  ProjectID: number;
   CreateTime: string;
   UpdateTime: string;
   ProjectName: string;
@@ -43,6 +44,7 @@ export default class ProjectGather extends React.Component {
       <div>
         {this.state.Projects.map((value) => (
           <ProjectCard
+            ProjectID={value.ProjectID}
             ProjectName={value.ProjectName}
             ProjectDescribeSimple={value.ProjectDescription}
           />
