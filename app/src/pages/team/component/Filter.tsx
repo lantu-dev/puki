@@ -4,8 +4,6 @@ import { call } from '@/api-client';
 
 const { Option } = Select;
 
-
-
 //比赛名称
 interface GetCompetitionNameReq {}
 interface GetCompetitionNameRes {
@@ -21,7 +19,6 @@ interface GetCompetitionTypeRes {
 //比赛(如互联网+，挑战杯等)
 function onChangeCompetition(value: string) {
   console.log('onSearchCompetition' + value);
-
 }
 function onBlurCompetition() {}
 function onFocusCompetition() {}
@@ -115,8 +112,10 @@ export default class Filter extends React.Component {
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            {this.state.competitionNames.map((value,index) => (
-              <Option key={index} value={value}>{value}</Option>
+            {this.state.competitionNames.map((value, index) => (
+              <Option key={index} value={value}>
+                {value}
+              </Option>
             ))}
           </Select>
         </Col>
@@ -135,8 +134,10 @@ export default class Filter extends React.Component {
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            {this.state.competitionTypes.map((value,index) => (
-              <Option key={index+10000} value={value}>{value}</Option>
+            {this.state.competitionTypes.map((value, index) => (
+              <Option key={index + 10000} value={value}>
+                {value}
+              </Option>
             ))}
           </Select>
         </Col>

@@ -8,14 +8,14 @@ const { Paragraph, Text } = Typography;
 
 interface ProjectCardProps {
   ProjectName: string;
-  ProjectDescribeSimple: string
+  ProjectDescribeSimple: string;
 }
 
 export default class ProjectCard extends React.Component {
   props: ProjectCardProps = {
     ProjectName: this.props.ProjectName,
-    ProjectDescribeSimple: this.props.ProjectDescribeSimple
-  }
+    ProjectDescribeSimple: this.props.ProjectDescribeSimple,
+  };
   render() {
     const Para = () => {
       const [ellipsis] = React.useState(true);
