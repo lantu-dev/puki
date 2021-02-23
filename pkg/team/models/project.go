@@ -10,7 +10,7 @@ type Project struct {
 	gorm.Model
 	//是否可用，初始值为false，若项目已招募够需要的人数、或由招募者手动操作后，进入true状态；招募者可重新开启招募
 	//解释：变量用途：1.用于展示优先度的计算；2.封存阶段仅可浏览、不可与招募者联系，可选择当招募再次开启时提醒
-	IsAvailable bool
+	IsAvailable bool `gorm:"default:false"`
 
 	//创建者ID
 	CreatorID int64
@@ -34,8 +34,6 @@ type Project struct {
 	DescribeDetail string
 	//介绍链接URL，类似于微信”阅读原文“功能，如有交互式展示、图文消息等复杂形式的介绍，目前不做集成仅作跳转
 	LinkURL string
-	//项目招募信息创建(最后一次编辑)时间，可作为首屏项目卡片排序的参照属性之一
-	EditTime time.Time
 	//项目招募结束时间，可作为首屏项目卡片排序的参照属性之一
 	EndTime time.Time
 
@@ -45,7 +43,7 @@ type Project struct {
 	Comments []Comment
 
 	//项目评论数
-	CommentsNum int64
+	CommentsNum int64 `gorm:"default:0"`
 	//项目Star数
-	StarNum int64
+	StarNum int64 `gorm:"default:0"`
 }
