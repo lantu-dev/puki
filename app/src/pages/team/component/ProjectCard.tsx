@@ -6,18 +6,16 @@ import { MoreOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 const { Paragraph, Text } = Typography;
 
-interface ProjectCardState {
+interface ProjectCardProps {
   ProjectName: string;
-  ProjectDescribeSimple: string;
-  ProjectID: number;
+  ProjectDescribeSimple: string
 }
 
 export default class ProjectCard extends React.Component {
-  state: ProjectCardState = {
-    ProjectName: '项目名称',
-    ProjectDescribeSimple: '项目介绍',
-    ProjectID: 1,
-  };
+  props: ProjectCardProps = {
+    ProjectName: this.props.ProjectName,
+    ProjectDescribeSimple: this.props.ProjectDescribeSimple
+  }
   render() {
     const Para = () => {
       const [ellipsis] = React.useState(true);
@@ -28,7 +26,7 @@ export default class ProjectCard extends React.Component {
           }
         >
           <Text strong>项目介绍：</Text>
-          {this.state.ProjectDescribeSimple}
+          {this.props.ProjectDescribeSimple}
         </Paragraph>
       );
     };
@@ -56,7 +54,7 @@ export default class ProjectCard extends React.Component {
                 state: { ProjectID: 1 },
               }}
             >
-              <Title level={4}>{this.state.ProjectName}</Title>
+              <Title level={4}>{this.props.ProjectName}</Title>
             </Link>
             <Para />
           </Col>

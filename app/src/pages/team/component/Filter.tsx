@@ -4,25 +4,24 @@ import { call } from '@/api-client';
 
 const { Option } = Select;
 
+
+
 //比赛名称
 interface GetCompetitionNameReq {}
 interface GetCompetitionNameRes {
-  result: {
-    CompetitionNames: string[];
-  };
+  CompetitionNames: string[];
 }
 
 //比赛类型
 interface GetCompetitionTypeReq {}
 interface GetCompetitionTypeRes {
-  result: {
-    CompetitionTypes: string[];
-  };
+  CompetitionTypes: string[];
 }
 
 //比赛(如互联网+，挑战杯等)
 function onChangeCompetition(value: string) {
   console.log('onSearchCompetition' + value);
+
 }
 function onBlurCompetition() {}
 function onFocusCompetition() {}
@@ -83,7 +82,7 @@ export default class Filter extends React.Component {
       if (!this.state.isCompetitionNamesFinished) {
         this.setState({
           isCompetitionNamesFinished: true,
-          competitionNames: r.result.CompetitionNames,
+          competitionNames: r.CompetitionNames,
         });
       }
     });
@@ -95,7 +94,7 @@ export default class Filter extends React.Component {
       if (!this.state.isCompetitionTypesFinished) {
         this.setState({
           isCompetitionTypesFinished: true,
-          competitionTypes: r.result.CompetitionTypes,
+          competitionTypes: r.CompetitionTypes,
         });
       }
     });
@@ -116,8 +115,8 @@ export default class Filter extends React.Component {
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            {this.state.competitionNames.map((value) => (
-              <Option value={value}>{value}</Option>
+            {this.state.competitionNames.map((value,index) => (
+              <Option key={index} value={value}>{value}</Option>
             ))}
           </Select>
         </Col>
@@ -136,8 +135,8 @@ export default class Filter extends React.Component {
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            {this.state.competitionTypes.map((value) => (
-              <Option value={value}>{value}</Option>
+            {this.state.competitionTypes.map((value,index) => (
+              <Option key={index+10000} value={value}>{value}</Option>
             ))}
           </Select>
         </Col>

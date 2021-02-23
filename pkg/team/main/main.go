@@ -26,6 +26,7 @@ func main() {
 	db.AutoMigrate(&models.Conversation{})
 	db.AutoMigrate(&models.File{})
 	db.AutoMigrate(&models.Position{})
+	db.AutoMigrate(&models.PositionTemplate{})
 	db.AutoMigrate(&models.Project{})
 
 	//jsonrpc
