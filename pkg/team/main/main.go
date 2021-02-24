@@ -28,6 +28,7 @@ func main() {
 	db.AutoMigrate(&models.Position{})
 	db.AutoMigrate(&models.PositionTemplate{})
 	db.AutoMigrate(&models.Project{})
+	db.AutoMigrate(&models.CompetitionProject{})
 
 	//jsonrpc
 	address := flag.String("address", ":8001", "")

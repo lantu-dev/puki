@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Row, Col, Image, Anchor, Avatar } from 'antd';
 const { Link } = Anchor;
 import { Typography, Progress } from 'antd';
-import { ArrowLeftOutlined, FileTextOutlined } from '@ant-design/icons';
+import {
+  ArrowLeftOutlined,
+  FileTextOutlined,
+  LikeOutlined,
+  MessageOutlined,
+  LikeFilled,
+} from '@ant-design/icons';
 import style from '../wwwroot/css/expand.css';
 
 const { Title, Paragraph, Text } = Typography;
+//来自ProjectCard的项目简略信息，这部分信息不需要再从数据库重新获取
 interface ProjectDetailProps {
   location: {
     state: {
@@ -19,10 +26,18 @@ interface ProjectDetailProps {
 export default function ProjectDetail(props: ProjectDetailProps) {
   const [ellipsis1, setEllipsis1] = React.useState(true);
   const [ellipsis2, setEllipsis2] = React.useState(true);
+  const [likeNum, setLikeNum] = React.useState(0);
+  const [isLike, setIsLike] = React.useState(false);
+  //基于ProjectDetailProps中的ProjectID，从数据库获取数据
+  //1. 发起人相关信息，包括姓名、头像、专业、年级、获奖情况
+  //2. 项目相关信息，包括项目图片、项目详细介绍
+  //3. 招募情况
+  //4. 评论条目
   return (
     <div style={{ marginLeft: '10px', marginRight: '10px', marginTop: '10px' }}>
       <Title level={3}>
         <div
+          style={{ cursor: 'pointer' }}
           onClick={() => {
             history.back();
           }}
@@ -68,58 +83,9 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         <Col flex={'2%'}> </Col>
         <Col flex={'22%'}>
           <div
+            style={{ cursor: 'pointer' }}
             onClick={() => {
-              let aim = document.getElementById('details');
-              if (aim != null) {
-                scrollTo(aim.offsetLeft, aim.offsetTop);
-              }
-            }}
-          >
-            <div
-              style={{
-                marginLeft: '10px',
-                marginRight: '10px',
-                width: '60px',
-                height: '60px',
-              }}
-              className={style.Box}
-            >
-              <div style={{ textAlign: 'center', fontSize: '18px' }}>
-                <FileTextOutlined />
-              </div>
-              <div style={{ textAlign: 'center' }}>详情</div>
-            </div>
-          </div>
-        </Col>
-        <Col flex={'22%'}>
-          <div
-            onClick={() => {
-              let aim = document.getElementById('details');
-              if (aim != null) {
-                scrollTo(aim.offsetLeft, aim.offsetTop);
-              }
-            }}
-          >
-            <div
-              style={{
-                marginLeft: '10px',
-                marginRight: '10px',
-                width: '60px',
-                height: '60px',
-              }}
-              className={style.Box}
-            >
-              <div style={{ textAlign: 'center', fontSize: '18px' }}>
-                <FileTextOutlined />
-              </div>
-              <div style={{ textAlign: 'center' }}>详情</div>
-            </div>
-          </div>
-        </Col>
-        <Col flex={'22%'}>
-          <div
-            onClick={() => {
-              let aim = document.getElementById('details');
+              let aim = document.getElementById('detail');
               if (aim != null) {
                 window.scrollTo({
                   top: aim.offsetTop,
@@ -141,6 +107,64 @@ export default function ProjectDetail(props: ProjectDetailProps) {
                 <FileTextOutlined />
               </div>
               <div style={{ textAlign: 'center' }}>详情</div>
+            </div>
+          </div>
+        </Col>
+        <Col flex={'22%'}>
+          <div
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              if (isLike) {
+                setLikeNum(likeNum - 1);
+                setIsLike(false);
+              } else {
+                setLikeNum(likeNum + 1);
+                setIsLike(true);
+              }
+            }}
+          >
+            <div
+              style={{
+                marginLeft: '10px',
+                marginRight: '10px',
+                width: '60px',
+                height: '60px',
+              }}
+              className={style.Box}
+            >
+              <div style={{ textAlign: 'center', fontSize: '18px' }}>
+                {isLike ? <LikeFilled /> : <LikeOutlined />}
+              </div>
+              <div style={{ textAlign: 'center' }}>很赞</div>
+            </div>
+          </div>
+        </Col>
+        <Col flex={'22%'}>
+          <div
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              let aim = document.getElementById('comment');
+              if (aim != null) {
+                window.scrollTo({
+                  top: aim.offsetTop,
+                  behavior: 'smooth',
+                });
+              }
+            }}
+          >
+            <div
+              style={{
+                marginLeft: '10px',
+                marginRight: '10px',
+                width: '60px',
+                height: '60px',
+              }}
+              className={style.Box}
+            >
+              <div style={{ textAlign: 'center', fontSize: '18px' }}>
+                <MessageOutlined />
+              </div>
+              <div style={{ textAlign: 'center' }}>评论</div>
             </div>
           </div>
         </Col>
@@ -221,7 +245,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </div>
         </div>
       </div>
-      <div className={style.Box} style={{ marginTop: '-1px' }}>
+      <div id="detail" className={style.Box} style={{ marginTop: '-1px' }}>
         <div style={{ margin: '10px' }}>
           <div>详情</div>
           <div>
@@ -230,7 +254,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </div>
         </div>
       </div>
-      <div className={style.Box} style={{ marginTop: '-1px' }}>
+      <div id="comment" className={style.Box} style={{ marginTop: '-1px' }}>
         <div style={{ margin: '10px' }}>
           <div>评论</div>
           <div>
@@ -261,6 +285,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </Col>
         </Row>
       </div>
+      <div style={{ height: '20px' }}> </div>
     </div>
   );
 }

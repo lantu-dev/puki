@@ -12,6 +12,8 @@ interface ProjectCardProps {
   ProjectDescribeSimple: string;
 }
 
+//需要补充：点赞数、评论数
+
 export default class ProjectCard extends React.Component {
   props: ProjectCardProps = {
     ProjectID: this.props.ProjectID,

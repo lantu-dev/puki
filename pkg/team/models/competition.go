@@ -33,3 +33,8 @@ type Type struct {
 	//类别介绍
 	Describe string
 }
+
+type CompetitionProject struct {
+	ProjectID     int64
+	CompetitionID int64
+}

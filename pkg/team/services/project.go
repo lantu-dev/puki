@@ -27,6 +27,7 @@ type GetProjectSimpleReq struct {
 }
 
 type ProjectSimple struct {
+	ProjectID          uint
 	CreateTime         time.Time
 	UpdateTime         time.Time
 	ProjectName        string
@@ -54,6 +55,7 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 	}
 	for _, item := range projects {
 		projectSimple := ProjectSimple{
+			ProjectID:          item.ID,
 			CreateTime:         item.CreatedAt,
 			UpdateTime:         item.UpdatedAt,
 			ProjectName:        item.Name,
@@ -64,5 +66,53 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 		}
 		res.ProjectSimples = append(res.ProjectSimples, projectSimple)
 	}
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//添加项目
+//请求包括：创建者ID，类别ID，
+type AddProjectReq struct {
+	CreatorID      int64
+	TypeID         int64
+	Name           string
+	DescribeSimple string
+	DescribeDetail string
+	LinkURL        string
+	EndTime        time.Time
+	CompetitionsID []int64 //传入ID数组，在创建Project后依据ID创建一系列中间表
+	Positions      []models.Position
+}
+
+type AddProjectRes struct {
+}
+
+func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *AddCompetitionRes) error {
+	var competitions []*models.Competition
+	for _, item := range req.CompetitionsID {
+		var competition models.Competition
+		c.db.First(&competition, item)
+		competitions = append(competitions, &competition)
+	}
+
+	//创建Project实例
+	project := models.Project{
+		Model:          gorm.Model{},
+		IsAvailable:    false,
+		CreatorID:      req.CreatorID,
+		Competitions:   competitions,
+		TypeID:         1,
+		Name:           req.Name,
+		DescribeSimple: req.DescribeSimple,
+		DescribeDetail: req.DescribeDetail,
+		LinkURL:        req.LinkURL,
+		EndTime:        req.EndTime,
+		Positions:      req.Positions,
+		Comments:       nil,
+		CommentsNum:    0,
+		StarNum:        0,
+	}
+	c.db.Create(&project)
 	return nil
 }
