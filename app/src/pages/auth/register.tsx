@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import React from 'react';
 import { useAsync } from 'react-use';
+import { history } from 'umi';
 
 const { Title } = Typography;
 
@@ -33,7 +34,7 @@ export default function Register() {
   const [form] = Form.useForm<IForm>();
 
   const phoneNumberState = useAsync(async () => {
-    const { User } = await call(auth.UserService.WhoAmI, {});
+    const { User } = await call(auth.UserService.GetProfile, {});
     if (User.RealName && User.RealName.length > 0) {
       message.error({ content: '用户已完成注册' });
     }
@@ -53,6 +54,11 @@ export default function Register() {
 
     if (Registered) {
       message.success({ content: '注册成功！' });
+      if (history.location.query?.redirect) {
+        history.push(history.location.query.redirect as string);
+      } else {
+        history.goBack();
+      }
     }
   };
 

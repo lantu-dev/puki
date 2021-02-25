@@ -2,7 +2,7 @@ export default [
   {
     exact: true,
     path: '/',
-    component: '@/pages/Index',
+    component: '@/pages/index',
   },
   {
     exact: true,

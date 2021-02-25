@@ -5,7 +5,7 @@
     "build": "umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,less,md}\"",
-    "prettier:check": "prettier --check '../app/**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "prettier:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx,json,css,scss,less,md}'",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
   },

@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type UserService struct {
@@ -88,20 +87,20 @@ func (s *UserService) SMSCodeLogin(r *http.Request, req *SMSCodeLoginReq, res *S
 		return err
 	}
 
-	res.Token = res.TokenUser.Sign(7 * 24 * time.Hour)
+	res.Token = res.TokenUser.Encode()
 	res.User = user
 
 	err = tx.Commit().Error // 数据库事务
 	return
 }
 
-type WhoAmIReq struct {
+type GetProfileReq struct {
 }
-type WhoAmIRes struct {
+type GetProfileRes struct {
 	User models.User
 }
 
-func (s *UserService) WhoAmI(r *http.Request, req *WhoAmIReq, res *WhoAmIRes) (err error) {
+func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetProfileRes) (err error) {
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil {
 		return err

@@ -5,7 +5,10 @@ import (
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
+	"github.com/juju/errors"
 	"github.com/pochard/commons/randstr"
+	log "github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -50,9 +53,10 @@ type smsResp struct {
 // 参数to, 字符串类型，表示接收者电话号码，多个号码之间用英文逗号隔开；
 // 示例："+8615123456789,+8615234567890"
 // 参数params为短信模板变量数组，用于依次填充“templateID”参数指定的模板内容中的变量，该参数需填写为JSONArray格式。
-func (h *SMSSender) SendMessage(templateID, to string, params ...string) (smsID SMSId, err error) {
+func (h *SMSSender) SendMessage(templateID, to string, params ...string) (smsID *SMSId, err error) {
 	//  https://support.huaweicloud.com/api-msgsms/sms_05_0001.html
 	//  now print everything to console
+
 	tr := &http.Transport{
 		// 为防止因HTTPS证书认证失败造成API调用失败，设置忽略证书信任问题
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -62,16 +66,17 @@ func (h *SMSSender) SendMessage(templateID, to string, params ...string) (smsID 
 		Transport: tr,
 	}
 	// body
+	paras, err := json.Marshal(params)
 	form := url.Values{
 		"From":          {h.Channel},
 		"to":            {to},
 		"templateId":    {templateID},
-		"templateParas": params,
+		"templateParas": {string(paras)},
 	}
-	req, err := http.NewRequest("POST", h.URL, strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("POST", h.URL+"/sms/batchSendSms/v1", strings.NewReader(form.Encode()))
 	if err != nil {
-		var sms SMSId
-		return sms, err
+
+		return nil, errors.Trace(err)
 	}
 	// 设置Header; 注意Set和Add
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -79,12 +84,23 @@ func (h *SMSSender) SendMessage(templateID, to string, params ...string) (smsID 
 	req.Header.Add("X-WSSE", smsBuildWSSEHeader(h.AppKey, h.AppSecret))
 	resp, err := client.Do(req)
 	if err != nil {
-		var sms SMSId
-		return sms, err
+
+		return nil, errors.Trace(err)
+	}
+
+	//spew.Dump(content)
+	//sms := content.result
+	dat, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		return nil, err
 	}
 	var content smsResp
-	err = json.NewDecoder(resp.Body).Decode(&content)
-	defer resp.Body.Close()
-	sms := content.result
-	return sms, err
+	err = json.Unmarshal(dat, &content)
+	if err != nil {
+		return nil, err
+	}
+	log.Infof("hwcloud sms resp: %s", string(dat))
+
+	return &content.result, errors.Trace(err)
 }

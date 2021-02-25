@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSetState } from 'react-use';
+import { history } from 'umi';
 import InputPhoneNumber from './components/input-phone-number';
 import InputVerifyCode from './components/input-verify-code';
 
@@ -15,6 +16,19 @@ export default function Index() {
     step: Step.inputPhoneNumber,
     tick: 0,
   });
+
+  const onLogged = (next: 'redirect' | 'register') => {
+    if (next === 'register') {
+      history.push({
+        pathname: '/auth/register',
+        query: history.location.query,
+      });
+    } else if (history.location.query?.redirect) {
+      history.push(history.location.query.redirect as string);
+    } else {
+      history.goBack();
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -47,7 +61,7 @@ export default function Index() {
           />,
           <InputVerifyCode
             onBack={() => setState({ step: Step.inputPhoneNumber })}
-            onLogged={console.log}
+            onLogged={onLogged}
             onResent={(session) => {
               setState({ session: session, tick: 60 });
             }}

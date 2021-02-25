@@ -97,7 +97,7 @@ jobs:
       - run: mkdir build
 
       - name: Build frontend
-        run: cd app &&PUBLIC_PATH=/puki/${{ steps.info.outputs.build-tag }}/app/ yarn build && mv dist ../build/
+        run: cd app &&PUBLIC_PATH=/puki/${{ steps.info.outputs.build-tag }}/app ENABLE_GATEWAY=true yarn build && mv dist ../build/
 
       - name: Build backend
         run: CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -ldflags "-X main.buildTag=${{ steps.info.outputs.build-tag }} -X main.buildCommit=${{ steps.info.outputs.commit-hash }}" -o build/puki github.com/lantu-dev/puki/cmd/main
