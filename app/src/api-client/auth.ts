@@ -38,7 +38,7 @@ export interface RegisterRes {
   Registered: boolean;
 }
 
-export const auth = {
+export default {
   UserService: {
     SMSSendCode: 'auth/UserService.SMSSendCode' as Endpoint<
       SMSSendCodeReq,

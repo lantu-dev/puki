@@ -1,15 +1,18 @@
 import auth from './auth/index';
+import events from './events/index';
 
 export default {
   'POST /api/': (req: any, res: any) => {
     const { method, params } = req.body;
-    console.log('method: ', method);
-    console.log('params: ', params);
 
-    //@ts-ignore
-    const [, Module, Service, Method]: string[] = /^(\w+)\/(\w+)\.(\w+)$/.exec(
+    const [, Module, Service, Method] = /^(\w+)\/(\w+)\.(\w+)$/.exec(
       method,
-    );
+    ) as string[];
+
+    console.log('Module: ', Module);
+    console.log('Service: ', Service);
+    console.log('Method: ', Method);
+    console.log('params: ', params);
 
     let reply = {
       err: {
@@ -26,8 +29,16 @@ export default {
           console.log(err);
         }
         break;
+      case 'events':
+        try {
+          //@ts-ignore
+          reply = events[Service][Method](params);
+        } catch (err) {
+          console.log(err);
+        }
+        break;
     }
-
-    res.send(reply).end();
+    console.log('reply: ', reply);
+    res.send({ result: reply }).end();
   },
 };
