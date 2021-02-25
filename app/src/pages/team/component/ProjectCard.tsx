@@ -10,6 +10,7 @@ interface ProjectCardProps {
   ProjectID: number;
   ProjectName: string;
   ProjectDescribeSimple: string;
+  PositionNames: string[];
 }
 
 //需要补充：点赞数、评论数
@@ -19,6 +20,7 @@ export default class ProjectCard extends React.Component {
     ProjectID: this.props.ProjectID,
     ProjectName: this.props.ProjectName,
     ProjectDescribeSimple: this.props.ProjectDescribeSimple,
+    PositionNames: this.props.PositionNames,
   };
   render() {
     const Para = () => {
@@ -71,24 +73,11 @@ export default class ProjectCard extends React.Component {
               style={{ height: '90%', position: 'absolute' }}
               className={style.PartialScrollVertical}
             >
-              <div>
-                <Tag color={'red'}>安卓开发是</Tag>
-              </div>
-              <div>
-                <Tag color={'red'}>安卓开发是</Tag>
-              </div>
-              <div>
-                <Tag color={'red'}>安卓开发是</Tag>
-              </div>
-              <div>
-                <Tag color={'red'}>安卓开发是</Tag>
-              </div>
-              <div>
-                <Tag color={'red'}>web后端是</Tag>
-              </div>
-              <div>
-                <Tag color={'red'}>web前端</Tag>
-              </div>
+              {this.props.PositionNames.map((value) => (
+                <div>
+                  <Tag color={'red'}>{value}</Tag>
+                </div>
+              ))}
             </div>
           </Col>
           <Col flex={'15px'}>

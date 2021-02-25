@@ -1,6 +1,7 @@
 import React from 'react';
 import { call } from '@/api-client';
 import ProjectCard from '@/pages/team/component/ProjectCard';
+import style from '../wwwroot/css/expand.css';
 
 interface Project {
   ProjectID: number;
@@ -10,6 +11,9 @@ interface Project {
   ProjectDescription: string;
   StarNum: number;
   CommentNum: number;
+  CompetitionNames: string[];
+  TypeName: string;
+  PositionNames: string[];
 }
 
 interface ProjectGatherState {
@@ -22,13 +26,19 @@ interface GetProjectSimpleRes {
   ProjectSimples: Project[];
 }
 
+interface ProjectGatherProp {
+  CompetitionName: string;
+}
+
 export default class ProjectGather extends React.Component {
+  props: ProjectGatherProp = {
+    CompetitionName: '',
+  };
   state: ProjectGatherState = {
     IsFinished: false,
     Projects: [],
   };
   render() {
-    console.log(this.state.Projects);
     call<GetProjectSimpleReq, GetProjectSimpleRes>(
       'ProjectService.GetProjectSimple',
       {},
@@ -43,13 +53,42 @@ export default class ProjectGather extends React.Component {
     return (
       <div>
         {this.state.Projects.map((value) => (
-          <ProjectCard
-            ProjectID={value.ProjectID}
-            ProjectName={value.ProjectName}
-            ProjectDescribeSimple={value.ProjectDescription}
-          />
+          <div
+            className={
+              value.CompetitionNames.join(' ') +
+              ' ' +
+              value.TypeName +
+              ' ' +
+              value.PositionNames.join(' ')
+            }
+          >
+            <ProjectCard
+              ProjectID={value.ProjectID}
+              ProjectName={value.ProjectName}
+              ProjectDescribeSimple={value.ProjectDescription}
+              PositionNames={value.PositionNames}
+            />
+          </div>
         ))}
       </div>
     );
   }
 }
+
+// {this.props.CompetitionName && !(this.props.CompetitionName === '所有比赛/活动')
+//   ? this.state.Projects.map((value) => (
+//     value.CompetitionNames ? value.CompetitionNames.map(value1 => (
+//       value1 === this.props.CompetitionName?
+//         <ProjectCard
+//           ProjectID={value.ProjectID}
+//           ProjectName={value.ProjectName}
+//           ProjectDescribeSimple={value.ProjectDescription}
+//         /> : false
+//     )) : false
+//   )) : this.state.Projects.map(value => (
+//     <ProjectCard
+//       ProjectID={value.ProjectID}
+//       ProjectName={value.ProjectName}
+//       ProjectDescribeSimple={value.ProjectDescription}
+//     />
+//   ))}

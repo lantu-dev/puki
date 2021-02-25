@@ -1,7 +1,9 @@
 package models
 
 import (
+	"github.com/lantu-dev/puki/pkg/team/models"
 	"gorm.io/gorm"
+	"net/http"
 )
 
 type PositionService struct {
@@ -16,3 +18,19 @@ func NewPositionService(db *gorm.DB) *PositionService {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+type GetPositionNamesReq struct{}
+type GetPositionNamesRes struct {
+	PositionNames []string
+}
+
+func (c *PositionService) GetPositionNames(r *http.Request, req *GetPositionNamesReq, res *GetPositionNamesRes) error {
+	var positionNames []string
+	var positionTemplates []models.PositionTemplate
+	c.db.Find(&positionTemplates)
+	for _, item := range positionTemplates {
+		positionNames = append(positionNames, item.Name)
+	}
+	res.PositionNames = positionNames
+	return nil
+}

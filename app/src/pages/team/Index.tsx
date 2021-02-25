@@ -2,15 +2,14 @@
 import React from 'react';
 import Header from './component/Header';
 import Filter from './component/Filter';
-import ProjectCard from '@/pages/team/component/ProjectCard';
-import ProjectGather from '@/pages/team/component/ProjectGather';
+
+const CompetitionContext = React.createContext('');
 
 export default function () {
   return (
     <div style={{ width: '95%', margin: 'auto', marginTop: '5px' }}>
       <Header />
       <Filter />
-      <ProjectGather />
     </div>
   );
 }

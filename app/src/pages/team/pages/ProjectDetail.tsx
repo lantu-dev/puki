@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { Link, history } from 'umi';
 import { Button, Row, Col, Image, Anchor, Avatar } from 'antd';
-const { Link } = Anchor;
 import { Typography, Progress } from 'antd';
 import {
   ArrowLeftOutlined,
@@ -102,9 +102,8 @@ export default function ProjectDetail(props: ProjectDetailProps) {
     <div style={{ marginLeft: '10px', marginRight: '10px', marginTop: '10px' }}>
       <Title level={3}>
         <div
-          style={{ cursor: 'pointer' }}
           onClick={() => {
-            history.back();
+            history.goBack();
           }}
         >
           <ArrowLeftOutlined

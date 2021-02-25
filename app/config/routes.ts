@@ -71,6 +71,26 @@ export default [
   },
   {
     exact: true,
+    path: '/team',
+    component: '@/pages/team',
+  },
+  {
+    exact: true,
+    path: '/team/ProjectDetail',
+    component: '@/pages/team/pages/ProjectDetail',
+  },
+  {
+    exact: true,
+    path: '/team/CreateCompetition',
+    component: '@/pages/team/pages/CreateCompetition',
+  },
+  {
+    exact: true,
+    path: '/team/CreateCompetitionType',
+    component: '@/pages/team/pages/CreateCompetitionType',
+  },
+  {
+    exact: true,
     path: '/topic',
     component: '@/pages/bbs/Index',
   },
