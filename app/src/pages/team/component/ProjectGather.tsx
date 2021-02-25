@@ -1,7 +1,7 @@
 import React from 'react';
 import { call } from '@/api-client';
 import ProjectCard from '@/pages/team/component/ProjectCard';
-import style from '../wwwroot/css/expand.css';
+import style from '../../../assets/team/css/expand.css';
 
 interface Project {
   ProjectID: number;

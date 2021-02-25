@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row, Typography, Tag } from 'antd';
 import { Link } from 'umi';
-import style from '../wwwroot/css/expand.css';
+import style from '../../../assets/team/css/expand.css';
 import { MoreOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 const { Paragraph, Text } = Typography;

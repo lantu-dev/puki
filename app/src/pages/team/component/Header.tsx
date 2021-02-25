@@ -1,5 +1,5 @@
 import { Col, Row, Space, Input } from 'antd';
-import logo from '@/pages/team/wwwroot/img/logo.png';
+import logo from '@/assets/team/img/logo.png';
 import React from 'react';
 import { Link } from 'umi';
 import { PlusCircleOutlined } from '@ant-design/icons';
