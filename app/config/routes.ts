@@ -16,6 +16,31 @@ export default [
   },
   {
     exact: true,
+    path: '/events/answers',
+    component: '@/pages/events/Answers',
+  },
+  {
+    exact: true,
+    path: '/events/display',
+    component: '@/pages/events/Display',
+  },
+  {
+    exact: true,
+    path: '/events/entered-for',
+    component: '@/pages/events/EnteredFor',
+  },
+  {
+    exact: true,
+    path: '/events/more-info',
+    component: '@/pages/events/MoreInfo',
+  },
+  {
+    exact: true,
+    path: '/events/questions',
+    component: '@/pages/events/Questions',
+  },
+  {
+    exact: true,
     path: '/me',
     component: '@/pages/me/Index',
   },
