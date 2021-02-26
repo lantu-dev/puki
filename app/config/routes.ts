@@ -2,17 +2,17 @@ export default [
   {
     exact: true,
     path: '/',
-    component: '@/pages/index',
+    component: '@/pages/Index',
   },
   {
     exact: true,
     path: '/auth/phone-login',
-    component: '@/pages/auth/phone-login',
+    component: '@/pages/auth/phone-login/Index',
   },
   {
     exact: true,
     path: '/auth/register',
-    component: '@/pages/auth/register',
+    component: '@/pages/auth/Register',
   },
   {
     exact: true,
