@@ -40,4 +40,12 @@ export default {
       ],
     });
   },
+  GetQuestionInfo: (param: { QuestionID: number }) => {
+    return Mock.mock({
+      title: '问题摘要',
+      date: '日期',
+      question: '问题描述',
+      questioner: '提问者XXX',
+    });
+  },
 };
