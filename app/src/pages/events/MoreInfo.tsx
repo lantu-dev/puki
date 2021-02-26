@@ -191,13 +191,7 @@ export default function () {
   return (
     <>
       <div className={style.image}>
-        <Image
-          src={eventState.value?.imageUrl}
-          style={{
-            minWidth: '100%',
-            minHeight: '100%',
-          }}
-        ></Image>
+        <Image src={eventState.value?.imageUrl}></Image>
       </div>
       <Space
         direction="vertical"
