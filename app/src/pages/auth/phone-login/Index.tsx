@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSetState } from 'react-use';
 import { history } from 'umi';
-import InputPhoneNumber from './components/input-phone-number';
-import InputVerifyCode from './components/input-verify-code';
+import InputPhoneNumber from './components/InputPhoneNumber';
+import InputVerifyCode from './components/InputVerifyCode';
 
 enum Step {
   inputPhoneNumber,
