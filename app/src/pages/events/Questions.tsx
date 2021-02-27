@@ -1,71 +1,97 @@
-import { Row, Col, Space } from 'antd';
-import { history } from 'umi';
-import { PlusCircleTwoTone } from '@ant-design/icons';
-import { Typography } from 'antd';
-import { useAsync } from 'react-use';
-import { call } from '@/api-client';
+import { call, events } from '@/api-client';
+import { QuestionInfo } from '@/api-client/events';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Drawer, Typography } from 'antd';
+import { useAsync, useMethods } from 'react-use';
+import Answers from './Answers';
 
-const { Title } = Typography;
+const { Paragraph, Title } = Typography;
 
-export interface GetQuestionInfoRes {
-  title: string;
-  question: string;
-  date: string;
-  questioner: string;
-}
+const initialState = {
+  visible: false,
+  questionInfo: {} as QuestionInfo,
+};
+const createMethods = (state: typeof initialState) => ({
+  openQuestion(questionInfo: QuestionInfo) {
+    return { ...state, questionInfo, visible: true };
+  },
+  closeQuestion() {
+    return { ...state, visible: false };
+  },
+});
 
-export function Question() {
-  const questionData = useAsync(async () => {
-    const res = await call<any, GetQuestionInfoRes>(
-      'events/Info.GetQuestionInfo',
-      { QuestionID: 1 },
-    );
+export default function Questions() {
+  const [state, methods] = useMethods(createMethods, initialState);
+
+  const questionsList = useAsync(async () => {
+    const res = await call(events.Info.GetQuestionsList, {
+      eventID: '1',
+    });
     console.log(res);
     return res;
   });
 
   return (
-    <div
-      onClick={() => {
-        history.push({
-          pathname: './answers',
-          query: {
-            //SelectedID :ID,
-          },
-        });
-      }}
-      style={{
-        border: '2px solid #f5f5f5',
-      }}
-    >
-      <Row justify="space-between">
-        <Col offset={1}>
-          <Title level={5}>{questionData.value?.title}</Title>
-        </Col>
-        <Col pull={1}>{questionData.value?.date}</Col>
-      </Row>
-      <Space direction={'vertical'}>
-        <Row>
-          <Col offset={1}>{questionData.value?.question}</Col>
-        </Row>
-        <Row>
-          <Col offset={1}>{'提问者：' + questionData.value?.questioner}</Col>
-        </Row>
-      </Space>
-    </div>
+    <>
+      {questionsList.value?.map((v) => (
+        <div
+          key={v.questionID}
+          onClick={() => {
+            methods.openQuestion(v);
+          }}
+        >
+          <Question {...v}></Question>
+        </div>
+      ))}
+
+      <Drawer
+        destroyOnClose
+        headerStyle={{ paddingTop: '24px' }}
+        onClose={methods.closeQuestion}
+        title={<Question {...state.questionInfo}></Question>}
+        visible={state.visible}
+        width="100%"
+      >
+        <Title level={4}>回答</Title>
+        <Answers questionID={state.questionInfo.questionID}></Answers>
+      </Drawer>
+      <div
+        style={{
+          position: 'fixed',
+          right: '2em',
+          bottom: '5em',
+          opacity: 0.7,
+        }}
+      >
+        <Button
+          icon={<PlusOutlined />}
+          shape="circle"
+          size="large"
+          type="primary"
+        ></Button>
+      </div>
+    </>
   );
 }
 
-//点击加号的回调函数
-function AddQuestion() {
-  window.alert('点击了加号按钮');
+interface QuestionProps {
+  questionID: string;
+  question: string;
+  questioner: string;
+  time: string;
+  title: string;
 }
 
-export default function Questions() {
+function Question(props: QuestionProps) {
   return (
-    <div>
-      <PlusCircleTwoTone onClick={AddQuestion}></PlusCircleTwoTone>
-      <Question></Question>
-    </div>
+    <Card
+      bordered={false}
+      extra={props.time}
+      size="small"
+      title={<Title level={5}>{props.title}</Title>}
+    >
+      <Paragraph>{props.question}</Paragraph>
+      <span>{'提问者：' + props.questioner}</span>
+    </Card>
   );
 }

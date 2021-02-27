@@ -1,48 +1,93 @@
 import { Endpoint } from './client';
 
-export interface EventInfoReq {
-  EventID: number;
-}
-
-export interface EventInfoRes {
+interface EventBriefInfo {
+  description: string;
+  eventID: string;
   imageUrl: string;
   title: string;
-  startTime: string;
+  type: 'l' | 's' | 'h';
+}
+
+interface EventMoreInfo extends EventBriefInfo {
   endTime?: string;
   location: string;
-  description: string;
-  more:
-    | {
-        // lecture
-        type: 'l';
-        lecturers: {
-          photoUrl: string;
-          personName: string;
-          description: string;
-        }[];
-      }
-    | {
-        // salon
-        type: 's';
-        schedules: {
-          personName: string;
-          description: string;
-          startTime: string;
-          title: string;
-        }[];
-      }
-    | {
-        // hackathon
-        type: 'h';
-        description: string;
-      };
+  startTime: string;
 }
+
+interface LectureInfo extends EventMoreInfo {
+  type: 'l';
+  lecturers: {
+    photoUrl: string;
+    personName: string;
+    description: string;
+  }[];
+}
+
+interface SalonInfo extends EventMoreInfo {
+  type: 's';
+  schedules: {
+    personName: string;
+    description: string;
+    startTime: string;
+    title: string;
+  }[];
+}
+
+interface HackathonInfo extends EventMoreInfo {
+  type: 'h';
+  steps: string;
+}
+
+export interface QuestionInfo {
+  questionID: string;
+  question: string;
+  questioner: string;
+  time: string;
+  title: string;
+}
+
+export interface AnswerInfo {
+  answerID: string;
+  replyer: string;
+  content: string;
+  time: string;
+}
+
+export interface GetEventsListReq {}
+export type GetEventsListRes = EventBriefInfo[];
+
+export interface EventMoreInfoReq {
+  eventID: string;
+}
+export type EventMoreInfoRes = LectureInfo | SalonInfo | HackathonInfo;
+
+export interface GetQuestionsListReq {
+  eventID: string;
+}
+export type GetQuestionsListRes = QuestionInfo[];
+
+export interface GetAnswersListReq {
+  questionID: string;
+}
+export type GetAnswersListRes = AnswerInfo[];
 
 export default {
   Info: {
-    GetEventInfo: 'events/Info.GetEventInfo' as Endpoint<
-      EventInfoReq,
-      EventInfoRes
+    GetEventsList: 'events/Info.GetEventsList' as Endpoint<
+      {},
+      GetEventsListRes
+    >,
+    GetEventMoreInfo: 'events/Info.GetEventMoreInfo' as Endpoint<
+      EventMoreInfoReq,
+      EventMoreInfoRes
+    >,
+    GetQuestionsList: 'events/Info.GetQuestionsList' as Endpoint<
+      GetQuestionsListReq,
+      GetQuestionsListRes
+    >,
+    GetAnswersList: 'events/Info.GetAnswersList' as Endpoint<
+      GetAnswersListReq,
+      GetAnswersListRes
     >,
   },
 };

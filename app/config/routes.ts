@@ -16,13 +16,8 @@ export default [
   },
   {
     exact: true,
-    path: '/events/answers',
-    component: '@/pages/events/Answers',
-  },
-  {
-    exact: true,
-    path: '/events/display',
-    component: '@/pages/events/Display',
+    path: '/events',
+    component: '@/pages/events/Index',
   },
   {
     exact: true,
@@ -51,8 +46,8 @@ export default [
   },
   {
     exact: true,
-    path: '/me/activity',
-    component: '@/pages/me/Activity',
+    path: '/me/events',
+    component: '@/pages/me/Events',
   },
   {
     exact: true,

@@ -1,17 +1,24 @@
+import { call, events } from '@/api-client';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Image, Menu, Row, Space, Typography } from 'antd';
 // @ts-ignore
 import Slider from 'react-slick';
+import { useAsync, useSetState } from 'react-use';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
-import style from './Display.less';
-import { useSetState } from 'react-use';
+import style from './Index.less';
 
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
 export default function () {
   const [state, setState] = useSetState({
     menu: 'recommend',
+  });
+
+  const eventsList = useAsync(async () => {
+    const res = await call(events.Info.GetEventsList, {});
+    console.log(res);
+    return res;
   });
 
   return (
@@ -61,25 +68,39 @@ export default function () {
           <Slider
             centerMode
             infinite
-            centerPadding="80px"
+            centerPadding="60px"
             style={{ margin: '1em' }}
+            autoplay
           >
-            {[0, 1, 2, 3, 4, 5, 6, 7].map((v) => (
-              <div key={v}>
-                <Card
-                  hoverable
-                  size="small"
-                  style={{ padding: '10px' }}
-                  cover={
-                    <div className={style.image}>
-                      <Image src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />
-                    </div>
-                  }
-                >
-                  <Card.Meta title="标题" description="描述" />
-                </Card>
-              </div>
-            ))}
+            {eventsList.value?.map((v) => {
+              return (
+                <div key={v.eventID}>
+                  <Card
+                    hoverable
+                    size="small"
+                    style={{ padding: '10px' }}
+                    cover={
+                      <div className={style.image}>
+                        <Image src={v.imageUrl} />
+                      </div>
+                    }
+                  >
+                    <Card.Meta
+                      title={v.title}
+                      description={
+                        <Paragraph
+                          ellipsis={{
+                            rows: 2,
+                          }}
+                        >
+                          {v.description}
+                        </Paragraph>
+                      }
+                    />
+                  </Card>
+                </div>
+              );
+            })}
           </Slider>
         </div>
         <div>

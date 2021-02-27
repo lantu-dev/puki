@@ -2,7 +2,7 @@ import { DoubleLeftOutlined } from '@ant-design/icons';
 import { Button, Empty, Typography } from 'antd';
 const { Title, Text } = Typography;
 
-export default function Activity() {
+export default function Events() {
   return (
     <Empty
       imageStyle={{
