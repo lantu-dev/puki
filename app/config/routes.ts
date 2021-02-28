@@ -76,11 +76,6 @@ export default [
   },
   {
     exact: true,
-    path: '/team/ProjectDetail',
-    component: '@/pages/team/pages/ProjectDetail',
-  },
-  {
-    exact: true,
     path: '/team/CreateCompetition',
     component: '@/pages/team/pages/CreateCompetition',
   },

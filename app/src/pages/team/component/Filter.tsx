@@ -1,100 +1,93 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Row, Select } from 'antd';
 import { call, team } from '@/api-client';
-import ProjectGather from '@/pages/team/component/ProjectGather';
-const { Option } = Select;
-
-//----------------------------------------------------------------------------------------
+import { Col, Row, Select } from 'antd';
+import React from 'react';
+import { useAsync } from 'react-use';
 
 interface FilterProps {
-  competitionNames: string[];
-  competitionTypes: string[];
-  positionNames: string[];
+  onChangeFilter: (filter: (v: any) => boolean) => void;
 }
 
 export default function Filter(props: FilterProps) {
-  let ColWidth = 'auto';
+  const typeListState = useAsync(async () => {
+    return {
+      competitionNames: (
+        await call(team.CompetitionService.GetCompetitionName, {})
+      ).CompetitionNames,
+      competitionTypes: (
+        await call(team.CompetitionService.GetCompetitionType, {})
+      ).CompetitionTypes,
+      positionNames: (await call(team.PositionService.GetPositionNames, {}))
+        .PositionNames,
+    };
+  });
 
-  let [competitionName, setCompetitionName] = useState('');
-  let [competitionType, setCompetitionType] = useState('');
-  let [positionName, setPositionName] = useState('');
+  const {
+    value: { competitionNames, competitionTypes, positionNames } = {
+      competitionNames: [''],
+      competitionTypes: [''],
+      positionNames: [''],
+    },
+  } = typeListState;
 
-  function onChangeCompetitionName(value: string) {
-    setCompetitionName(value);
+  function onCompetitionNameChange(value: string) {
+    console.log(value);
   }
-  function onChangeCompetitionType(value: string) {
-    setCompetitionType(value);
+  function onCompetitionTypeChange(value: string) {
+    console.log(value);
   }
-  function onChangePositionName(value: string) {
-    setPositionName(value);
+  function onPositionNameChange(value: string) {
+    console.log(value);
   }
 
   return (
     <div>
-      <Row style={{ marginTop: '7px' }}>
+      <Row justify="space-around" style={{ marginTop: '7px' }} wrap={false}>
         {/*按比赛/活动筛选*/}
-        <Col flex={ColWidth}>
+        <Col span={7}>
           <Select
-            showSearch
-            style={{ width: '95%' }}
-            placeholder="按比赛/活动"
-            optionFilterProp="children"
-            onChange={onChangeCompetitionName}
-            filterOption={(input, option: any) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {props.competitionNames.map((value, index) => (
-              <Option key={index} value={value}>
-                {value}
-              </Option>
-            ))}
-          </Select>
+            style={{ width: '100%' }}
+            dropdownMatchSelectWidth={false}
+            defaultValue={'所有比赛/活动'}
+            loading={typeListState.loading}
+            onChange={onCompetitionNameChange}
+            options={competitionNames.map((v) => ({
+              label: v,
+              value: v,
+            }))}
+            placeholder="按比赛"
+          />
         </Col>
         {/*按比赛/活动类别筛选*/}
-        <Col flex={ColWidth}>
+        <Col span={7}>
           <Select
-            showSearch
-            style={{ width: '95%' }}
+            style={{ width: '100%' }}
+            dropdownMatchSelectWidth={false}
+            defaultValue={'所有类别'}
+            loading={typeListState.loading}
+            onChange={onCompetitionTypeChange}
+            options={competitionTypes.map((v) => ({
+              label: v,
+              value: v,
+            }))}
             placeholder="按类别"
-            optionFilterProp="children"
-            onChange={onChangeCompetitionType}
-            filterOption={(input, option: any) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {props.competitionTypes.map((value, index) => (
-              <Option key={index} value={value}>
-                {value}
-              </Option>
-            ))}
-          </Select>
+          />
         </Col>
         {/*按岗位筛选*/}
-        <Col flex={ColWidth}>
+        <Col span={7}>
           <Select
-            showSearch
-            style={{ width: '95%' }}
+            style={{ width: '100%' }}
+            dropdownMatchSelectWidth={false}
+            defaultValue={'所有岗位'}
+            loading={typeListState.loading}
+            onChange={onPositionNameChange}
+            options={positionNames.map((v) => ({
+              label: v,
+              value: v,
+            }))}
             placeholder="按岗位"
-            optionFilterProp="children"
-            onChange={onChangePositionName}
-            filterOption={(input, option: any) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {props.positionNames.map((value, index) => (
-              <Option key={index} value={value}>
-                {value}
-              </Option>
-            ))}
-          </Select>
+          />
         </Col>
       </Row>
-      <ProjectGather
-        competitionName={competitionName}
-        competitionType={competitionType}
-        positionName={positionName}
-      />
     </div>
   );
 }
