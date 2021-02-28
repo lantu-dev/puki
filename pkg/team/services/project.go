@@ -91,15 +91,15 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 //添加项目
 //请求包括：创建者ID，类别ID，
 type AddProjectReq struct {
-	CreatorID      int64
-	TypeID         int64
-	Name           string
-	DescribeSimple string
-	DescribeDetail string
-	LinkURL        string
-	EndTime        time.Time
-	CompetitionsID []int64 //传入ID数组，在创建Project后依据ID创建一系列中间表
-	Positions      []models.Position
+	CreatorID        int64
+	TypeID           int64
+	Name             string
+	DescribeSimple   string
+	DescribeDetail   string
+	LinkURL          string
+	EndTime          time.Time
+	CompetitionNames []string //传入ID数组，在创建Project后依据ID创建一系列中间表
+	Positions        []models.Position
 }
 
 type AddProjectRes struct {
@@ -107,12 +107,11 @@ type AddProjectRes struct {
 
 func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *AddCompetitionRes) error {
 	var competitions []*models.Competition
-	for _, item := range req.CompetitionsID {
+	for _, item := range req.CompetitionNames {
 		var competition models.Competition
-		c.db.First(&competition, item)
+		c.db.Where(&models.Competition{Name: item}).First(&competition)
 		competitions = append(competitions, &competition)
 	}
-
 	//创建Project实例
 	project := models.Project{
 		Model:          gorm.Model{},
@@ -228,5 +227,79 @@ type GetProjectNumRes struct {
 
 func (c *ProjectService) GetProjectNum(r *http.Request, req *GetProjectNumReq, res *GetProjectNumRes) error {
 	c.db.Model(&models.Project{}).Count(&res.ProjectNum)
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//获取数据库中project的ID
+type GetProjectIDReq struct{}
+type GetProjectIDRes struct {
+	ProjectID []int64
+}
+
+func (c *ProjectService) GetProjectID(r *http.Request, req *GetProjectIDReq, res *GetProjectIDRes) error {
+	var projects []models.Project
+	c.db.Find(&projects) //查找所有项目
+	for _, item := range projects {
+		res.ProjectID = append(res.ProjectID, int64(item.ID))
+	}
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//通过请求中项目ID数组获取项目简介数组
+type GetProjectSimplesReq struct {
+	ProjectID []uint
+}
+
+//响应，包括一个项目对象的数组
+type GetProjectSimplesRes struct {
+	IsFound        bool
+	ProjectSimples []ProjectSimple
+}
+
+func (c *ProjectService) GetProjectSimples(r *http.Request, req *GetProjectSimplesReq, res *GetProjectSimplesRes) error {
+	var projects []models.Project
+
+	//通过ID数组查找所有项目
+	result := c.db.Preload("Competitions").Where(req.ProjectID).Find(&projects)
+	if result.Error != nil {
+		res.IsFound = false
+		return nil
+	}
+
+	var competitionNames []string
+
+	for _, project := range projects {
+		for _, j := range project.Competitions {
+			competitionNames = append(competitionNames, j.Name)
+		}
+		var typeNew models.Type
+		c.db.First(&typeNew, project.TypeID)
+		var positions []models.Position
+		c.db.Where(&models.Position{ProjectID: int64(project.ID)}).Find(&positions)
+		var positionNames []string
+		for _, j := range positions {
+			var positionTemplate models.PositionTemplate
+			c.db.First(&positionTemplate, j.PositionTemplateID)
+			positionNames = append(positionNames, positionTemplate.Name)
+		}
+		projectSimple := ProjectSimple{
+			ProjectID:          project.ID,
+			CreateTime:         project.CreatedAt,
+			UpdateTime:         project.UpdatedAt,
+			ProjectName:        project.Name,
+			ProjectDescription: project.DescribeSimple,
+			StarNum:            project.StarNum,
+			CommentNum:         project.CommentsNum,
+			PositionNames:      positionNames,
+			CompetitionNames:   competitionNames,
+			TypeName:           typeNew.Name,
+		}
+		res.ProjectSimples = append(res.ProjectSimples, projectSimple)
+	}
+	res.IsFound = true
 	return nil
 }
