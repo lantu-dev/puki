@@ -1,5 +1,7 @@
 import fly, { FlyResponse } from 'flyio';
 
+import { isBrowser } from 'umi';
+
 export async function setToken(token: string) {
   localStorage.setItem('token', token);
 }
@@ -9,6 +11,14 @@ export async function hasLogged() {
 }
 
 export interface Endpoint<P, R> extends String {}
+
+//@ts-ignore
+if (ENABLE_GATEWAY && isBrowser()) {
+  //@ts-ignore
+  fly.config.baseURL = new URL(
+    `${window.location.origin}${window.routerBase}/../api`,
+  ).toString();
+}
 
 async function gw_call<P, R>(
   endpoint: Endpoint<P, R>,
