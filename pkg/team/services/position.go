@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/team/models"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"net/http"
 )
@@ -28,10 +29,17 @@ type GetPositionNamesRes struct {
 func (c *PositionService) GetPositionNames(r *http.Request, req *GetPositionNamesReq, res *GetPositionNamesRes) error {
 	var positionNames []string
 	var positionTemplates []models.PositionTemplate
-	c.db.Find(&positionTemplates)
+
+	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
+	positionTemplates = models.FindAllPositionTemplates(tx)
+	err := tx.Commit().Error // 数据库事务
+	if err != nil {
+		log.Debug(err)
+	}
+
 	for _, item := range positionTemplates {
 		positionNames = append(positionNames, item.Name)
 	}
 	res.PositionNames = positionNames
-	return nil
+	return err
 }

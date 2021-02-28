@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+)
 
 //模型间逻辑说明：通过项目找到对应的Position => 通过Position找到对应的PositionTemplate => 通过PositionTemplate找到其他项目
 
@@ -39,4 +42,34 @@ type PositionTemplate struct {
 	Positions []Position
 	//默认岗位描述
 	DefaultDescribe string
+}
+
+//获取所有岗位模板
+func FindAllPositionTemplates(tx *gorm.DB) []PositionTemplate {
+	var positionTemplates []PositionTemplate
+	result := tx.Find(&positionTemplates)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return positionTemplates
+}
+
+//通过项目ID查找所有岗位ID
+func FindPositionTemplateByID(tx *gorm.DB, positionTemplateID int64) PositionTemplate {
+	var positionTemplate PositionTemplate
+	result := tx.First(&positionTemplate, positionTemplateID)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return positionTemplate
+}
+
+//通过项目ID查找所有岗位ID
+func FindPositionsByProjectID(tx *gorm.DB, projectID int64) []Position {
+	var positions []Position
+	result := tx.Where(Position{ProjectID: projectID}).Find(&positions)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return positions
 }

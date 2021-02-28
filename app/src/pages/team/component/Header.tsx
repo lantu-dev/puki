@@ -74,7 +74,7 @@ export default function Header(props: HeaderProps) {
             positionNames={props.positionNames}
           />
         </Suspense>
-        <div style={{height:"200px"}}> </div>
+        <div style={{ height: '200px' }}> </div>
       </div>
     </div>
   );

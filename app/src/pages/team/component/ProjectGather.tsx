@@ -47,9 +47,8 @@ export default function ProjectGather(props: ProjectGatherProps) {
   useEffect(() => {
     call(team.ProjectService.GetProjectNum, {}).then((r) => {
       setProjectNum(r.ProjectNum);
-      console.log('projectNum' + projectNum);
     });
-  }, [projectNum]);
+  }, [1]);
   useEffect(() => {
     call(team.ProjectService.GetProjectSimple, {
       ProjectID: projectIndex,

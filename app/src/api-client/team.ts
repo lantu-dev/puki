@@ -99,6 +99,21 @@ export interface GetProjectNumRes {
   ProjectNum: number;
 }
 
+//获取项目ID
+export interface GetProjectIDReq {}
+export interface GetProjectIDRes {
+  ProjectID: number[];
+}
+
+//获取项目简介列表
+export interface GetProjectSimplesReq {
+  ProjectID: number[];
+}
+export interface GetProjectSimplesRes {
+  IsFound: boolean;
+  ProjectSimples: ProjectSimple[];
+}
+
 export const team = {
   CommentService: {},
   CompetitionService: {
@@ -124,6 +139,10 @@ export const team = {
       GetProjectSimpleReq,
       GetProjectSimpleRes
     >,
+    GetProjectSimples: 'ProjectService.GetProjectSimples' as Endpoint<
+      GetProjectSimplesReq,
+      GetProjectSimplesRes
+    >,
     AddProject: 'ProjectService.AddProject' as Endpoint<
       AddProjectReq,
       AddProjectRes
@@ -135,6 +154,10 @@ export const team = {
     GetProjectNum: 'ProjectService.GetProjectNum' as Endpoint<
       GetProjectNumReq,
       GetProjectNumRes
+    >,
+    GetProjectID: 'ProjectService.GetProjectID' as Endpoint<
+      GetProjectIDReq,
+      GetProjectIDRes
     >,
   },
 };

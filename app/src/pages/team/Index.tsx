@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Header from './component/Header';
 import Filter from './component/Filter';
 import { call, team } from '@/api-client';
-import {useAsync} from "react-use";
-import CreatePosition from "@/pages/team/component/CreatePosition";
+import { useAsync } from 'react-use';
+import CreatePosition from '@/pages/team/component/CreatePosition';
 
 const CompetitionContext = React.createContext('');
 
@@ -15,7 +15,6 @@ export default function () {
   let [competitionTypes, setCompetitionTypes] = useState(['']);
   //岗位
   let [positionNames, setPositionNames] = useState(['']);
-
 
   useEffect(() => {
     call(team.CompetitionService.GetCompetitionName, {})

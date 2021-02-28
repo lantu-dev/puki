@@ -58,7 +58,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
       setPositions(r.Positions);
       setComments(r.Comments);
     });
-  }, [Comments]);
+  }, [1]);
 
   return (
     <div style={{ marginRight: '10px', width: '95%' }}>

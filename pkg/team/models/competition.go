@@ -1,6 +1,7 @@
 package models
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -44,12 +45,50 @@ type CompetitionProject struct {
 //查找所有比赛
 func FindAllCompetitions(tx *gorm.DB) []Competition {
 	var competitions []Competition
-	tx.Find(&competitions)
+	result := tx.Find(&competitions)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
 	return competitions
 }
 
 //创建比赛
-func CreateCompetition(tx *gorm.DB, competition Competition) {
-	tx.Create(&competition)
-	return
+func CreateCompetition(tx *gorm.DB, competition Competition) error {
+	result := tx.Create(&competition)
+	return result.Error
+}
+
+//创建比赛
+func FindAllTypes(tx *gorm.DB) []Type {
+	var types []Type
+	result := tx.Find(&types)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return types
+}
+
+//创建类型
+func CreateType(tx *gorm.DB, typeNew Type) error {
+	result := tx.Create(&typeNew)
+	return result.Error
+}
+
+//通过ID查找类型
+func FindTypeByID(tx *gorm.DB, typeID int64) Type {
+	var typeNew Type
+	result := tx.First(&typeNew, typeID)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return typeNew
+}
+
+func FindCompetitionByName(tx *gorm.DB, competitionName string) Competition {
+	var competition Competition
+	result := tx.Where(&Competition{Name: competitionName}).First(&competition)
+	if result.Error != nil {
+		log.Error(result.Error)
+	}
+	return competition
 }

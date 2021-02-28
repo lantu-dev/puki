@@ -47,8 +47,13 @@ export default function CreateProject(props: CreateProjectProps) {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
-      <Form.Item label="项目类型" name="ProjectType" hasFeedback
-        required={true} rules={[{ required: true, message: '请选择项目类型!' }]} >
+      <Form.Item
+        label="项目类型"
+        name="ProjectType"
+        hasFeedback
+        required={true}
+        rules={[{ required: true, message: '请选择项目类型!' }]}
+      >
         <Select>
           {props.competitionTypes
             .filter((value) => value != '所有类别')
@@ -59,9 +64,14 @@ export default function CreateProject(props: CreateProjectProps) {
             ))}
         </Select>
       </Form.Item>
-      <Form.Item label="项目所属比赛/活动" name="ProjectCompetitions" hasFeedback
-                 required={true} rules={[{ required: true, message: '请选择项目所属比赛!' }]} >
-        <Select mode={"multiple"}>
+      <Form.Item
+        label="项目所属比赛/活动"
+        name="ProjectCompetitions"
+        hasFeedback
+        required={true}
+        rules={[{ required: true, message: '请选择项目所属比赛!' }]}
+      >
+        <Select mode={'multiple'}>
           {props.competitionNames
             .filter((value) => value != '所有比赛/活动')
             .map((value, index) => (
@@ -71,17 +81,29 @@ export default function CreateProject(props: CreateProjectProps) {
             ))}
         </Select>
       </Form.Item>
-      <Form.Item label="项目名称" name="ProjectName"
-        required={true} rules={[{required:true, message: "请输入项目名称!"}]}>
-        <Input/>
+      <Form.Item
+        label="项目名称"
+        name="ProjectName"
+        required={true}
+        rules={[{ required: true, message: '请输入项目名称!' }]}
+      >
+        <Input />
       </Form.Item>
-      <Form.Item label="项目简介" name="ProjectDescribeSimple"
-        required={true} rules={[{required:true, message: "请输入项目简介!"}]}>
-        <Input/>
+      <Form.Item
+        label="项目简介"
+        name="ProjectDescribeSimple"
+        required={true}
+        rules={[{ required: true, message: '请输入项目简介!' }]}
+      >
+        <Input />
       </Form.Item>
-      <Form.Item label="项目报名截止日期" name="ProjectEndTime"
-                 required={true} rules={[{required:true, message: "请输入报名截止日期!"}]}>
-        <DatePicker style={{width:"100%"}} size={"large"}/>
+      <Form.Item
+        label="项目报名截止日期"
+        name="ProjectEndTime"
+        required={true}
+        rules={[{ required: true, message: '请输入报名截止日期!' }]}
+      >
+        <DatePicker style={{ width: '100%' }} size={'large'} />
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" style={{ width: '100%' }}>

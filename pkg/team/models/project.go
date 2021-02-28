@@ -1,6 +1,7 @@
 package models
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"time"
 )
@@ -46,4 +47,29 @@ type Project struct {
 	CommentsNum int64 `gorm:"default:0"`
 	//项目Star数
 	StarNum int64 `gorm:"default:0"`
+}
+
+//通过项目ID查找项目
+func FindProjectByID(tx *gorm.DB, projectID uint) Project {
+	var project Project
+	result := tx.Preload("Competitions").First(&project, projectID)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return project
+}
+
+//创建项目
+func CreateProject(tx *gorm.DB, project Project) error {
+	result := tx.Create(&project)
+	return result.Error
+}
+
+func GetProjectNum(tx *gorm.DB) int64 {
+	var projectNum int64
+	result := tx.Model(&Project{}).Count(&projectNum)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return projectNum
 }

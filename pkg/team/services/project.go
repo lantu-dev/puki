@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/team/models"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"net/http"
 	"time"
@@ -50,23 +51,34 @@ type Position struct {
 
 func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimpleReq, res *GetProjectSimpleRes) error {
 	var project models.Project
-	result := c.db.Preload("Competitions").First(&project, req.ProjectID)
-	if result.Error != nil {
+	var typeNew models.Type
+	var positions []models.Position
+
+	tx := c.db.Begin()
+	project = models.FindProjectByID(tx, req.ProjectID)
+	typeNew = models.FindTypeByID(tx, project.TypeID)
+	positions = models.FindPositionsByProjectID(tx, int64(project.ID))
+	err := tx.Commit().Error
+	if err != nil {
 		res.IsFound = false
 		return nil
 	}
+
 	var competitionNames []string
 	for _, j := range project.Competitions {
 		competitionNames = append(competitionNames, j.Name)
 	}
-	var typeNew models.Type
-	c.db.First(&typeNew, project.TypeID)
-	var positions []models.Position
-	c.db.Where(&models.Position{ProjectID: int64(project.ID)}).Find(&positions)
+
 	var positionNames []string
 	for _, j := range positions {
 		var positionTemplate models.PositionTemplate
-		c.db.First(&positionTemplate, j.PositionTemplateID)
+
+		positionTemplate = models.FindPositionTemplateByID(tx, j.PositionTemplateID)
+		err = tx.Commit().Error
+		if err != nil {
+			log.Debug(err)
+		}
+
 		positionNames = append(positionNames, positionTemplate.Name)
 	}
 	projectSimple := ProjectSimple{
@@ -109,7 +121,14 @@ func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *Ad
 	var competitions []*models.Competition
 	for _, item := range req.CompetitionNames {
 		var competition models.Competition
-		c.db.Where(&models.Competition{Name: item}).First(&competition)
+
+		tx := c.db.Begin()
+		competition = models.FindCompetitionByName(tx, item)
+		err := tx.Commit().Error
+		if err != nil {
+			log.Debug(err)
+		}
+
 		competitions = append(competitions, &competition)
 	}
 	//创建Project实例
@@ -129,8 +148,15 @@ func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *Ad
 		CommentsNum:    0,
 		StarNum:        0,
 	}
-	c.db.Create(&project)
-	return nil
+
+	tx := c.db.Begin()
+	err := models.CreateProject(tx, project)
+	if err != nil {
+		log.Debug()
+	}
+	err = tx.Commit().Error
+
+	return err
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -171,20 +197,37 @@ type GetProjectDetailRes struct {
 
 func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetailReq, res *GetProjectDetailRes) error {
 	var project models.Project
-	c.db.First(&project, req.ProjectID) //根据项目ID查找到目标项目
+	var positions []models.Position
+	var comments []models.Comment
+
+	tx := c.db.Begin()
+	project = models.FindProjectByID(tx, uint(req.ProjectID))
+	//招募岗位，查找Position中ProjectID匹配的所有岗位对象
+	positions = models.FindPositionsByProjectID(tx, int64(project.ID))
+	//评论，查找Comment中ProjectID匹配的所有评论对象
+	comments = models.FindCommentsByProjectID(tx, int64(project.ID))
+	err := tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
+
 	//根据项目中CreatorID查找用户，并获取用户相关信息【目前未连接auth服务】
 	award1 := Award{Name: "互联网+一等奖"}
 	award2 := Award{Name: "挑战杯二等奖"}
 	var awards []Award
 	awards = append(awards, award1)
 	awards = append(awards, award2)
-	//招募岗位，查找Position中ProjectID匹配的所有岗位对象
-	var positions []models.Position
-	c.db.Where(&models.Position{ProjectID: int64(project.ID)}).Find(&positions)
+
 	var positionSimples []PositionSimple
 	for _, item := range positions {
 		var positionTemplate models.PositionTemplate
-		c.db.First(&positionTemplate, item.PositionTemplateID)
+
+		positionTemplate = models.FindPositionTemplateByID(tx, item.PositionTemplateID)
+		err := tx.Commit().Error
+		if err != nil {
+			log.Debug(err)
+		}
+
 		positionSimple := PositionSimple{
 			Name:           positionTemplate.Name,
 			NowPeople:      item.NowPeople,
@@ -194,9 +237,7 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 		}
 		positionSimples = append(positionSimples, positionSimple)
 	}
-	//评论，查找Comment中ProjectID匹配的所有评论对象
-	var comments []models.Comment
-	c.db.Where(&models.Comment{ProjectID: int64(project.ID)}).Find(&comments)
+
 	var commentSimples []CommentSimple
 	for _, item := range comments {
 		commentSimple := CommentSimple{
@@ -214,7 +255,8 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	res.CreatorAward = awards
 	res.Positions = positionSimples
 	res.Comments = commentSimples
-	return nil
+
+	return err
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -226,8 +268,13 @@ type GetProjectNumRes struct {
 }
 
 func (c *ProjectService) GetProjectNum(r *http.Request, req *GetProjectNumReq, res *GetProjectNumRes) error {
-	c.db.Model(&models.Project{}).Count(&res.ProjectNum)
-	return nil
+	tx := c.db.Begin()
+	res.ProjectNum = models.GetProjectNum(tx)
+	err := tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
+	return err
 }
 
 //----------------------------------------------------------------------------------------------------------------------
