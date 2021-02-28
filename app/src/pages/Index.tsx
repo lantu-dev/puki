@@ -1,21 +1,23 @@
-import { Divider } from 'antd';
 import React from 'react';
-import { Link } from 'umi';
+import { Link, withRouter } from 'umi';
+import { List } from 'antd';
 
-export default function IndexPage() {
+const IndexPage = withRouter((props: any) => {
+  const routes = props.routes;
+
   return (
-    <div>
-      <Link to="/auth/phone-login">login</Link>
-      <Divider />
-      <Link to="/auth/register">register</Link>
-      <Divider />
-      <Link to="/me">me</Link>
-      <Divider />
-      <Link to="/test">test</Link>
-      <Divider />
-      <Link to="/topic">topic</Link>
-      <Divider />
-      <Link to="/team">team</Link>
+    <div style={{ padding: '10px' }}>
+      <h1>devbox</h1>
+      <List
+        dataSource={routes}
+        renderItem={(item: { path: string }) => (
+          <List.Item>
+            <Link to={item.path}>{item.path}</Link>
+          </List.Item>
+        )}
+      />
     </div>
   );
-}
+});
+
+export default IndexPage;

@@ -114,7 +114,7 @@ export interface GetProjectSimplesRes {
   ProjectSimples: ProjectSimple[];
 }
 
-export const team = {
+export default {
   CommentService: {},
   CompetitionService: {
     GetCompetitionName: 'CompetitionService.GetCompetitionName' as Endpoint<

@@ -1,67 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { Link, history } from 'umi';
-import { Button, Row, Col, Image, Anchor, Avatar } from 'antd';
-import { Typography, Progress } from 'antd';
+import { call, team } from '@/api-client';
+import style from '@/assets/team/css/expand.css';
 import {
-  ArrowLeftOutlined,
   FileTextOutlined,
+  LikeFilled,
   LikeOutlined,
   MessageOutlined,
-  LikeFilled,
 } from '@ant-design/icons';
-import style from '../../../assets/team/css/expand.css';
-import { call, team } from '@/api-client';
+import { Avatar, Button, Col, Image, Progress, Row, Typography } from 'antd';
+import React, { useState } from 'react';
+import { useAsync } from 'react-use';
 
 const { Title, Paragraph, Text } = Typography;
 //来自ProjectCard的项目简略信息，这部分信息不需要再从数据库重新获取
 interface ProjectDetailProps {
   ProjectID: number;
   ProjectName: string;
-  ProjectDescribeSimple: string;
+  ProjectDescription: string;
 }
 
 export default function ProjectDetail(props: ProjectDetailProps) {
-  const [ellipsis, setEllipsis1] = useState(true);
   const [likeNum, setLikeNum] = useState(0);
   const [isLike, setIsLike] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  //基于ProjectDetailProps中的ProjectID，从数据库获取数据
-  const [DescribeDetail, setDescribeDetail] = useState('');
-  const [LinkURL, setLinkURL] = useState('');
-  const [EndTime, setEndTime] = useState('');
-  const [CreatorName, setCreatorName] = useState('');
-  const [CreatorSchool, setCreatorSchool] = useState('');
-  const [CreatorGrade, setCreatorGrade] = useState('');
-  const [Awards, setAwards] = useState([{ Name: '' }]);
-  const [Comments, setComments] = useState([{ CreatorName: '', Content: '' }]);
-  const [Positions, setPositions] = useState([
-    {
-      Name: '',
-      NowPeople: 0,
-      NeedPeople: 0,
-      InterestPeople: 0,
-      Describe: '',
-    },
-  ]);
 
-  useEffect(() => {
-    call(team.ProjectService.GetProjectDetail, {
+  const projectDetailState = useAsync(async () => {
+    let res = await call(team.ProjectService.GetProjectDetail, {
       ProjectID: props.ProjectID,
-    }).then((r) => {
-      setDescribeDetail(r.DescribeDetail);
-      setLinkURL(r.LinkURL);
-      setEndTime(r.EndTime);
-      setCreatorName(r.CreatorName);
-      setCreatorSchool(r.CreatorSchool);
-      setCreatorGrade(r.CreatorGrade);
-      setAwards(r.CreatorAward);
-      setPositions(r.Positions);
-      setComments(r.Comments);
     });
-  }, [1]);
+    return res;
+  });
+
+  const {
+    DescribeDetail = '',
+    LinkURL = '',
+    EndTime = '',
+    CreatorName = '',
+    CreatorSchool = '',
+    CreatorGrade = '',
+    CreatorAward = [{ Name: '' }],
+    Comments = [{ CreatorName: '', Content: '' }],
+    Positions = [
+      {
+        Name: '',
+        NowPeople: 0,
+        NeedPeople: 0,
+        InterestPeople: 0,
+        Describe: '',
+      },
+    ],
+  } = projectDetailState.value || {};
 
   return (
-    <div style={{ marginRight: '10px', width: '95%' }}>
+    <div style={{ margin: '5px' }}>
+      <Title level={3}>{props.ProjectName}</Title>
       <Row wrap={false}>
         <Col flex={'10px'}> </Col>
         <Col flex={'30%'}>
@@ -74,11 +65,9 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         <Col flex={'auto'}>
           <Paragraph
             style={{ fontSize: '16px' }}
-            ellipsis={
-              ellipsis ? { rows: 4, expandable: true, symbol: '展开' } : false
-            }
+            ellipsis={{ rows: 4, expandable: true, symbol: '展开' }}
           >
-            {props.ProjectDescribeSimple}
+            {props.ProjectDescription}
           </Paragraph>
         </Col>
       </Row>
@@ -203,17 +192,10 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </Col>
           <Col flex={'40%'} style={{ marginTop: '10px' }}>
             <Paragraph
-              style={{ fontSize: '16px', color: 'gray' }}
-              ellipsis={
-                ellipsis ? { rows: 2, expandable: true, symbol: '展开' } : false
-              }
+              style={{ fontSize: '16px', color: 'gray', whiteSpace: 'pre' }}
+              ellipsis={{ rows: 2, expandable: true, symbol: '展开' }}
             >
-              {Awards.map((value, index) => (
-                <div key={index}>
-                  {value.Name}
-                  <br />
-                </div>
-              ))}
+              {CreatorAward.map((v) => v.Name).join('\n')}
             </Paragraph>
           </Col>
         </Row>
@@ -241,13 +223,9 @@ export default function ProjectDetail(props: ProjectDetailProps) {
                   </Row>
                   <Paragraph
                     style={{ fontSize: '16px', color: 'gray' }}
-                    ellipsis={
-                      ellipsis
-                        ? { rows: 1, expandable: true, symbol: '展开' }
-                        : false
-                    }
+                    ellipsis={{ rows: 1, expandable: true, symbol: '展开' }}
                   >
-                    岗位需求: {value.Describe}
+                    岗位需求: {value.Describe.repeat(10)}
                   </Paragraph>
                 </div>
               ))
