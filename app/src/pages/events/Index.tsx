@@ -6,6 +6,7 @@ import Slider from 'react-slick';
 import { useAsync, useSetState } from 'react-use';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
+import { history } from 'umi';
 import style from './Index.less';
 
 const { Text, Paragraph } = Typography;
@@ -74,7 +75,17 @@ export default function () {
           >
             {eventsList.value?.map((v) => {
               return (
-                <div key={v.eventID}>
+                <div
+                  key={v.eventID}
+                  onClick={() => {
+                    history.push({
+                      pathname: '/events/more-info',
+                      query: {
+                        eventID: v.eventID,
+                      },
+                    });
+                  }}
+                >
                   <Card
                     hoverable
                     size="small"
@@ -123,17 +134,38 @@ export default function () {
             vertical
             verticalSwiping
           >
-            {[0, 1, 2, 3, 4, 5, 6, 7].map((v) => (
-              <div key={v}>
+            {eventsList.value?.map((v) => (
+              <div
+                key={v.eventID}
+                onClick={() => {
+                  history.push({
+                    pathname: '/events/more-info',
+                    query: {
+                      eventID: v.eventID,
+                    },
+                  });
+                }}
+              >
                 <Card
                   style={{ margin: '10px' }}
                   cover={
                     <div className={style.image}>
-                      <Image src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />
+                      <Image src={v.imageUrl} />
                     </div>
                   }
                 >
-                  <Card.Meta title="标题" description="描述" />
+                  <Card.Meta
+                    title={v.title}
+                    description={
+                      <Paragraph
+                        ellipsis={{
+                          rows: 2,
+                        }}
+                      >
+                        {v.description}
+                      </Paragraph>
+                    }
+                  />
                 </Card>
               </div>
             ))}

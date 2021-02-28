@@ -44,7 +44,9 @@ export default function MoreInfo() {
   const [form] = Form.useForm();
 
   const eventMoreInfo = useAsync(async () => {
-    const res = await call(events.Info.GetEventMoreInfo, { eventID: '1' });
+    const res = await call(events.Info.GetEventMoreInfo, {
+      eventID: history.location.query?.eventID,
+    });
     console.log(res);
     return res;
   });

@@ -3,6 +3,7 @@ import { QuestionInfo } from '@/api-client/events';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Drawer, Typography } from 'antd';
 import { useAsync, useMethods } from 'react-use';
+import { history } from 'umi';
 import Answers from './Answers';
 
 const { Paragraph, Title } = Typography;
@@ -25,7 +26,7 @@ export default function Questions() {
 
   const questionsList = useAsync(async () => {
     const res = await call(events.Info.GetQuestionsList, {
-      eventID: '1',
+      eventID: history.location.query?.eventID,
     });
     console.log(res);
     return res;
