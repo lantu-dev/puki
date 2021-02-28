@@ -54,16 +54,18 @@ type GetCompetitionNameRes struct {
 func (c *CompetitionService) GetCompetitionName(r *http.Request,
 	req *GetCompetitionNameReq, res *GetCompetitionNameRes) error {
 	var competitions []models.Competition
-	result := c.db.Find(&competitions)
-	if result.Error != nil {
-		print(result.Error)
-	}
+
+	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
+	competitions = models.FindAllCompetitions(tx)
+	err := tx.Commit().Error // 数据库事务
+
 	var competitionNames []string
 	for _, item := range competitions {
 		competitionNames = append(competitionNames, item.Name)
 	}
 	res.CompetitionNames = competitionNames
-	return result.Error
+
+	return err
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -92,7 +94,11 @@ func (c *CompetitionService) AddCompetition(r *http.Request, req *AddCompetition
 		Time:        "",
 		Files:       nil,
 	}
-	err := c.db.Create(&competition)
+
+	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
+	models.CreateCompetition(tx, competition)
+	err := tx.Commit().Error // 数据库事务
+
 	if err != nil {
 		res.Result = "failed"
 	} else {

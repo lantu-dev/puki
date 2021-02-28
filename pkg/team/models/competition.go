@@ -38,3 +38,18 @@ type CompetitionProject struct {
 	ProjectID     int64
 	CompetitionID int64
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//查找所有比赛
+func FindAllCompetitions(tx *gorm.DB) []Competition {
+	var competitions []Competition
+	tx.Find(&competitions)
+	return competitions
+}
+
+//创建比赛
+func CreateCompetition(tx *gorm.DB, competition Competition) {
+	tx.Create(&competition)
+	return
+}

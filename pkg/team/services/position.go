@@ -19,6 +19,7 @@ func NewPositionService(db *gorm.DB) *PositionService {
 
 //----------------------------------------------------------------------------------------------------------------------
 
+//获取岗位的名称
 type GetPositionNamesReq struct{}
 type GetPositionNamesRes struct {
 	PositionNames []string

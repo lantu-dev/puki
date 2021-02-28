@@ -17,7 +17,6 @@ const onFinish = (values: any) => {
     Description: desc,
     Name: name,
   }).then();
-
   history.back();
 };
 

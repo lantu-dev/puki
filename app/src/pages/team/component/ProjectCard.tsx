@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { Col, Row, Typography, Tag } from 'antd';
-import { Link } from 'umi';
-import style from '../../../assets/team/css/expand.css';
-import { MoreOutlined } from '@ant-design/icons';
+import style from '@/assets/team/css/expand.css';
+import { ArrowLeftOutlined, MoreOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 const { Paragraph, Text } = Typography;
 
@@ -15,28 +14,59 @@ interface ProjectCardProps {
 
 //需要补充：点赞数、评论数
 
-export default class ProjectCard extends React.Component {
-  props: ProjectCardProps = {
-    ProjectID: this.props.ProjectID,
-    ProjectName: this.props.ProjectName,
-    ProjectDescribeSimple: this.props.ProjectDescribeSimple,
-    PositionNames: this.props.PositionNames,
-  };
-  render() {
-    const Para = () => {
-      const [ellipsis] = React.useState(true);
-      return (
+export default function ProjectCard(props: ProjectCardProps) {
+  const Para = () => {
+    const [ellipsis, setEllipsis] = React.useState(true);
+    return (
+      <>
+        <Text strong>项目介绍：</Text>
         <Paragraph
           ellipsis={
             ellipsis ? { rows: 2, expandable: true, symbol: '查看更多' } : false
           }
         >
-          <Text strong>项目介绍：</Text>
-          {this.props.ProjectDescribeSimple}
+          {props.ProjectDescribeSimple}
         </Paragraph>
-      );
-    };
-    return (
+      </>
+    );
+  };
+  const ProjectDetailPage = lazy(
+    () => import('@/pages/team/pages/ProjectDetail'),
+  );
+  let [isHidden, setIsHidden] = useState(true);
+  return (
+    <div>
+      <div
+        hidden={isHidden}
+        style={{
+          backgroundColor: 'white',
+          margin: '0px',
+          height: '1000px',
+          position: 'fixed',
+          width: '100%',
+          top: '0px',
+          zIndex: 50,
+          overflow: 'scroll',
+          paddingTop: '10px',
+        }}
+      >
+        <Title level={3}>
+          <div style={{ cursor: 'pointer' }} onClick={() => setIsHidden(true)}>
+            <ArrowLeftOutlined
+              style={{ color: 'black', fontSize: '24px', marginRight: '10px' }}
+            />
+            {props.ProjectName}
+          </div>
+        </Title>
+        <Suspense fallback={<div>loading</div>}>
+          <ProjectDetailPage
+            ProjectDescribeSimple={props.ProjectDescribeSimple}
+            ProjectID={props.ProjectID}
+            ProjectName={props.ProjectName}
+          />
+        </Suspense>
+      </div>
+
       <div
         style={{
           marginTop: '15px',
@@ -54,18 +84,14 @@ export default class ProjectCard extends React.Component {
               paddingRight: '5px',
             }}
           >
-            <Link
-              to={{
-                pathname: '/team/ProjectDetail',
-                state: {
-                  ProjectID: this.props.ProjectName,
-                  ProjectName: this.props.ProjectName,
-                  ProjectDescribeSimple: this.props.ProjectDescribeSimple,
-                },
+            <div
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setIsHidden(false);
               }}
             >
-              <Title level={4}>{this.props.ProjectName}</Title>
-            </Link>
+              <Title level={4}>{props.ProjectName}</Title>
+            </div>
             <Para />
           </Col>
           <Col flex={'80px'} className={style.ProjectDetailTag}>
@@ -73,8 +99,8 @@ export default class ProjectCard extends React.Component {
               style={{ height: '90%', position: 'absolute' }}
               className={style.PartialScrollVertical}
             >
-              {this.props.PositionNames.map((value) => (
-                <div>
+              {props.PositionNames.map((value, index) => (
+                <div key={index}>
                   <Tag color={'red'}>{value}</Tag>
                 </div>
               ))}
@@ -85,6 +111,6 @@ export default class ProjectCard extends React.Component {
           </Col>
         </Row>
       </div>
-    );
-  }
+    </div>
+  );
 }

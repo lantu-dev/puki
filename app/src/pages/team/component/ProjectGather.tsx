@@ -1,67 +1,89 @@
-import React from 'react';
-import { call } from '@/api-client';
+import React, { useState, Suspense, useEffect, lazy } from 'react';
+import { call, team } from '@/api-client';
 import ProjectCard from '@/pages/team/component/ProjectCard';
-import style from '../../../assets/team/css/expand.css';
 
-interface Project {
-  ProjectID: number;
-  CreateTime: string;
-  UpdateTime: string;
-  ProjectName: string;
-  ProjectDescription: string;
-  StarNum: number;
-  CommentNum: number;
-  CompetitionNames: string[];
-  TypeName: string;
-  PositionNames: string[];
+interface ProjectGatherProps {
+  competitionName: string;
+  competitionType: string;
+  positionName: string;
 }
 
-interface ProjectGatherState {
-  IsFinished: boolean;
-  Projects: Project[];
-}
+export default function ProjectGather(props: ProjectGatherProps) {
+  //项目简介数组
+  let [projectSimples, setProjectSimples] = useState([
+    {
+      ProjectID: 0,
+      CreateTime: '',
+      UpdateTime: '',
+      ProjectName: '',
+      ProjectDescription: '',
+      StarNum: 0,
+      CommentNum: 0,
+      CompetitionNames: [''],
+      TypeName: '',
+      PositionNames: [''],
+    },
+  ]);
+  //项目简介对象
+  let [projectSimple, setProjectSimple] = useState({
+    ProjectID: 0,
+    CreateTime: '',
+    UpdateTime: '',
+    ProjectName: '',
+    ProjectDescription: '',
+    StarNum: 0,
+    CommentNum: 0,
+    CompetitionNames: [''],
+    TypeName: '',
+    PositionNames: [''],
+  });
+  //获取项目个数【即首屏卡片个数】
+  let [projectNum, setProjectNum] = useState(0);
+  //数据库中project的索引
+  let [projectIndex, setProjectIndex] = useState(1);
+  //目前成功获取的项目简介数量
+  let [projectCount, setProjectCount] = useState(0);
 
-interface GetProjectSimpleReq {}
-interface GetProjectSimpleRes {
-  ProjectSimples: Project[];
-}
-
-interface ProjectGatherProp {
-  CompetitionName: string;
-}
-
-export default class ProjectGather extends React.Component {
-  props: ProjectGatherProp = {
-    CompetitionName: '',
-  };
-  state: ProjectGatherState = {
-    IsFinished: false,
-    Projects: [],
-  };
-  render() {
-    call<GetProjectSimpleReq, GetProjectSimpleRes>(
-      'ProjectService.GetProjectSimple',
-      {},
-    ).then((r) => {
-      if (!this.state.IsFinished) {
-        this.setState({
-          IsFinished: true,
-          Projects: r.ProjectSimples,
-        });
+  useEffect(() => {
+    call(team.ProjectService.GetProjectNum, {}).then((r) => {
+      setProjectNum(r.ProjectNum);
+      console.log('projectNum' + projectNum);
+    });
+  }, [projectNum]);
+  useEffect(() => {
+    call(team.ProjectService.GetProjectSimple, {
+      ProjectID: projectIndex,
+    }).then((r) => {
+      if (r.IsFound) {
+        projectSimples.push(r.ProjectSimple);
+        setProjectSimples(projectSimples);
+        setProjectCount(projectCount + 1);
+        setProjectIndex(projectIndex + 1);
+      } else {
+        if (projectCount < projectNum) {
+          setProjectIndex(projectIndex + 1);
+        }
       }
     });
-    return (
-      <div>
-        {this.state.Projects.map((value) => (
-          <div
-            className={
-              value.CompetitionNames.join(' ') +
-              ' ' +
-              value.TypeName +
-              ' ' +
-              value.PositionNames.join(' ')
-            }
-          >
+  }, [projectIndex]);
+
+  return (
+    <div>
+      {projectSimples
+        .filter(
+          (value) =>
+            (value.CompetitionNames.includes(props.competitionName) ||
+              props.competitionName === '') &&
+            (value.TypeName === props.competitionType ||
+              props.competitionType === '所有类别' ||
+              props.competitionType === '') &&
+            (value.PositionNames.includes(props.positionName) ||
+              props.positionName === '' ||
+              props.positionName === '所有岗位') &&
+            value.ProjectID != 0,
+        )
+        .map((value, index) => (
+          <div key={index}>
             <ProjectCard
               ProjectID={value.ProjectID}
               ProjectName={value.ProjectName}
@@ -70,25 +92,6 @@ export default class ProjectGather extends React.Component {
             />
           </div>
         ))}
-      </div>
-    );
-  }
+    </div>
+  );
 }
-
-// {this.props.CompetitionName && !(this.props.CompetitionName === '所有比赛/活动')
-//   ? this.state.Projects.map((value) => (
-//     value.CompetitionNames ? value.CompetitionNames.map(value1 => (
-//       value1 === this.props.CompetitionName?
-//         <ProjectCard
-//           ProjectID={value.ProjectID}
-//           ProjectName={value.ProjectName}
-//           ProjectDescribeSimple={value.ProjectDescription}
-//         /> : false
-//     )) : false
-//   )) : this.state.Projects.map(value => (
-//     <ProjectCard
-//       ProjectID={value.ProjectID}
-//       ProjectName={value.ProjectName}
-//       ProjectDescribeSimple={value.ProjectDescription}
-//     />
-//   ))}

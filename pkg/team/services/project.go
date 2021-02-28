@@ -24,6 +24,7 @@ func NewProjectService(db *gorm.DB) *ProjectService {
 //信息包括：项目名称、项目介绍、岗位标签、(创建者头像、创建者姓名)、star数、评论数
 //请求，包括比赛名称、比赛类别、岗位名称
 type GetProjectSimpleReq struct {
+	ProjectID uint
 }
 type ProjectSimple struct {
 	ProjectID          uint
@@ -40,49 +41,48 @@ type ProjectSimple struct {
 
 //响应，包括一个项目对象的数组
 type GetProjectSimpleRes struct {
-	ProjectSimples []ProjectSimple
+	IsFound       bool
+	ProjectSimple ProjectSimple
 }
 
 type Position struct {
 }
 
-type Projects []models.Project
-
 func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimpleReq, res *GetProjectSimpleRes) error {
-	var projects Projects
-	result := c.db.Preload("Competitions").Find(&projects)
+	var project models.Project
+	result := c.db.Preload("Competitions").First(&project, req.ProjectID)
 	if result.Error != nil {
-		print(result.Error)
+		res.IsFound = false
+		return nil
 	}
-	for _, item := range projects {
-		var competitionNames []string
-		for _, j := range item.Competitions {
-			competitionNames = append(competitionNames, j.Name)
-		}
-		var typeNew models.Type
-		c.db.First(&typeNew, item.TypeID)
-		var positions []models.Position
-		c.db.Where(&models.Position{ProjectID: int64(item.ID)}).Find(&positions)
-		var positionNames []string
-		for _, j := range positions {
-			var positionTemplate models.PositionTemplate
-			c.db.First(&positionTemplate, j.PositionTemplateID)
-			positionNames = append(positionNames, positionTemplate.Name)
-		}
-		projectSimple := ProjectSimple{
-			ProjectID:          item.ID,
-			CreateTime:         item.CreatedAt,
-			UpdateTime:         item.UpdatedAt,
-			ProjectName:        item.Name,
-			ProjectDescription: item.DescribeSimple,
-			StarNum:            item.StarNum,
-			CommentNum:         item.CommentsNum,
-			PositionNames:      positionNames,
-			CompetitionNames:   competitionNames,
-			TypeName:           typeNew.Name,
-		}
-		res.ProjectSimples = append(res.ProjectSimples, projectSimple)
+	var competitionNames []string
+	for _, j := range project.Competitions {
+		competitionNames = append(competitionNames, j.Name)
 	}
+	var typeNew models.Type
+	c.db.First(&typeNew, project.TypeID)
+	var positions []models.Position
+	c.db.Where(&models.Position{ProjectID: int64(project.ID)}).Find(&positions)
+	var positionNames []string
+	for _, j := range positions {
+		var positionTemplate models.PositionTemplate
+		c.db.First(&positionTemplate, j.PositionTemplateID)
+		positionNames = append(positionNames, positionTemplate.Name)
+	}
+	projectSimple := ProjectSimple{
+		ProjectID:          project.ID,
+		CreateTime:         project.CreatedAt,
+		UpdateTime:         project.UpdatedAt,
+		ProjectName:        project.Name,
+		ProjectDescription: project.DescribeSimple,
+		StarNum:            project.StarNum,
+		CommentNum:         project.CommentsNum,
+		PositionNames:      positionNames,
+		CompetitionNames:   competitionNames,
+		TypeName:           typeNew.Name,
+	}
+	res.ProjectSimple = projectSimple
+	res.IsFound = true
 	return nil
 }
 
@@ -215,5 +215,18 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	res.CreatorAward = awards
 	res.Positions = positionSimples
 	res.Comments = commentSimples
+	return nil
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+//获取数据库中project的个数
+type GetProjectNumReq struct{}
+type GetProjectNumRes struct {
+	ProjectNum int64
+}
+
+func (c *ProjectService) GetProjectNum(r *http.Request, req *GetProjectNumReq, res *GetProjectNumRes) error {
+	c.db.Model(&models.Project{}).Count(&res.ProjectNum)
 	return nil
 }
