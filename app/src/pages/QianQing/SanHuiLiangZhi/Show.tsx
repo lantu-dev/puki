@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, Button } from 'antd';
-import { Page, contentProps } from '../QingNian';
+import { Page, contentProps } from '../QingNianDaXueXi';
 import { Link } from 'umi';
 import 'antd/dist/antd.css';
 

@@ -89,6 +89,17 @@ export default [
     path: '/topic',
     component: '@/pages/bbs/Index',
   },
+  {
+    exact: true,
+    path: '/QingNianDaXueXi',
+    component: '@/pages/QianQing/QingNianDaXueXi',
+  },
+  {
+    exact: true,
+    path: '/SanHuiLiangZhi',
+    component: '@/pages/QianQing/SanHuiLiangZhi',
+  },
+
     {
     exact: true,
     path: '/community/Community',
@@ -98,5 +109,6 @@ export default [
     exact: true,
     path: '/homepage/Homepage',
     component: '@/pages/homepage/Homepage',
+
   },
 ];
