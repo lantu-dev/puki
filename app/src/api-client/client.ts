@@ -1,6 +1,6 @@
 import fly, { FlyResponse } from 'flyio';
-
-import { isBrowser } from 'react-use/lib/misc/util';
+//@ts-ignore
+import { isBrowser } from 'umi'
 
 export async function setToken(token: string) {
   localStorage.setItem('token', token);
@@ -14,10 +14,8 @@ export interface Endpoint<P, R> extends String {}
 
 //@ts-ignore
 if (ENABLE_GATEWAY && isBrowser()) {
-  //@ts-ignore
   fly.config.baseURL = new URL(
-    //@ts-ignore
-    `${window.location.origin}${window.routerBase}/../api`,
+    `${window.location.origin}${(window as any).routerBase}/../api`,
   ).toString();
 }
 

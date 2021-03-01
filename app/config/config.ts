@@ -1,4 +1,4 @@
-import { defineConfig } from 'umi';
+import {defineConfig} from 'umi';
 import routes from './routes';
 
 export default defineConfig({
@@ -26,5 +26,5 @@ export default defineConfig({
   },
   publicPath: (process.env.PUBLIC_PATH || '') + '/',
   routes,
-  ssr:{}
+  ssr: {}
 });
