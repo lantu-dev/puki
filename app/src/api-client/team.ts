@@ -5,8 +5,8 @@ export interface Position {}
 export interface Award {}
 
 //获取所有比赛名称
-export interface GetCompetitionNameReq {}
-interface GetCompetitionNameRes {
+export interface GetCompetitionNamesReq {}
+interface GetCompetitionNamesRes {
   CompetitionNames: string[];
 }
 
@@ -75,7 +75,6 @@ export interface GetProjectDetailRes {
 
 //添加新的项目【创建项目】
 export interface AddProjectReq {
-  CreatorID: number;
   TypeID: number;
   Name: string;
   DescribeSimple: string;
@@ -117,11 +116,11 @@ export interface GetProjectSimplesRes {
 export default {
   CommentService: {},
   CompetitionService: {
-    GetCompetitionNames: 'CompetitionService.GetCompetitionNames' as Endpoint<
-      GetCompetitionNameReq,
-      GetCompetitionNameRes
+    GetCompetitionNames: 'team/CompetitionService.GetCompetitionNames' as Endpoint<
+      GetCompetitionNamesReq,
+      GetCompetitionNamesRes
     >,
-    GetCompetitionTypes: 'CompetitionService.GetCompetitionTypes' as Endpoint<
+    GetCompetitionTypes: 'team/CompetitionService.GetCompetitionTypes' as Endpoint<
       GetCompetitionTypesReq,
       GetCompetitionTypesRes
     >,
@@ -129,33 +128,33 @@ export default {
   ConversationService: {},
   FileService: {},
   PositionService: {
-    GetPositionNames: 'PositionService.GetPositionNames' as Endpoint<
+    GetPositionNames: 'team/PositionService.GetPositionNames' as Endpoint<
       GetPositionNamesReq,
       GetPositionNamesRes
     >,
   },
   ProjectService: {
-    GetProjectSimple: 'ProjectService.GetProjectSimple' as Endpoint<
+    GetProjectSimple: 'team/ProjectService.GetProjectSimple' as Endpoint<
       GetProjectSimpleReq,
       GetProjectSimpleRes
     >,
-    GetProjectSimples: 'ProjectService.GetProjectSimples' as Endpoint<
+    GetProjectSimples: 'team/ProjectService.GetProjectSimples' as Endpoint<
       GetProjectSimplesReq,
       GetProjectSimplesRes
     >,
-    AddProject: 'ProjectService.AddProject' as Endpoint<
+    AddProject: 'team/ProjectService.AddProject' as Endpoint<
       AddProjectReq,
       AddProjectRes
     >,
-    GetProjectDetail: 'ProjectService.GetProjectDetail' as Endpoint<
+    GetProjectDetail: 'team/ProjectService.GetProjectDetail' as Endpoint<
       GetProjectDetailReq,
       GetProjectDetailRes
     >,
-    GetProjectNum: 'ProjectService.GetProjectNum' as Endpoint<
+    GetProjectNum: 'team/ProjectService.GetProjectNum' as Endpoint<
       GetProjectNumReq,
       GetProjectNumRes
     >,
-    GetProjectID: 'ProjectService.GetProjectID' as Endpoint<
+    GetProjectID: 'team/ProjectService.GetProjectID' as Endpoint<
       GetProjectIDReq,
       GetProjectIDRes
     >,

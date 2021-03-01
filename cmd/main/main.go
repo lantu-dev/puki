@@ -62,6 +62,9 @@ func main() {
 	if err := authsetup.Setup(reg, db); err != nil {
 		log.Fatal(err)
 	}
+	if err := teamsetup.Setup(reg, db); err != nil {
+		log.Fatal(err)
+	}
 
 	var smsSender *hwcloud.SMSSender = nil
 

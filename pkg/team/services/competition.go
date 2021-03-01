@@ -65,7 +65,6 @@ func (c *CompetitionService) GetCompetitionNames(r *http.Request,
 		competitionNames = append(competitionNames, item.Name)
 	}
 	res.CompetitionNames = competitionNames
-
 	return err
 }
 
