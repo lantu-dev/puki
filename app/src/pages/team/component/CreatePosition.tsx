@@ -36,8 +36,6 @@ export default function CreatePosition() {
           setVisible(false);
         }
       }}
-    >
-
-    </Form.Provider>
+    ></Form.Provider>
   );
 }

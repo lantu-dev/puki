@@ -1,6 +1,6 @@
 import fly, { FlyResponse } from 'flyio';
 
-import {isBrowser} from "react-use/lib/misc/util";
+import { isBrowser } from 'react-use/lib/misc/util';
 
 export async function setToken(token: string) {
   localStorage.setItem('token', token);
