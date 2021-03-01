@@ -1,65 +1,58 @@
 module.exports = {
-  title: 'My Site',
+  title: '蓝图主页',
   tagline: 'The tagline of my site',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'lantu-dev', // Usually your GitHub org/user name.
+  projectName: 'puki', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: '蓝图主页',
       logo: {
-        alt: 'My Site Logo',
+        alt: '蓝图主页',
         src: 'img/logo.svg',
       },
       items: [
         {
-          to: 'docs/',
-          activeBasePath: 'docs',
-          label: 'Docs',
-          position: 'left',
-        },
-        {to: 'blog', label: 'Blog', position: 'left'},
-        {
-          href: 'https://github.com/facebook/docusaurus',
-          label: 'GitHub',
+          to: '/',
+          label: '首页',
           position: 'right',
         },
+        {to: 'blog', label: '关于我们', position: 'right'},
+        {
+
+        }
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       links: [
         {
-          title: 'Docs',
+          title: '产品',
           items: [
             {
-              label: 'Style Guide',
+              label: '产品介绍',
               to: 'docs/',
             },
             {
-              label: 'Second Doc',
+              label: '产品服务',
               to: 'docs/doc2/',
             },
           ],
         },
         {
-          title: 'Community',
+          title: '企业介绍',
           items: [
             {
-              label: 'Stack Overflow',
+              label: '关于我们',
               href: 'https://stackoverflow.com/questions/tagged/docusaurus',
             },
             {
-              label: 'Discord',
+              label: '社区',
               href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
             },
           ],
         },
@@ -77,7 +70,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} 版权所有`,
     },
   },
   presets: [
