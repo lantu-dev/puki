@@ -22,6 +22,7 @@ func FindCommentsByProjectID(tx *gorm.DB, ProjectID int64) []Comment {
 	var comments []Comment
 	result := tx.Where(&Comment{ProjectID: ProjectID}).Find(&comments)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return comments

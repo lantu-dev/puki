@@ -17,6 +17,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/guregu/null.v4 v4.0.0
+	gorm.io/driver/postgres v1.0.8 // indirect
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/driver/sqlserver v1.0.6
 	gorm.io/gorm v1.20.12
