@@ -14,7 +14,7 @@ import (
 
 func main() {
 	//gorm
-	dsn := "sqlserver://sa:Cwh2001128,.@39.97.211.86/instance?database=zdxt&port=1433"
+	dsn := "sqlserver://sa:YourPassword@YourIP/instance?database=YourDatabaseName&port=1433"
 	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
