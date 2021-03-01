@@ -1,6 +1,7 @@
 package models
 
 import (
+	models2 "github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -104,7 +105,6 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 //添加项目
 //请求包括：创建者ID，类别ID，
 type AddProjectReq struct {
-	CreatorID        int64
 	TypeID           int64
 	Name             string
 	DescribeSimple   string
@@ -136,7 +136,6 @@ func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *Ad
 	project := models.Project{
 		Model:          gorm.Model{},
 		IsAvailable:    false,
-		CreatorID:      req.CreatorID,
 		Competitions:   competitions,
 		TypeID:         1,
 		Name:           req.Name,
@@ -201,18 +200,21 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	var positions []models.Position
 	var comments []models.Comment
 
+	var creator models2.User
+
 	tx := c.db.Begin()
 	project = models.FindProjectByID(tx, uint(req.ProjectID))
 	//招募岗位，查找Position中ProjectID匹配的所有岗位对象
 	positions = models.FindPositionsByProjectID(tx, int64(project.ID))
 	//评论，查找Comment中ProjectID匹配的所有评论对象
 	comments = models.FindCommentsByProjectID(tx, int64(project.ID))
+	//根据项目中CreatorID查找用户，并获取用户相关信息
+	creator = *models2.FindUserById(tx, project.CreatorID)
 	err := tx.Commit().Error
 	if err != nil {
 		log.Debug(err)
 	}
 
-	//根据项目中CreatorID查找用户，并获取用户相关信息【目前未连接auth服务】
 	award1 := Award{Name: "互联网+一等奖"}
 	award2 := Award{Name: "挑战杯二等奖"}
 	var awards []Award
@@ -252,7 +254,7 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	res.DescribeDetail = project.DescribeDetail
 	res.LinkURL = project.LinkURL
 	res.EndTime = project.EndTime.Format("2006-01-02")
-	res.CreatorName = "测试姓名"
+	res.CreatorName = creator.Name.String
 	res.CreatorSchool = "测试学院"
 	res.CreatorGrade = "测试年级"
 	res.CreatorAward = awards

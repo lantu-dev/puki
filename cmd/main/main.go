@@ -11,6 +11,7 @@ import (
 	"github.com/lantu-dev/puki/pkg/base"
 	"github.com/lantu-dev/puki/pkg/hwcloud"
 	"github.com/lantu-dev/puki/pkg/storage"
+	teamsetup "github.com/lantu-dev/puki/pkg/team/setup"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -51,6 +52,12 @@ func main() {
 		log.Info("using sqlite")
 	}
 
+	//dsn := "sqlserver://sa:nzLAroDPf7HbOByw@39.97.211.86/instance?database=demo&port=1433"
+	//db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+	//if err != nil {
+	//	panic("failed to connect database")
+	//}
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,6 +67,9 @@ func main() {
 	// 每新增一个模块 ( mod ) , 在这里新增一个 Setup 。
 	storage.Setup()
 	if err := authsetup.Setup(reg, db); err != nil {
+		log.Fatal(err)
+	}
+	if err := teamsetup.Setup(reg, db); err != nil {
 		log.Fatal(err)
 	}
 
