@@ -54,4 +54,14 @@ export default [
     path: '/topic',
     component: '@/pages/bbs/Index',
   },
+    {
+    exact: true,
+    path: '/community/Community',
+    component: '@/pages/community/Community',
+  },
+      {
+    exact: true,
+    path: '/homepage/Homepage',
+    component: '@/pages/homepage/Homepage',
+  },
 ];
