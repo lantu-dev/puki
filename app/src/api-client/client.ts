@@ -1,6 +1,6 @@
 import fly, { FlyResponse } from 'flyio';
 //@ts-ignore
-import { isBrowser } from 'umi'
+import { isBrowser } from 'umi';
 
 export async function setToken(token: string) {
   localStorage.setItem('token', token);
