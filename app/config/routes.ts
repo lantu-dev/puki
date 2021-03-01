@@ -89,4 +89,14 @@ export default [
     path: '/topic',
     component: '@/pages/bbs/Index',
   },
+  {
+    exact: true,
+    path: '/login',
+    component: '@/pages/home/Login',
+  },
+  {
+    exact: true,
+    path: '/community',
+    component: '@/pages/community/Community',
+  },
 ];

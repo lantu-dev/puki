@@ -1,0 +1,38 @@
+.login {
+  width: 900px;
+  min-width: 900px;
+  margin: auto;
+  background-image: url('~@/assets/background.jpg');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  color: #fff;
+  padding: 100px 300px;
+}
+.input {
+  border: 0;
+  border-radius: 1.5em;
+  height: 3em;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+.input input {
+  background-color: rgba(0, 0, 0, 0);
+  color: #fff;
+}
+.input input::-webkit-input-placeholder {
+  color: #aaa;
+}
+.input input::-moz-placeholder {
+  color: #aaa;
+}
+.input input::-ms-input-placeholder {
+  color: #aaa;
+}
+.input input::placeholder {
+  color: #aaa;
+}
+.button {
+  border-radius: 1.5em;
+  height: 3em;
+  color: #fff;
+}

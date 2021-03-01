@@ -1,0 +1,13 @@
+.background {
+  width: 100%;
+  margin: auto;
+  background-image: url('~@/assets/background.jpg');
+  background-repeat: no-repeat;
+}
+.lantu {
+  height: 30px;
+  width: auto;
+}
+.tab {
+  white-space: normal;
+}
