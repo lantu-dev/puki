@@ -2,9 +2,11 @@ import lantu from '@/assets/lantu.png';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Col, Image, Input, Row, Space, Switch } from 'antd';
 import { Link } from 'umi';
-import style from '@/pages/home/Login.less';
+import style from './Login.less';
 
 export default function Login() {
+  // TODO 登录
+
   return (
     <div className={style.login}>
       <Image preview={false} src={lantu}></Image>
@@ -20,7 +22,7 @@ export default function Login() {
           prefix={<LockOutlined />}
           visibilityToggle={false}
         ></Input.Password>
-        <Button shape="round" block className={style.button} type="primary">
+        <Button block className={style.button} type="primary">
           登录
         </Button>
         <Row justify="space-between" style={{ fontSize: '0.8em' }}>

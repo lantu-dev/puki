@@ -1,9 +1,9 @@
-import lantu_blue from '@/assets/lantu_blue.png';
+import lantu_blue from '@/assets/lantu-blue.png';
 import tree from '@/assets/tree.png';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Col, Image, Input, Row, Space, Switch } from 'antd';
 import { Link } from 'umi';
 import style from '@/pages/community/community.less';
+import { useState } from 'React';
 interface PageProps {
   title: string;
   content: string;
@@ -19,7 +19,7 @@ interface Thread {
   people: string;
   rateIcon: string;
   rate: string;
-  image: string[];
+  //image: string[];
 }
 
 const data: PageProps = {
@@ -35,29 +35,97 @@ const data: PageProps = {
       people: '26人参与讨论',
       rateIcon: '',
       rate: '4.7',
-      image: '', //{tree},
+      // image: '', //{tree},
     },
   ],
 };
 export default function Community() {
+  const [state, setState] = useState(0);
   return (
-    <div>
-      <Image src={lantu_blue}></Image>
-      <div>首页</div>
-      <div>功能模块</div>
-      <div>关于我们</div>
-      <div>社区</div>
-      <Button shape="round" type="primary">
-        注册/登录
-      </Button>
+    <div className={style.background}>
+      <Row justify="space-between" style={{ fontSize: '0.8em' }}>
+        <Image src={lantu_blue} preview={false} className={style.lantu}></Image>
+        <Col>首页</Col>
+        <Col>功能模块</Col>
+        <Col>关于我们</Col>
+        <Col>社区</Col>
 
-      <div>开源代码</div>
-      <div>XXXXXXX</div>
-      <div>XXXXXXX</div>
-      <div>XXXXXXX</div>
-      <div>XXXXXXX</div>
-      <div>XXXXXXX</div>
-      <div>XXXXXXX</div>
+        <Button shape="round" type="primary">
+          注册/登录
+        </Button>
+      </Row>
+      {/* <Row>
+        <Col
+          className={`${state === 0 ? style.active : ''}`}
+          onClick={() => {
+            setState(0);
+          }}
+        >
+          开源代码
+        </Col>
+        <Col
+          className={`${state === 1 ? style.active : ''}`}
+          onClick={() => {
+            setState(1);
+          }}
+        >
+          XXXXXXX
+        </Col>
+        <Col
+          className={`${state === 2 ? style.active : ''}`}
+          onClick={() => {
+            setState(2);
+          }}
+        >
+          XXXXXXX
+        </Col>
+        <Col
+          className={`${state === 3 ? style.active : ''}`}
+          onClick={() => {
+            setState(3);
+          }}
+        >
+          XXXXXXX
+        </Col>
+        <Col
+          className={`${state === 4 ? style.active : ''}`}
+          onClick={() => {
+            setState(4);
+          }}
+        >
+          XXXXXXX
+        </Col>
+        <Col
+          className={`${state === 5 ? style.active : ''}`}
+          onClick={() => {
+            setState(5);
+          }}
+        >
+          XXXXXXX
+        </Col>
+        <Col
+          className={`${state === 6 ? style.active : ''}`}
+          onClick={() => {
+            setState(6);
+          }}
+        >
+          XXXXXXX
+        </Col>
+      </Row> */}
+      {/* <>
+        {[0, 1, 2, 3, 4, 5, 6].map((v) => (
+          <div
+            key={v}
+            className={`${style.tab} ${state === v ? style.active : ''}`}
+            onClick={() => {
+              console.log(v);
+              setState(v);
+            }}
+          >
+            {v + 1}
+          </div>
+        ))}
+      </> */}
 
       {/* <div>
       <div>
@@ -67,7 +135,7 @@ export default function Community() {
         <Button>了解更多</Button>
       </div>
     </div> */}
-      <Row>
+      <Row justify="space-between" style={{ fontSize: '0.8em' }}>
         <Col>
           {' '}
           <Link to="/">产品</Link>
@@ -87,7 +155,7 @@ export default function Community() {
           <Link to="/">关于我们</Link>
         </Col>
       </Row>
-      <Row>
+      <Row justify="space-between" style={{ fontSize: '0.8em' }}>
         <Col>
           {' '}
           <Link to="/">产品服务</Link>

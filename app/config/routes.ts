@@ -79,4 +79,9 @@ export default [
     path: '/login',
     component: '@/pages/home/Login',
   },
+  {
+    exact: true,
+    path: '/community',
+    component: '@/pages/community/Community',
+  },
 ];
