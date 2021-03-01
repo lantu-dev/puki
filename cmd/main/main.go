@@ -11,6 +11,7 @@ import (
 	"github.com/lantu-dev/puki/pkg/base"
 	"github.com/lantu-dev/puki/pkg/hwcloud"
 	"github.com/lantu-dev/puki/pkg/storage"
+	teamsetup "github.com/lantu-dev/puki/pkg/team/setup"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
