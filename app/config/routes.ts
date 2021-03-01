@@ -71,6 +71,21 @@ export default [
   },
   {
     exact: true,
+    path: '/team',
+    component: '@/pages/team/Index',
+  },
+  {
+    exact: true,
+    path: '/team/CreateCompetition',
+    component: '@/pages/team/pages/CreateCompetition',
+  },
+  {
+    exact: true,
+    path: '/team/CreateCompetitionType',
+    component: '@/pages/team/pages/CreateCompetitionType',
+  },
+  {
+    exact: true,
     path: '/topic',
     component: '@/pages/bbs/Index',
   },
@@ -83,5 +98,17 @@ export default [
     exact: true,
     path: '/SanHuiLiangZhi',
     component: '@/pages/QianQing/SanHuiLiangZhi',
+  },
+
+    {
+    exact: true,
+    path: '/community/Community',
+    component: '@/pages/community/Community',
+  },
+      {
+    exact: true,
+    path: '/homepage/Homepage',
+    component: '@/pages/homepage/Homepage',
+
   },
 ];

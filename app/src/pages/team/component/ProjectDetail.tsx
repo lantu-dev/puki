@@ -1,118 +1,58 @@
-import React, { useState } from 'react';
-import { Button, Row, Col, Image, Anchor, Avatar } from 'antd';
-const { Link } = Anchor;
-import { Typography, Progress } from 'antd';
+import { call, team } from '@/api-client';
+import style from '@/assets/team/css/expand.css';
 import {
-  ArrowLeftOutlined,
   FileTextOutlined,
+  LikeFilled,
   LikeOutlined,
   MessageOutlined,
-  LikeFilled,
 } from '@ant-design/icons';
-import style from '../wwwroot/css/expand.css';
-import { call } from '@/api-client';
+import { Avatar, Button, Col, Image, Progress, Row, Typography } from 'antd';
+import React, { useState } from 'react';
+import { useAsync } from 'react-use';
 
 const { Title, Paragraph, Text } = Typography;
 //来自ProjectCard的项目简略信息，这部分信息不需要再从数据库重新获取
 interface ProjectDetailProps {
-  location: {
-    state: {
-      ProjectID: number;
-      ProjectName: string;
-      ProjectDescribeSimple: string;
-    };
-  };
-}
-
-interface GetProjectDetailReq {
   ProjectID: number;
-}
-
-interface PositionSimple {
-  Name: string;
-  NowPeople: number;
-  NeedPeople: number;
-  InterestPeople: number;
-  Describe: string;
-}
-interface AwardSimple {
-  Name: string;
-}
-interface Comment {
-  CreatorName: string;
-  Content: string;
-}
-interface GetProjectDetailRes {
-  DescribeDetail: string;
-  LinkURL: string;
-  EndTime: string;
-  CreatorName: string;
-  CreatorSchool: string;
-  CreatorGrade: string;
-  CreatorAward: AwardSimple[];
-  Positions: PositionSimple[];
-  Comments: Comment[];
+  ProjectName: string;
+  ProjectDescription: string;
 }
 
 export default function ProjectDetail(props: ProjectDetailProps) {
-  const [ellipsis, setEllipsis1] = React.useState(true);
-  const [likeNum, setLikeNum] = React.useState(0);
-  const [isLike, setIsLike] = React.useState(false);
-  const [isFinished, setIsFinished] = React.useState(false);
-  //基于ProjectDetailProps中的ProjectID，从数据库获取数据
-  const [DescribeDetail, setDescribeDetail] = React.useState('');
-  const [LinkURL, setLinkURL] = React.useState('');
-  const [EndTime, setEndTime] = React.useState('');
-  const [CreatorName, setCreatorName] = React.useState('');
-  const [CreatorSchool, setCreatorSchool] = React.useState('');
-  const [CreatorGrade, setCreatorGrade] = React.useState('');
-  const [Awards, setAwards] = React.useState([{ Name: '' }]);
-  const [Comments, setComments] = React.useState([
-    { CreatorName: '', Content: '' },
-  ]);
-  const [Positions, setPositions] = React.useState([
-    {
-      Name: '',
-      NowPeople: 0,
-      NeedPeople: 0,
-      InterestPeople: 0,
-      Describe: '',
-    },
-  ]);
+  const [likeNum, setLikeNum] = useState(0);
+  const [isLike, setIsLike] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
-  call<GetProjectDetailReq, GetProjectDetailRes>(
-    'ProjectService.GetProjectDetail',
-    { ProjectID: 1 },
-  ).then((r) => {
-    if (!isFinished) {
-      setDescribeDetail(r.DescribeDetail);
-      setLinkURL(r.LinkURL);
-      setEndTime(r.EndTime);
-      setCreatorName(r.CreatorName);
-      setCreatorSchool(r.CreatorSchool);
-      setCreatorGrade(r.CreatorGrade);
-      setAwards(r.CreatorAward);
-      setPositions(r.Positions);
-      setIsFinished(true);
-      setComments(r.Comments);
-    }
+  const projectDetailState = useAsync(async () => {
+    let res = await call(team.ProjectService.GetProjectDetail, {
+      ProjectID: props.ProjectID,
+    });
+    return res;
   });
 
+  const {
+    DescribeDetail = '',
+    LinkURL = '',
+    EndTime = '',
+    CreatorName = '',
+    CreatorSchool = '',
+    CreatorGrade = '',
+    CreatorAward = [{ Name: '' }],
+    Comments = [{ CreatorName: '', Content: '' }],
+    Positions = [
+      {
+        Name: '',
+        NowPeople: 0,
+        NeedPeople: 0,
+        InterestPeople: 0,
+        Describe: '',
+      },
+    ],
+  } = projectDetailState.value || {};
+
   return (
-    <div style={{ marginLeft: '10px', marginRight: '10px', marginTop: '10px' }}>
-      <Title level={3}>
-        <div
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            history.back();
-          }}
-        >
-          <ArrowLeftOutlined
-            style={{ color: 'black', fontSize: '24px', marginRight: '10px' }}
-          />
-          {props.location.state.ProjectName}
-        </div>
-      </Title>
+    <div style={{ margin: '5px' }}>
+      <Title level={3}>{props.ProjectName}</Title>
       <Row wrap={false}>
         <Col flex={'10px'}> </Col>
         <Col flex={'30%'}>
@@ -125,11 +65,9 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         <Col flex={'auto'}>
           <Paragraph
             style={{ fontSize: '16px' }}
-            ellipsis={
-              ellipsis ? { rows: 4, expandable: true, symbol: '展开' } : false
-            }
+            ellipsis={{ rows: 4, expandable: true, symbol: '展开' }}
           >
-            {props.location.state.ProjectDescribeSimple}
+            {props.ProjectDescription}
           </Paragraph>
         </Col>
       </Row>
@@ -254,17 +192,10 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </Col>
           <Col flex={'40%'} style={{ marginTop: '10px' }}>
             <Paragraph
-              style={{ fontSize: '16px', color: 'gray' }}
-              ellipsis={
-                ellipsis ? { rows: 2, expandable: true, symbol: '展开' } : false
-              }
+              style={{ fontSize: '16px', color: 'gray', whiteSpace: 'pre' }}
+              ellipsis={{ rows: 2, expandable: true, symbol: '展开' }}
             >
-              {Awards.map((value) => (
-                <>
-                  {value.Name}
-                  <br />
-                </>
-              ))}
+              {CreatorAward.map((v) => v.Name).join('\n')}
             </Paragraph>
           </Col>
         </Row>
@@ -272,60 +203,60 @@ export default function ProjectDetail(props: ProjectDetailProps) {
       <div className={style.Box} style={{ marginTop: '-1px' }}>
         <div style={{ margin: '10px' }}>
           <div>招募</div>
-          {Positions.map((value) => (
-            <div style={{ marginTop: '10px' }}>
-              <Row wrap={false}>
-                <Col flex={'25%'}>
-                  <Text strong>{value.Name}</Text>
-                </Col>
-                <Col flex={'42%'}>
-                  <Progress
-                    percent={(value.NowPeople / value.NeedPeople) * 100}
-                    steps={value.NeedPeople}
-                    showInfo={false}
-                  />
-                </Col>
-                <Col flex={'15%'}>录用：{value.NowPeople}</Col>
-                <Col flex={'3%'}> </Col>
-                <Col flex={'15%'}>投递：{value.InterestPeople}</Col>
-              </Row>
-              <Paragraph
-                style={{ fontSize: '16px', color: 'gray' }}
-                ellipsis={
-                  ellipsis
-                    ? { rows: 1, expandable: true, symbol: '展开' }
-                    : false
-                }
-              >
-                岗位需求: {value.Describe}
-              </Paragraph>
-            </div>
-          ))}
+          {Positions
+            ? Positions.map((value, index) => (
+                <div key={index} style={{ marginTop: '10px' }}>
+                  <Row wrap={false}>
+                    <Col flex={'25%'}>
+                      <Text strong>{value.Name}</Text>
+                    </Col>
+                    <Col flex={'42%'}>
+                      <Progress
+                        percent={(value.NowPeople / value.NeedPeople) * 100}
+                        steps={value.NeedPeople}
+                        showInfo={false}
+                      />
+                    </Col>
+                    <Col flex={'15%'}>录用：{value.NowPeople}</Col>
+                    <Col flex={'3%'}> </Col>
+                    <Col flex={'15%'}>投递：{value.InterestPeople}</Col>
+                  </Row>
+                  <Paragraph
+                    style={{ fontSize: '16px', color: 'gray' }}
+                    ellipsis={{ rows: 1, expandable: true, symbol: '展开' }}
+                  >
+                    岗位需求: {value.Describe.repeat(10)}
+                  </Paragraph>
+                </div>
+              ))
+            : false}
         </div>
       </div>
       <div id="detail" className={style.Box} style={{ marginTop: '-1px' }}>
         <div style={{ margin: '10px' }}>
           <div>详情</div>
-          <div>{DescribeDetail}</div>
+          <div>{DescribeDetail ? DescribeDetail : false}</div>
         </div>
       </div>
       <div id="comment" className={style.Box} style={{ marginTop: '-1px' }}>
         <div style={{ margin: '10px' }}>
           <div>评论</div>
           <div>
-            {Comments.map((value) => (
-              <Row>
-                <Col flex={'35px'}>
-                  <Avatar style={{ margin: '10px' }} size={35}>
-                    {' '}
-                  </Avatar>
-                </Col>
-                <Col flex={'auto'}>
-                  <Title level={5}>{value.CreatorName}</Title>
-                  <div style={{ marginTop: '-10px' }}>{value.Content}</div>
-                </Col>
-              </Row>
-            ))}
+            {Comments
+              ? Comments.map((value, index) => (
+                  <Row key={index}>
+                    <Col flex={'35px'}>
+                      <Avatar style={{ margin: '10px' }} size={35}>
+                        {' '}
+                      </Avatar>
+                    </Col>
+                    <Col flex={'auto'}>
+                      <Title level={5}>{value.CreatorName}</Title>
+                      <div style={{ marginTop: '-10px' }}>{value.Content}</div>
+                    </Col>
+                  </Row>
+                ))
+              : false}
           </div>
         </div>
       </div>
@@ -344,7 +275,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </Col>
         </Row>
       </div>
-      <div style={{ height: '20px' }}> </div>
+      <div style={{ height: '200px' }}> </div>
     </div>
   );
 }
