@@ -55,21 +55,49 @@ func FindProjectByID(tx *gorm.DB, projectID uint) Project {
 	result := tx.Preload("Competitions").First(&project, projectID)
 	if result.Error != nil {
 		log.Debug(result.Error)
+		tx.Rollback()
 	}
 	return project
+}
+
+//通过项目ID数组查找项目
+func FindProjectByIDs(tx *gorm.DB, projectID []int64) []Project {
+	var projects []Project
+	result := tx.Preload("Competitions").Where(projectID).Find(&projects)
+	if result.Error != nil {
+		log.Debug(result.Error)
+		tx.Rollback()
+	}
+	return projects
 }
 
 //创建项目
 func CreateProject(tx *gorm.DB, project Project) error {
 	result := tx.Create(&project)
+	if result.Error != nil {
+		tx.Rollback()
+	}
 	return result.Error
 }
 
+//获取项目的个数
 func GetProjectNum(tx *gorm.DB) int64 {
 	var projectNum int64
 	result := tx.Model(&Project{}).Count(&projectNum)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return projectNum
+}
+
+//获取所有项目
+func FindAllProjects(tx *gorm.DB) []Project {
+	var projects []Project
+	result := tx.Find(&projects)
+	if result.Error != nil {
+		log.Debug(result.Error)
+		tx.Rollback()
+	}
+	return projects
 }

@@ -47,6 +47,7 @@ func FindAllCompetitions(tx *gorm.DB) []Competition {
 	var competitions []Competition
 	result := tx.Find(&competitions)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return competitions
@@ -63,6 +64,7 @@ func FindAllTypes(tx *gorm.DB) []Type {
 	var types []Type
 	result := tx.Find(&types)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return types
@@ -79,6 +81,7 @@ func FindTypeByID(tx *gorm.DB, typeID int64) Type {
 	var typeNew Type
 	result := tx.First(&typeNew, typeID)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return typeNew
@@ -88,6 +91,7 @@ func FindCompetitionByName(tx *gorm.DB, competitionName string) Competition {
 	var competition Competition
 	result := tx.Where(&Competition{Name: competitionName}).First(&competition)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Error(result.Error)
 	}
 	return competition

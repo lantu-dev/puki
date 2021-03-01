@@ -11,8 +11,8 @@ interface GetCompetitionNameRes {
 }
 
 //获取所有比赛类型
-export interface GetCompetitionTypeReq {}
-export interface GetCompetitionTypeRes {
+export interface GetCompetitionTypesReq {}
+export interface GetCompetitionTypesRes {
   CompetitionTypes: string[];
 }
 
@@ -117,13 +117,13 @@ export interface GetProjectSimplesRes {
 export default {
   CommentService: {},
   CompetitionService: {
-    GetCompetitionName: 'CompetitionService.GetCompetitionName' as Endpoint<
+    GetCompetitionNames: 'CompetitionService.GetCompetitionNames' as Endpoint<
       GetCompetitionNameReq,
       GetCompetitionNameRes
     >,
-    GetCompetitionType: 'CompetitionService.GetCompetitionType' as Endpoint<
-      GetCompetitionTypeReq,
-      GetCompetitionTypeRes
+    GetCompetitionTypes: 'CompetitionService.GetCompetitionTypes' as Endpoint<
+      GetCompetitionTypesReq,
+      GetCompetitionTypesRes
     >,
   },
   ConversationService: {},

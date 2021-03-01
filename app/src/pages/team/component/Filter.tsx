@@ -22,10 +22,10 @@ export default function Filter(props: FilterProps) {
   const typeListState = useAsync(async () => {
     return {
       competitionNames: (
-        await call(team.CompetitionService.GetCompetitionName, {})
+        await call(team.CompetitionService.GetCompetitionNames, {})
       ).CompetitionNames,
       competitionTypes: (
-        await call(team.CompetitionService.GetCompetitionType, {})
+        await call(team.CompetitionService.GetCompetitionTypes, {})
       ).CompetitionTypes,
       positionNames: (await call(team.PositionService.GetPositionNames, {}))
         .PositionNames,

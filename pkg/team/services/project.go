@@ -73,6 +73,7 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 	for _, j := range positions {
 		var positionTemplate models.PositionTemplate
 
+		tx = c.db.Begin()
 		positionTemplate = models.FindPositionTemplateByID(tx, j.PositionTemplateID)
 		err = tx.Commit().Error
 		if err != nil {
@@ -222,8 +223,9 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	for _, item := range positions {
 		var positionTemplate models.PositionTemplate
 
+		tx = c.db.Begin()
 		positionTemplate = models.FindPositionTemplateByID(tx, item.PositionTemplateID)
-		err := tx.Commit().Error
+		err = tx.Commit().Error
 		if err != nil {
 			log.Debug(err)
 		}
@@ -239,6 +241,7 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	}
 
 	var commentSimples []CommentSimple
+
 	for _, item := range comments {
 		commentSimple := CommentSimple{
 			CreatorName: "测试姓名",
@@ -287,7 +290,12 @@ type GetProjectIDRes struct {
 
 func (c *ProjectService) GetProjectID(r *http.Request, req *GetProjectIDReq, res *GetProjectIDRes) error {
 	var projects []models.Project
-	c.db.Find(&projects) //查找所有项目
+	tx := c.db.Begin()
+	projects = models.FindAllProjects(tx)
+	err := tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
 	for _, item := range projects {
 		res.ProjectID = append(res.ProjectID, int64(item.ID))
 	}
@@ -298,7 +306,7 @@ func (c *ProjectService) GetProjectID(r *http.Request, req *GetProjectIDReq, res
 
 //通过请求中项目ID数组获取项目简介数组
 type GetProjectSimplesReq struct {
-	ProjectID []uint
+	ProjectID []int64
 }
 
 //响应，包括一个项目对象的数组
@@ -307,14 +315,17 @@ type GetProjectSimplesRes struct {
 	ProjectSimples []ProjectSimple
 }
 
-func (c *ProjectService) GetProjectSimples(r *http.Request, req *GetProjectSimplesReq, res *GetProjectSimplesRes) error {
+func (c *ProjectService) GetProjectSimples(r *http.Request,
+	req *GetProjectSimplesReq, res *GetProjectSimplesRes) error {
 	var projects []models.Project
 
 	//通过ID数组查找所有项目
-	result := c.db.Preload("Competitions").Where(req.ProjectID).Find(&projects)
-	if result.Error != nil {
+	tx := c.db.Begin()
+	projects = models.FindProjectByIDs(tx, req.ProjectID)
+	err := tx.Commit().Error
+	if len(projects) == 0 || err != nil {
 		res.IsFound = false
-		return nil
+		return err
 	}
 
 	var competitionNames []string
@@ -324,13 +335,29 @@ func (c *ProjectService) GetProjectSimples(r *http.Request, req *GetProjectSimpl
 			competitionNames = append(competitionNames, j.Name)
 		}
 		var typeNew models.Type
-		c.db.First(&typeNew, project.TypeID)
 		var positions []models.Position
-		c.db.Where(&models.Position{ProjectID: int64(project.ID)}).Find(&positions)
+
+		tx = c.db.Begin()
+		typeNew = models.FindTypeByID(tx, project.TypeID)
+		positions = models.FindPositionsByProjectID(tx, int64(project.ID))
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFound = false
+			return err
+		}
+
 		var positionNames []string
 		for _, j := range positions {
 			var positionTemplate models.PositionTemplate
-			c.db.First(&positionTemplate, j.PositionTemplateID)
+
+			tx = c.db.Begin()
+			positionTemplate = models.FindPositionTemplateByID(tx, j.PositionTemplateID)
+			err = tx.Commit().Error
+			if err != nil {
+				res.IsFound = false
+				return err
+			}
+
 			positionNames = append(positionNames, positionTemplate.Name)
 		}
 		projectSimple := ProjectSimple{

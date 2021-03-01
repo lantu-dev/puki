@@ -49,6 +49,7 @@ func FindAllPositionTemplates(tx *gorm.DB) []PositionTemplate {
 	var positionTemplates []PositionTemplate
 	result := tx.Find(&positionTemplates)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return positionTemplates
@@ -59,6 +60,7 @@ func FindPositionTemplateByID(tx *gorm.DB, positionTemplateID int64) PositionTem
 	var positionTemplate PositionTemplate
 	result := tx.First(&positionTemplate, positionTemplateID)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return positionTemplate
@@ -69,6 +71,7 @@ func FindPositionsByProjectID(tx *gorm.DB, projectID int64) []Position {
 	var positions []Position
 	result := tx.Where(Position{ProjectID: projectID}).Find(&positions)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return positions

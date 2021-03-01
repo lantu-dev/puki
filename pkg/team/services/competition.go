@@ -43,17 +43,17 @@ func (c *CompetitionService) GetCompetition(r *http.Request, req *GetCompetition
 
 //仅获取比赛名称,用于首屏中filter中比赛列表的获取；
 //请求
-type GetCompetitionNameReq struct {
+type GetCompetitionNamesReq struct {
 }
 
 //响应
-type GetCompetitionNameRes struct {
+type GetCompetitionNamesRes struct {
 	CompetitionNames []string
 }
 
 //获取所有比赛的名称
-func (c *CompetitionService) GetCompetitionName(r *http.Request,
-	req *GetCompetitionNameReq, res *GetCompetitionNameRes) error {
+func (c *CompetitionService) GetCompetitionNames(r *http.Request,
+	req *GetCompetitionNamesReq, res *GetCompetitionNamesRes) error {
 	var competitions []models.Competition
 
 	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
@@ -112,17 +112,17 @@ func (c *CompetitionService) AddCompetition(r *http.Request, req *AddCompetition
 
 //仅获取比赛类型,用于首屏中filter中比赛类型列表的获取；
 //请求
-type GetCompetitionTypeReq struct {
+type GetCompetitionTypesReq struct {
 }
 
 //响应
-type GetCompetitionTypeRes struct {
+type GetCompetitionTypesRes struct {
 	CompetitionTypes []string
 }
 
 //获取所有比赛的类型
-func (c *CompetitionService) GetCompetitionType(r *http.Request,
-	req *GetCompetitionTypeReq, res *GetCompetitionTypeRes) error {
+func (c *CompetitionService) GetCompetitionTypes(r *http.Request,
+	req *GetCompetitionTypesReq, res *GetCompetitionTypesRes) error {
 	var types []models.Type
 
 	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
@@ -134,6 +134,7 @@ func (c *CompetitionService) GetCompetitionType(r *http.Request,
 		competitionTypes = append(competitionTypes, item.Name)
 	}
 	res.CompetitionTypes = competitionTypes
+
 	return err
 }
 
