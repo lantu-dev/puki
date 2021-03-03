@@ -23,7 +23,7 @@ export interface GetProfileRes {
   User: { PhoneNumber: string; RealName: string };
 }
 
-export interface RegisterReq {
+export interface CompleteProfileReq {
   RealName: string;
   NickName: string;
 
@@ -34,8 +34,8 @@ export interface RegisterReq {
   School: string;
 }
 
-export interface RegisterRes {
-  Registered: boolean;
+export interface CompleteProfileRes {
+  Completed: boolean;
 }
 
 export default {
@@ -49,6 +49,9 @@ export default {
       SMSCodeLoginRes
     >,
     GetProfile: 'auth/UserService.GetProfile' as Endpoint<{}, GetProfileRes>,
-    Register: 'auth/UserService.Register' as Endpoint<RegisterReq, RegisterRes>,
+    CompleteProfile: 'auth/UserService.CompleteProfile' as Endpoint<
+      CompleteProfileReq,
+      CompleteProfileRes
+    >,
   },
 };

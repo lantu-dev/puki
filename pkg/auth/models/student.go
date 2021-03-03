@@ -32,16 +32,16 @@ type Student struct {
 	VerifyImageURL null.String `gorm:"default:null"`
 }
 
-func (s *Student) GetUser(tx *gorm.DB) (*User, error) {
-	if s.User == nil {
+func (student *Student) GetUser(tx *gorm.DB) (*User, error) {
+	if student.User == nil {
 		var user User
-		if err := tx.Model(&User{}).First(&user, s.UserID).Error; err != nil {
+		if err := tx.Model(&User{}).First(&user, student.UserID).Error; err != nil {
 			return nil, errors.Trace(err)
 		}
-		s.User = &user
+		student.User = &user
 
 	}
-	return s.User, nil
+	return student.User, nil
 }
 
 func FindOrCreateStudentFromUser(tx *gorm.DB, user *User) (*Student, error) {
