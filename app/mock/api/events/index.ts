@@ -1,3 +1,3 @@
-import Info from './Info';
+import EventService from './EventService';
 
-export default { Info };
+export default { EventService };

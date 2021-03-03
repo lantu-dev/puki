@@ -1,4 +1,5 @@
 import { call, events } from '@/api-client';
+import { EventType } from '@/api-client/events';
 import {
   CalendarOutlined,
   EnvironmentOutlined,
@@ -43,10 +44,23 @@ export default function MoreInfo() {
 
   const [form] = Form.useForm();
 
-  const eventMoreInfo = useAsync(async () => {
-    const res = await call(events.Info.GetEventMoreInfo, {
-      eventID: history.location.query?.eventID,
+  const { value = null } = useAsync(async () => {
+    const EventID = Number(history.location.query?.EventID);
+    if (Number.isNaN(EventID)) {
+      return;
+    }
+    let eventInfo = (
+      await call(events.EventService.GetEventsList, {
+        EventIDs: [EventID],
+      })
+    )[0];
+    let eventMoreInfo = await call(events.EventService.GetEventMoreInfo, {
+      EventID,
     });
+    let res = {
+      ...eventInfo,
+      ...eventMoreInfo,
+    };
     console.log(res);
     return res;
   });
@@ -58,7 +72,7 @@ export default function MoreInfo() {
       onOk={async () => {
         if (state.enterForSteps === EnterForSteps.Confirm) {
           // TODO 检查登录状态/是否已经报名
-          if (eventMoreInfo.value!.type !== 'h') {
+          if (value!.EventType !== EventType.EventTypeHackathon) {
             // TODO 发送报名请求
             setState({ enterFor: false });
             history.push('/events/entered-for');
@@ -95,16 +109,16 @@ export default function MoreInfo() {
     </Modal>
   );
 
-  return eventMoreInfo.value ? (
+  return value ? (
     <div>
       <div className={style.image}>
-        <Image src={eventMoreInfo.value.imageUrl}></Image>
+        <Image src={value.ImageUrl}></Image>
       </div>
       <Space
         direction="vertical"
         style={{ width: '100%', padding: '0 1em 1em 1em' }}
       >
-        <Title level={3}>{eventMoreInfo.value.title}</Title>
+        <Title level={3}>{value.Title}</Title>
         <Row wrap={false} align="middle">
           <Col span={12}>
             <Row align="middle" wrap={false} gutter={5}>
@@ -112,13 +126,11 @@ export default function MoreInfo() {
                 <CalendarOutlined style={{ fontSize: '1.5em' }} />
               </Col>
               <Col>
-                {eventMoreInfo.value.type === 'h'
-                  ? `${moment(eventMoreInfo.value.startTime).format(
+                {value.EventType === EventType.EventTypeHackathon
+                  ? `${moment(value.StartedAt).format(
                       'HH:mm A(DD号)',
-                    )}-${moment(eventMoreInfo.value.endTime).format(
-                      'HH:mm A(DD号)',
-                    )}`
-                  : moment(eventMoreInfo.value.startTime).format('HH:mm A')}
+                    )}-${moment(value.EndedAt).format('HH:mm A(DD号)')}`
+                  : moment(value.StartedAt).format('HH:mm A')}
               </Col>
             </Row>
           </Col>
@@ -127,52 +139,81 @@ export default function MoreInfo() {
               <Col>
                 <EnvironmentOutlined style={{ fontSize: '1.5em' }} />
               </Col>
-              <Col>{eventMoreInfo.value.location}</Col>
+              <Col>{value.Location}</Col>
             </Row>
           </Col>
         </Row>
         <Text strong style={{ fontSize: '1.2em' }}>
-          {eventMoreInfo.value.type === 'l' && '具体信息'}
-          {eventMoreInfo.value.type === 's' && '沙龙核心议题'}
-          {eventMoreInfo.value.type === 'h' && '活动介绍'}
+          {value.EventType === EventType.EventTypeLecture && '具体信息'}
+          {value.EventType === EventType.EventTypeSalon && '沙龙核心议题'}
+          {value.EventType === EventType.EventTypeHackathon && '活动介绍'}
         </Text>
-        <Paragraph>{eventMoreInfo.value.description}</Paragraph>
+        <Paragraph
+          ellipsis={{
+            rows: 2,
+            expandable: true,
+            symbol: '更多',
+          }}
+          style={{ whiteSpace: 'pre-wrap' }}
+        >
+          {value.Description.replaceAll('\\n', '\n')}
+        </Paragraph>
         <Text strong style={{ fontSize: '1.2em' }}>
-          {eventMoreInfo.value.type === 'l' && '主讲人'}
-          {eventMoreInfo.value.type === 's' && '具体安排'}
-          {eventMoreInfo.value.type === 'h' && '活动流程'}
+          {value.EventType === EventType.EventTypeLecture && '主讲人'}
+          {value.EventType === EventType.EventTypeSalon && '具体安排'}
+          {value.EventType === EventType.EventTypeHackathon && '活动流程'}
         </Text>
-        {eventMoreInfo.value.type === 'l' && (
+        {value.EventType === EventType.EventTypeLecture && (
           <List
             bordered
-            dataSource={eventMoreInfo.value.lecturers}
+            dataSource={value.Schedules}
             itemLayout="horizontal"
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar src={item.photoUrl} />}
-                  title={item.personName}
-                  description={item.description}
+                  avatar={<Avatar src={item.TalkerAvatarURL} />}
+                  title={item.TalkerName}
+                  description={item.TalkerDescription}
                 />
               </List.Item>
             )}
           />
         )}
-        {eventMoreInfo.value.type === 's' && (
+        {value.EventType === EventType.EventTypeSalon && (
           <Carousel autoplay>
-            {eventMoreInfo.value.schedules.map((v) => (
+            {value.Schedules.map((v) => (
               <Card
-                extra={moment(v.startTime).format('HH:mm A')}
-                key={v.personName}
+                extra={moment(v.StartedAt).format('HH:mm A')}
+                key={v.TalkerName}
                 style={{ width: 300 }}
-                title={`${v.personName} ${v.title}`}
+                title={`${v.TalkerName} ${v.TalkerTitle}`}
               >
-                <Paragraph>{v.description}</Paragraph>
+                <Paragraph
+                  ellipsis={{
+                    rows: 2,
+                    expandable: true,
+                    symbol: '更多',
+                  }}
+                  style={{ whiteSpace: 'pre-wrap' }}
+                >
+                  {v.TalkerDescription.replaceAll('\\n', '\n')}
+                </Paragraph>
               </Card>
             ))}
           </Carousel>
         )}
-        {eventMoreInfo.value.type === 'h' && eventMoreInfo.value.steps}
+        {value.EventType === EventType.EventTypeHackathon && (
+          <Paragraph
+            ellipsis={{
+              rows: 2,
+              expandable: true,
+              symbol: '更多',
+            }}
+            style={{ whiteSpace: 'pre-wrap' }}
+          >
+            {value.Hackathon.Steps.replaceAll('\\n', '\n')}
+          </Paragraph>
+        )}
       </Space>
       <Space
         direction="vertical"
@@ -192,7 +233,7 @@ export default function MoreInfo() {
           onClick={() => {
             setState({ enterFor: true });
           }}
-        ></Button>
+        />
         {EnterForModel()}
         <Button
           shape="circle"
@@ -203,17 +244,17 @@ export default function MoreInfo() {
             history.push({
               pathname: '/events/questions',
               query: {
-                eventID: eventMoreInfo.value?.eventID || '0',
+                ID: value?.ID.toString() || '0',
               },
             });
           }}
-        ></Button>
+        />
         <Button
           shape="circle"
           size="large"
           type="primary"
           icon={<ShareAltOutlined />}
-        ></Button>
+        />
       </Space>
     </div>
   ) : (
@@ -307,7 +348,7 @@ function TeamUpForm(props: { form: ReturnType<typeof Form.useForm>[0] }) {
                           remove(field.name);
                         }}
                         style={{ transform: 'translate(5px,7px)' }}
-                      ></Button>
+                      />
                     )}
                   </Col>
                 </Row>

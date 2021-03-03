@@ -1,15 +1,15 @@
 import { call, events } from '@/api-client';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Image, Menu, Row, Space, Typography } from 'antd';
+import { Button, Col, Menu, Row, Space, Typography } from 'antd';
 // @ts-ignore
 import Slider from 'react-slick';
 import { useAsync, useSetState } from 'react-use';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import { history } from 'umi';
-import style from './Index.less';
+import EventCard from './components/EventCard';
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 export default function () {
   const [state, setState] = useSetState({
@@ -17,7 +17,9 @@ export default function () {
   });
 
   const eventsList = useAsync(async () => {
-    const res = await call(events.Info.GetEventsList, {});
+    const res = await call(events.EventService.GetEventsList, {
+      EventIDs: [],
+    });
     console.log(res);
     return res;
   });
@@ -59,7 +61,7 @@ export default function () {
               icon={<SearchOutlined />}
               type="primary"
               style={{ borderRadius: '5px' }}
-            ></Button>
+            />
           </Col>
         </Row>
         <div>
@@ -76,39 +78,21 @@ export default function () {
             {eventsList.value?.map((v) => {
               return (
                 <div
-                  key={v.eventID}
+                  key={v.ID}
                   onClick={() => {
                     history.push({
                       pathname: '/events/more-info',
                       query: {
-                        eventID: v.eventID,
+                        EventID: v.ID.toString(),
                       },
                     });
                   }}
                 >
-                  <Card
-                    hoverable
-                    size="small"
-                    style={{ padding: '10px' }}
-                    cover={
-                      <div className={style.image}>
-                        <Image src={v.imageUrl} />
-                      </div>
-                    }
-                  >
-                    <Card.Meta
-                      title={v.title}
-                      description={
-                        <Paragraph
-                          ellipsis={{
-                            rows: 2,
-                          }}
-                        >
-                          {v.description}
-                        </Paragraph>
-                      }
-                    />
-                  </Card>
+                  <EventCard
+                    ImageUrl={v.ImageUrl}
+                    Title={v.Title}
+                    Description={v.Description}
+                  />
                 </div>
               );
             })}
@@ -136,37 +120,21 @@ export default function () {
           >
             {eventsList.value?.map((v) => (
               <div
-                key={v.eventID}
+                key={v.ID}
                 onClick={() => {
                   history.push({
                     pathname: '/events/more-info',
                     query: {
-                      eventID: v.eventID,
+                      EventID: v.ID.toString(),
                     },
                   });
                 }}
               >
-                <Card
-                  style={{ margin: '10px' }}
-                  cover={
-                    <div className={style.image}>
-                      <Image src={v.imageUrl} />
-                    </div>
-                  }
-                >
-                  <Card.Meta
-                    title={v.title}
-                    description={
-                      <Paragraph
-                        ellipsis={{
-                          rows: 2,
-                        }}
-                      >
-                        {v.description}
-                      </Paragraph>
-                    }
-                  />
-                </Card>
+                <EventCard
+                  ImageUrl={v.ImageUrl}
+                  Title={v.Title}
+                  Description={v.Description}
+                />
               </div>
             ))}
           </Slider>

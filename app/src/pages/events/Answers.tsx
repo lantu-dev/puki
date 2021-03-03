@@ -10,7 +10,7 @@ interface AnswersProps {
 
 export default function Answers(props: AnswersProps) {
   const answersList = useAsync(async () => {
-    const res = await call(events.Info.GetAnswersList, {
+    const res = await call(events.QuestionService.GetAnswersList, {
       questionID: props.questionID,
     });
     console.log(res);
