@@ -4,6 +4,7 @@ import (
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/base"
+	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
@@ -116,70 +117,87 @@ func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetPr
 	return
 }
 
-type RegisterReq struct {
+type CompleteProfileReq struct {
 	RealName string
+	UserName null.String
 	NickName string
-
-	UserName string
 	Password string
 
 	StudentID string
 	School    string
 }
-type RegisterRes struct {
-	Registered bool
+type CompleteProfileRes struct {
+	Completed bool
 }
 
-// 这里的 Register 更有完善用户资料的意味，因为此时数据库中 User 已经创建好了
-func (s *UserService) Register(r *http.Request, req *RegisterReq, res *RegisterRes) (err error) {
+func (s *UserService) CompleteProfile(r *http.Request, req *CompleteProfileReq, res *CompleteProfileRes) error {
+	// 检查用户登录
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil {
 		return err
 	}
 
-	tx := s.db.Begin()
-
+	// 以后的游客权限
 	if tu.IsAnon() {
 		return base.UserErrorf("login required")
 	}
 
-	user := tu.User(tx)
+	s.db.Transaction(func(tx *gorm.DB) (err error) {
+		user := tu.User(tx)
 
-	if user.RealName != "" {
-		return base.UserErrorf("registered already")
-	}
-
-	user.SetRealName(req.RealName)
-	user.SetNickName(req.NickName)
-
-	if req.UserName != "" {
-		if user.SetUserName(tx, req.UserName) != true {
-			return base.UserErrorf("username exists")
+		// 如果请求修改真实姓名
+		if req.RealName != "" {
+			// 校验并设置真实姓名
+			if err = user.SetRealName(req.RealName); err != nil {
+				return err
+			}
 		}
-	}
 
-	if req.Password != "" {
-		user.SetPassword(req.Password)
-	}
+		// 如果请求修改用户名
+		if !req.UserName.Equal(null.StringFrom("")) {
+			// 校验并设置用户名
+			if err = user.SetUserName(tx, req.UserName); err != nil {
+				return err
+			}
+		}
 
-	if req.StudentID != "" {
-		stu, err := models.FindOrCreateStudentFromUser(tx, &user)
-		if err != nil {
+		// 如果请求修改昵称
+		if req.NickName != "" {
+			// 校验并设置昵称
+			if err = user.SetNickName(req.NickName); err != nil {
+				return err
+			}
+		}
+
+		// 如果请求修改密码
+		if req.Password != "" {
+			// 校验并设置密码
+			if err = user.SetPassword(req.Password); err != nil {
+				return err
+			}
+		}
+
+		// 如果请求修改学号
+		if req.StudentID != "" {
+			stu, err := models.FindOrCreateStudentFromUser(tx, &user)
+			if err != nil {
+				return err
+			}
+			stu.UntrustedID = req.StudentID
+			stu.School = req.School
+			if err = tx.Save(stu).Error; err != nil {
+				return err
+			}
+		}
+
+		if err = tx.Save(&user).Error; err != nil {
 			return err
 		}
-		stu.UntrustedID = req.StudentID
-		stu.School = req.School
-		if err := tx.Save(stu).Error; err != nil {
-			return err
-		}
-	}
 
-	if err := tx.Save(&user).Error; err != nil {
-		return err
-	}
+		res.Completed = true
 
-	res.Registered = true
+		return nil
+	})
 
-	err = tx.Commit().Error
-	return
+	return nil
 }
