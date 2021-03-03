@@ -16,7 +16,7 @@ export default {
 
     let result = {
       err: {
-        message: 'mock service unfind',
+        message: 'mock service failed',
         status: 3,
       },
     };

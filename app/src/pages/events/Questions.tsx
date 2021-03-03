@@ -25,7 +25,7 @@ export default function Questions() {
   const [state, methods] = useMethods(createMethods, initialState);
 
   const questionsList = useAsync(async () => {
-    const res = await call(events.Info.GetQuestionsList, {
+    const res = await call(events.QuestionService.GetQuestionsList, {
       eventID: history.location.query?.eventID,
     });
     console.log(res);

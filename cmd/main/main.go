@@ -7,8 +7,9 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/go-redis/redis/v8"
 	"github.com/lantu-dev/puki/pkg/auth"
-	authsetup "github.com/lantu-dev/puki/pkg/auth/setup"
+	authSetup "github.com/lantu-dev/puki/pkg/auth/setup"
 	"github.com/lantu-dev/puki/pkg/base"
+	eventsSetup "github.com/lantu-dev/puki/pkg/events/setup"
 	"github.com/lantu-dev/puki/pkg/hwcloud"
 	"github.com/lantu-dev/puki/pkg/storage"
 	log "github.com/sirupsen/logrus"
@@ -59,7 +60,10 @@ func main() {
 
 	// 每新增一个模块 ( mod ) , 在这里新增一个 Setup 。
 	storage.Setup()
-	if err := authsetup.Setup(reg, db); err != nil {
+	if err := authSetup.Setup(reg, db); err != nil {
+		log.Fatal(err)
+	}
+	if err := eventsSetup.Setup(reg, db); err != nil {
 		log.Fatal(err)
 	}
 
