@@ -7,6 +7,7 @@ interface User {
   RealName: string;
   AvatarURI: string;
   NickName: string;
+  Password: string;
   Gender: boolean | null;
   IsStaff: boolean;
   IsSuper: boolean;
@@ -49,17 +50,12 @@ export interface GetProfileRes {
   Student: Student;
 }
 
-export interface CompleteProfileReq {
-  RealName: string;
-  NickName: string;
-
-  UserName: string;
-  Password: string;
-
-  StudentID: string;
-  School: string;
-}
-
+type CompleteProfileReq = {
+  [key in keyof User]?: User[key];
+} &
+  {
+    [key in keyof Student]?: Student[key];
+  };
 export interface CompleteProfileRes {
   Completed: boolean;
 }

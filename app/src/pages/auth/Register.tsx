@@ -21,7 +21,7 @@ interface IForm {
   realName: string;
   nickName: string;
   fillStudentInfo: boolean;
-  studentID?: string;
+  untrustedID?: string;
   school?: string;
   fillUserName: boolean;
   userName?: string;
@@ -50,7 +50,7 @@ export default function Register() {
       NickName: values.nickName || '',
       UserName: values.userName || '',
       Password: values.password || '',
-      StudentID: values.studentID || '',
+      UntrustedID: values.untrustedID || '',
       School: values.school || '',
     });
 
@@ -140,7 +140,7 @@ export default function Register() {
                 <>
                   <Form.Item
                     label="学号"
-                    name="studentID"
+                    name="untrustedID"
                     validateFirst
                     hasFeedback
                     rules={[

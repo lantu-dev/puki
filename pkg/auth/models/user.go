@@ -57,19 +57,9 @@ func (user *User) CheckPassword(password string) bool {
 	return err == nil
 }
 
-func (user *User) SetRealName(realName string) error {
-	user.RealName = realName
+func (user *User) SetGender(gender null.Bool) error {
+	user.Gender = gender
 
-	return nil
-}
-
-func (user *User) SetUserName(tx *gorm.DB, userName null.String) error {
-	// TODO: remove non-ascii & length limit
-	anotherUser := FindUserByUserName(tx, userName)
-	if anotherUser != nil {
-		return base.UserErrorf("UserName exists")
-	}
-	user.UserName = userName
 	return nil
 }
 
@@ -86,6 +76,22 @@ func (user *User) SetPassword(passWord string) error {
 	}
 	user.Password = string(hashed)
 
+	return nil
+}
+
+func (user *User) SetRealName(realName string) error {
+	user.RealName = realName
+
+	return nil
+}
+
+func (user *User) SetUserName(tx *gorm.DB, userName null.String) error {
+	// TODO: remove non-ascii & length limit
+	anotherUser := FindUserByUserName(tx, userName)
+	if anotherUser != nil {
+		return base.UserErrorf("UserName exists")
+	}
+	user.UserName = userName
 	return nil
 }
 
