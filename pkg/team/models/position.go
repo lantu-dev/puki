@@ -67,6 +67,17 @@ func FindPositionTemplateByID(tx *gorm.DB, positionTemplateID int64) PositionTem
 }
 
 //通过项目ID查找所有岗位ID
+func FindPositionTemplateByName(tx *gorm.DB, positionTemplateName string) PositionTemplate {
+	var positionTemplate PositionTemplate
+	result := tx.First(&positionTemplate, PositionTemplate{Name: positionTemplateName})
+	if result.Error != nil {
+		tx.Rollback()
+		log.Debug(result.Error)
+	}
+	return positionTemplate
+}
+
+//通过项目ID查找所有岗位ID
 func FindPositionsByProjectID(tx *gorm.DB, projectID int64) []Position {
 	var positions []Position
 	result := tx.Where(Position{ProjectID: projectID}).Find(&positions)

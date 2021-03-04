@@ -6,7 +6,17 @@ import {
   LikeOutlined,
   MessageOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Col, Image, Progress, Row, Typography } from 'antd';
+import {
+  Avatar,
+  Button,
+  Col,
+  Form,
+  Image,
+  Input,
+  Progress,
+  Row,
+  Typography,
+} from 'antd';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 
@@ -51,9 +61,9 @@ export default function ProjectDetail(props: ProjectDetailProps) {
   } = projectDetailState.value || {};
 
   return (
-    <div style={{ margin: '5px' }}>
+    <div style={{ margin: '2%', minWidth: '300px' }}>
       <Title level={3}>{props.ProjectName}</Title>
-      <Row wrap={false}>
+      <Row style={{ width: '100%' }} wrap={false}>
         <Col flex={'10px'}> </Col>
         <Col flex={'30%'}>
           <Image
@@ -71,7 +81,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </Paragraph>
         </Col>
       </Row>
-      <Row wrap={false}>
+      <Row style={{ width: '100%' }} wrap={false}>
         <Col flex={'2%'}> </Col>
         <Col flex={'30%'} style={{ height: '60px' }}>
           <div style={{ marginTop: '10px' }}>
@@ -84,7 +94,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </div>
         </Col>
         <Col flex={'2%'}> </Col>
-        <Col flex={'22%'}>
+        <Col flex={'21%'}>
           <div
             style={{ cursor: 'pointer' }}
             onClick={() => {
@@ -113,7 +123,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
             </div>
           </div>
         </Col>
-        <Col flex={'22%'}>
+        <Col flex={'21%'}>
           <div
             style={{ cursor: 'pointer' }}
             onClick={() => {
@@ -142,7 +152,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
             </div>
           </div>
         </Col>
-        <Col flex={'22%'}>
+        <Col flex={'21%'}>
           <div
             style={{ cursor: 'pointer' }}
             onClick={() => {
@@ -171,6 +181,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
             </div>
           </div>
         </Col>
+        <Col flex={'2%'}> </Col>
       </Row>
       <div className={style.Box} style={{ marginTop: '15px' }}>
         <Row style={{ margin: '10px' }}>
@@ -258,6 +269,24 @@ export default function ProjectDetail(props: ProjectDetailProps) {
                 ))
               : false}
           </div>
+          <div>
+            <Row>
+              <Col flex={'35px'}>
+                <Avatar style={{ margin: '10px' }} size={35}>
+                  {' '}
+                </Avatar>
+              </Col>
+              <Col flex={'auto'}>
+                <Title level={5}>title</Title>
+                <div style={{ marginTop: '-10px' }}>sdsd</div>
+              </Col>
+            </Row>
+          </div>
+          <Form style={{ marginTop: '15px' }}>
+            <Form.Item>
+              <Input.TextArea />
+            </Form.Item>
+          </Form>
         </div>
       </div>
       <div className={style.Box} style={{ marginTop: '-1px' }}>
@@ -275,7 +304,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           </Col>
         </Row>
       </div>
-      <div style={{ height: '200px' }}> </div>
+      <div style={{ height: '20px' }}> </div>
     </div>
   );
 }

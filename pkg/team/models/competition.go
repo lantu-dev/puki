@@ -26,7 +26,7 @@ type Competition struct {
 	Projects []*Project `gorm:"many2many:competition_projects"`
 }
 
-//比赛类型，此类别区别于”比赛“属性，其内容为：如：“校企合作”，“导师科研”，“学生自研”等
+//比赛类型，此类别区别于”比赛“属性，其内容为：如：“校企合作”，“导师科研”，“学生自研”等 + 讲座、沙龙
 type Type struct {
 	gorm.Model
 	//类别名称
@@ -38,6 +38,11 @@ type Type struct {
 type CompetitionProject struct {
 	ProjectID     int64
 	CompetitionID int64
+
+	//奖项名次， 如一等奖就等于1，二等奖就等于2
+	AwardRanking int64
+	//奖项
+	ProveImgURL string
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -95,4 +100,14 @@ func FindCompetitionByName(tx *gorm.DB, competitionName string) Competition {
 		log.Error(result.Error)
 	}
 	return competition
+}
+
+func FindTypeIDByName(tx *gorm.DB, typeName string) int64 {
+	var typeNew Type
+	result := tx.First(&typeNew, Type{Name: typeName})
+	if result.Error != nil {
+		tx.Rollback()
+		log.Error(result.Error)
+	}
+	return int64(typeNew.ID)
 }

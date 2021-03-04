@@ -94,7 +94,6 @@ func (c *CompetitionService) AddCompetition(r *http.Request, req *AddCompetition
 		Time:        "",
 		Files:       nil,
 	}
-
 	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
 	models.CreateCompetition(tx, competition)
 	err := tx.Commit().Error // 数据库事务

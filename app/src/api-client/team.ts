@@ -75,16 +75,19 @@ export interface GetProjectDetailRes {
 
 //添加新的项目【创建项目】
 export interface AddProjectReq {
-  TypeID: number;
+  TypeName: string;
   Name: string;
   DescribeSimple: string;
   DescribeDetail: string;
   LinkURL: string;
   EndTime: string;
-  CompetitionsID: number[]; //传入ID数组，在创建Project后依据ID创建一系列中间表
-  Positions: Position[];
+  CompetitionNames: string[]; //传入ID数组，在创建Project后依据ID创建一系列中间表
+  PositionNames: string[]; //传入岗位名称输入
 }
-export interface AddProjectRes {}
+export interface AddProjectRes {
+  IsFailed: boolean;
+  ProjectID: number;
+}
 
 //获取所有岗位的名称
 export interface GetPositionNamesReq {}

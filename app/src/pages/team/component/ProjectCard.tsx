@@ -1,7 +1,9 @@
 import { MoreOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Row, Space, Tag, Typography } from 'antd';
+import style from '@/assets/team/css/expand.css';
+import { useState } from 'react';
 
-const { Paragraph, Text } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 interface CardProps {
   ProjectName: string;
@@ -12,7 +14,7 @@ interface CardProps {
 
 export default function ProjectCard(props: CardProps) {
   return (
-    <Card hoverable style={{ margin: '5px' }}>
+    <div className={style.Card}>
       <Row wrap={false}>
         <Col
           flex="auto"
@@ -23,19 +25,13 @@ export default function ProjectCard(props: CardProps) {
           }}
         >
           <Space direction="vertical" style={{ width: '100%' }}>
-            <div>
-              <Button
-                type="dashed"
-                size="large"
-                onClick={props.onClick}
-                style={{ fontWeight: 'bolder' }}
-              >
+            <div onClick={props.onClick}>
+              <Title level={4} style={{ marginBottom: '-5px' }}>
                 {props.ProjectName}
-              </Button>
+              </Title>
             </div>
-            <Text strong>项目介绍：</Text>
             <Paragraph
-              ellipsis={{ rows: 2, expandable: true, symbol: '查看更多' }}
+              ellipsis={{ rows: 1, expandable: true, symbol: '查看更多' }}
             >
               {props.ProjectDescription}
             </Paragraph>
@@ -50,6 +46,7 @@ export default function ProjectCard(props: CardProps) {
             }}
           >
             <div
+              onClick={props.onClick}
               style={{
                 height: '100%',
                 position: 'absolute',
@@ -57,17 +54,22 @@ export default function ProjectCard(props: CardProps) {
               }}
             >
               {props.PositionNames.map((value, index) => (
-                <Tag key={index} color="red">
+                <Tag key={index} color="blue">
                   {value}
                 </Tag>
               ))}
             </div>
           </div>
         </Col>
-        <Col flex="15px">
-          <MoreOutlined style={{ fontSize: '20px', fontWeight: 'bold' }} />
-        </Col>
+        <MoreOutlined
+          style={{
+            fontSize: '20px',
+            fontWeight: 'bold',
+            position: 'absolute',
+            right: '5px',
+          }}
+        />
       </Row>
-    </Card>
+    </div>
   );
 }

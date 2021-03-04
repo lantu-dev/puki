@@ -5,13 +5,19 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { Col, Input, Row, Select, Space } from 'antd';
 import _ from 'lodash';
 import { useAsync, useSetState } from 'react-use';
-import { Link } from 'umi';
+import { Link, history } from 'umi';
+import { PubSub } from 'pubsub-ts';
 const { Search } = Input;
 interface FilterProps {
   onChangeFilter: (filter: (v: ProjectSimple) => boolean) => void;
+  subscriber: PubSub.Subscriber;
+  userID: number;
 }
 
 export default function Filter(props: FilterProps) {
+  let publisher = new PubSub.Publisher();
+  publisher.add(props.subscriber);
+
   const [state, setState] = useSetState({
     searchValue: '',
     competitionName: 'all',
@@ -20,7 +26,7 @@ export default function Filter(props: FilterProps) {
   });
 
   const typeListState = useAsync(async () => {
-    return {
+    let typeList = {
       competitionNames: (
         await call(team.CompetitionService.GetCompetitionNames, {})
       ).CompetitionNames,
@@ -30,6 +36,8 @@ export default function Filter(props: FilterProps) {
       positionNames: (await call(team.PositionService.GetPositionNames, {}))
         .PositionNames,
     };
+    publisher.notify('typeList', typeList);
+    return typeList;
   });
 
   const {
@@ -99,9 +107,19 @@ export default function Filter(props: FilterProps) {
     handler(fields);
   };
 
+  const onCreateProjectClick = () => {
+    if (props.userID === 0) {
+      //若为游客登录，则逻辑上不能创建项目，跳转至登录页
+      history.push('/auth/phone-login');
+    } else {
+      //若已登录，则能创建项目
+      publisher.notify('createProjectDrawerVisible', true);
+    }
+  };
+
   return (
     <div>
-      <Row align="middle">
+      <Row align="middle" wrap={false}>
         <Col flex="50px">
           <Link to="team">
             <img alt={logo} width="50" src={logo} />
@@ -120,8 +138,12 @@ export default function Filter(props: FilterProps) {
           </div>
         </Col>
         <Col flex="30px" style={{ textAlign: 'right' }}>
-          <PlusCircleOutlined style={{ fontSize: 30, color: 'black' }} />
+          <PlusCircleOutlined
+            onClick={onCreateProjectClick}
+            style={{ fontSize: 30, color: 'black' }}
+          />
         </Col>
+        <Col flex="5px"></Col>
       </Row>
       <Row justify="space-around" style={{ marginTop: '7px' }} wrap={false}>
         {/*按比赛/活动筛选*/}

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/lantu-dev/puki/pkg/auth"
 	models2 "github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	log "github.com/sirupsen/logrus"
@@ -105,20 +106,30 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 //添加项目
 //请求包括：创建者ID，类别ID，
 type AddProjectReq struct {
-	TypeID           int64
+	TypeName         string
 	Name             string
 	DescribeSimple   string
 	DescribeDetail   string
 	LinkURL          string
 	EndTime          time.Time
-	CompetitionNames []string //传入ID数组，在创建Project后依据ID创建一系列中间表
-	Positions        []models.Position
+	CompetitionNames []string //传入比赛名称数组
+	PositionNames    []string
 }
 
 type AddProjectRes struct {
+	IsFailed  bool
+	ProjectID uint
 }
 
-func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *AddCompetitionRes) error {
+func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *AddProjectRes) error {
+	//获取创建者信息
+	var user auth.TokenUser
+	user, err := auth.ExtractTokenUser(r)
+	if err != nil {
+		return err
+	}
+
+	//根据比赛名称数组获取比赛数组
 	var competitions []*models.Competition
 	for _, item := range req.CompetitionNames {
 		var competition models.Competition
@@ -132,30 +143,62 @@ func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *Ad
 
 		competitions = append(competitions, &competition)
 	}
+
+	tx := c.db.Begin()
+	typeID := models.FindTypeIDByName(tx, req.TypeName)
+	err = tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
+
 	//创建Project实例
 	project := models.Project{
 		Model:          gorm.Model{},
-		IsAvailable:    false,
+		CreatorID:      user.ID,
+		IsAvailable:    true,
 		Competitions:   competitions,
-		TypeID:         1,
+		TypeID:         typeID,
 		Name:           req.Name,
 		DescribeSimple: req.DescribeSimple,
 		DescribeDetail: req.DescribeDetail,
 		LinkURL:        req.LinkURL,
 		EndTime:        req.EndTime,
-		Positions:      req.Positions,
-		Comments:       nil,
-		CommentsNum:    0,
-		StarNum:        0,
 	}
 
-	tx := c.db.Begin()
-	err := models.CreateProject(tx, project)
+	//根据岗位名称数组【生成】岗位数组，即根据positionTemplate生成position
+	for _, item := range req.PositionNames {
+		var positionTemplate models.PositionTemplate
+
+		tx := c.db.Begin()
+		//获取岗位模板
+		positionTemplate = models.FindPositionTemplateByName(tx, item)
+		//生成岗位
+		position := models.Position{
+			ProjectID:          int64(project.ID),
+			PositionTemplateID: int64(positionTemplate.ID),
+			Describe:           "",
+			NowPeople:          0,
+			NeedPeople:         0,
+			InterestPeople:     0,
+			Conversations:      nil,
+		}
+		err := tx.Commit().Error
+		if err != nil {
+			log.Debug(err)
+		}
+
+		//project中添加该岗位
+		project.Positions = append(project.Positions, position)
+	}
+
+	tx = c.db.Begin()
+	projectID, err := models.CreateProject(tx, project)
 	if err != nil {
 		log.Debug()
 	}
 	err = tx.Commit().Error
 
+	res.ProjectID = projectID
 	return err
 }
 

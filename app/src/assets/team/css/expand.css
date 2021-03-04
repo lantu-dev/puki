@@ -3,7 +3,7 @@
 }
 
 .Box {
-  border-radius: '5px';
+  border-radius: 5px;
   border: 1px solid #d9d9d9;
 }
 
@@ -13,4 +13,13 @@
 
 .PartialScrollVertical {
   overflow-y: scroll;
+}
+
+.Card {
+  margin: 10px 5px 5px;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  padding: 2%;
+  max-height: 120px;
+  cursor: pointer;
 }

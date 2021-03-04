@@ -10155,6 +10155,21 @@ public-encrypt@^4.0.0:
     randombytes "^2.0.1"
     safe-buffer "^5.1.2"
 
+pubsub-js@^1.9.3:
+  version "1.9.3"
+  resolved "https://registry.npm.taobao.org/pubsub-js/download/pubsub-js-1.9.3.tgz#674eea4d568d0402e0527cdb10e2aab7b55621d2"
+  integrity sha1-Z07qTVaNBALgUnzbEOKqt7VWIdI=
+
+pubsub-ts@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npm.taobao.org/pubsub-ts/download/pubsub-ts-0.2.0.tgz#9f940e71e2e7fe4e295485f0b58a7130fc444113"
+  integrity sha1-n5QOceLn/k4pVIXwtYpxMPxEQRM=
+
+pubsub@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.npm.taobao.org/pubsub/download/pubsub-3.2.1.tgz#cfaebb722971d7c06dce4c6b2999c8f0c94fe3c4"
+  integrity sha1-z667cilx18BtzkxrKZnI8MlP48Q=
+
 pump@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/pump/download/pump-2.0.1.tgz#12399add6e4cf7526d973cbc8b5ce2e2908b3909"

@@ -10,29 +10,62 @@ import {
   InputNumber,
   TreeSelect,
   Switch,
+  Typography,
 } from 'antd';
+import { useAsync } from 'react-use';
+import { call } from '@/api-client';
+import team, { Position } from '@/api-client/team';
+import { PubSub } from 'pubsub-ts';
+import { history } from 'umi';
 
+const { Title } = Typography;
 const { Option } = Select;
-
-// CreatorID      int64
-// TypeID         int64
-// Name           string
-// DescribeSimple string
-// DescribeDetail string
-// LinkURL        string
-// EndTime        time.Time
-// CompetitionsID []int64 //传入ID数组，在创建Project后依据ID创建一系列中间表
-// Positions      []models.Position
 
 interface CreateProjectProps {
   competitionNames: string[];
   competitionTypes: string[];
   positionNames: string[];
+  subscriber: PubSub.Subscriber;
+}
+
+//ProjectType: "类型1", ProjectCompetitions: Array(1), ProjectName: "七万五千", ProjectDescribeSimple: "wdsa", ProjectEndTime: Moment
+interface formValue {
+  ProjectType: string;
+  ProjectName: string;
+  ProjectCompetitions: string[];
+  ProjectDescribeSimple: string;
+  ProjectEndTime: string;
+  ProjectPositions: string[];
 }
 
 export default function CreateProject(props: CreateProjectProps) {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  let publisher = new PubSub.Publisher();
+  publisher.add(props.subscriber);
+
+  const onFinish = (values: formValue) => {
+    call(team.ProjectService.AddProject, {
+      TypeName: values.ProjectType,
+      Name: values.ProjectName,
+      DescribeSimple: values.ProjectDescribeSimple,
+      DescribeDetail: '',
+      LinkURL: '',
+      EndTime: values.ProjectEndTime,
+      CompetitionNames: values.ProjectCompetitions,
+      PositionNames: values.ProjectPositions,
+    }).then((r) => {
+      if (r.IsFailed) {
+        alert('创建失败！');
+      } else {
+        //隐藏创建项目卡片
+        publisher.notifyUrgent('createProjectDrawerVisible', false);
+        //传数据
+        publisher.notify('projectCreateInfo', {
+          ProjectID: r.ProjectID,
+          ProjectName: values.ProjectName,
+          ProjectDescription: values.ProjectDescribeSimple,
+        });
+      }
+    });
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -40,13 +73,24 @@ export default function CreateProject(props: CreateProjectProps) {
   };
   return (
     <Form
-      style={{ width: '95%' }}
+      style={{ padding: '5%' }}
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 14 }}
       layout="vertical"
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
+      <Title level={3} style={{ marginBottom: '20px' }}>
+        创建招募卡片
+      </Title>
+      <Form.Item
+        label="项目名称"
+        name="ProjectName"
+        required={true}
+        rules={[{ required: true, message: '请输入项目名称!' }]}
+      >
+        <Input />
+      </Form.Item>
       <Form.Item
         label="项目类型"
         name="ProjectType"
@@ -57,6 +101,31 @@ export default function CreateProject(props: CreateProjectProps) {
         <Select>
           {props.competitionTypes
             .filter((value) => value != '所有类别')
+            .map((value, index) => (
+              <Option key={index} value={value}>
+                {value}
+              </Option>
+            ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        label="项目简介"
+        name="ProjectDescribeSimple"
+        required={true}
+        rules={[{ required: true, message: '请输入项目简介!' }]}
+      >
+        <Input.TextArea autoSize={true} />
+      </Form.Item>
+      <Form.Item
+        label="项目所需的岗位"
+        name="ProjectPositions"
+        hasFeedback
+        required={true}
+        rules={[{ required: true, message: '请选择项目所属的岗位' }]}
+      >
+        <Select mode={'multiple'}>
+          {props.positionNames
+            .filter((value) => value != '全部岗位')
             .map((value, index) => (
               <Option key={index} value={value}>
                 {value}
@@ -81,22 +150,7 @@ export default function CreateProject(props: CreateProjectProps) {
             ))}
         </Select>
       </Form.Item>
-      <Form.Item
-        label="项目名称"
-        name="ProjectName"
-        required={true}
-        rules={[{ required: true, message: '请输入项目名称!' }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        label="项目简介"
-        name="ProjectDescribeSimple"
-        required={true}
-        rules={[{ required: true, message: '请输入项目简介!' }]}
-      >
-        <Input />
-      </Form.Item>
+
       <Form.Item
         label="项目报名截止日期"
         name="ProjectEndTime"
