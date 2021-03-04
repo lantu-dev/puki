@@ -6,6 +6,7 @@ import {
   ShareAltOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
+import { call, hasLogged, events } from '@/api-client';
 import { Button, Col, Image, Modal, Row, Space, Typography } from 'antd';
 import { useSetState } from 'react-use';
 import { history } from 'umi';
@@ -31,13 +32,23 @@ export default function MoreInfo(props: Event & MoreInfoProps) {
       centered
       visible={state.enterFor}
       onOk={async () => {
-        // TODO 检查登录状态/是否已经报名
-        if (props.teamed) {
+        if (!hasLogged()) {
+          history.push('/phone-login');
+        } else if (props.teamed) {
           history.push('/team');
         } else {
-          // TODO 发送报名请求
-          setState({ enterFor: false });
-          history.push('/events/entered-for');
+          const { Success } = await call(events.EventService.EnrollForEvent, {
+            EventID: props.ID,
+          });
+          if (Success) {
+            setState({ enterFor: false });
+            history.push({
+              pathname: '/events/entered-for',
+              query: {
+                EventID: props.ID.toString(),
+              },
+            });
+          }
         }
       }}
       onCancel={() => {

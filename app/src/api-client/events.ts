@@ -56,6 +56,18 @@ export interface EventMoreInfoReq {
 }
 export type EventMoreInfoRes = LectureInfo | SalonInfo | HackathonInfo;
 
+export interface EnrollForEventReq {
+  EventID: number;
+}
+export interface EnrollForEventRes {
+  Success: boolean;
+}
+
+export interface GetUserEnrolledEventsReq {}
+export interface GetUserEnrolledEventsRes {
+  Events: Event[];
+}
+
 export interface QuestionInfo {
   questionID: string;
   question: string;
@@ -90,6 +102,15 @@ export default {
     GetEventMoreInfo: 'events/EventService.GetEventMoreInfo' as Endpoint<
       EventMoreInfoReq,
       EventMoreInfoRes
+    >,
+    EnrollForEvent: 'events/EventService.EnrollForEvent' as Endpoint<
+      EnrollForEventReq,
+      EnrollForEventRes
+    >,
+
+    GetUserEnrolledEvents: 'events/EventService.GetUserEnrolledEvents' as Endpoint<
+      GetUserEnrolledEventsReq,
+      GetUserEnrolledEventsRes
     >,
   },
   QuestionService: {

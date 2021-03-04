@@ -2,11 +2,11 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/events/models"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
-	"time"
 )
 
 // 用户模型
@@ -45,11 +45,8 @@ type User struct {
 	// 「账号是否被禁用」
 	IsDisabled null.Bool `gorm:"not null;default:false"`
 
-	// 「用户创建日期」
-	UpdatedAt time.Time `gorm:"not null"`
-
-	// 「用户信息最近一次更新日期」
-	CreatedAt time.Time `gorm:"not null"`
+	// 「用户参与的活动列表」
+	Events []models.Event `gorm:"many2many:user_events;"`
 }
 
 func (user *User) CheckPassword(password string) bool {

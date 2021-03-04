@@ -1,5 +1,10 @@
 import { call, events } from '@/api-client';
-import { EventType } from '@/api-client/events';
+import {
+  EventType,
+  HackathonInfo,
+  LectureInfo,
+  SalonInfo,
+} from '@/api-client/events';
 import { Spin } from 'antd';
 import moment from 'moment';
 import { useAsync } from 'react-use';
@@ -8,7 +13,6 @@ import MoreInfoCard from './components/MoreInfoCard';
 import Hackathon from './eventBox/Hackathon';
 import Lecture from './eventBox/Lecture';
 import Salon from './eventBox/Salon';
-import { HackathonInfo, SalonInfo, LectureInfo } from '@/api-client/events';
 
 export default function MoreInfo() {
   const { value = null } = useAsync(async () => {
@@ -24,12 +28,10 @@ export default function MoreInfo() {
     let eventMoreInfo = await call(events.EventService.GetEventMoreInfo, {
       EventID,
     });
-    let res = {
+    return {
       eventInfo,
       eventMoreInfo,
     };
-    console.log(res);
-    return res;
   });
 
   let info = {
