@@ -1,7 +1,7 @@
-import {auth, call} from '@/api-client';
-import {Button, Col, Form, Input, Row, Select, Space, Typography} from 'antd';
+import { auth, call } from '@/api-client';
+import { Button, Col, Form, Input, Row, Select, Space, Typography } from 'antd';
 
-const {Title} = Typography;
+const { Title } = Typography;
 
 interface PhoneProps {
   currentCodeSentPhoneNumber?: string;
@@ -11,7 +11,7 @@ interface PhoneProps {
 
 export default function InputPhoneNumber(props: PhoneProps) {
   const onFinish = async (values: { prefix: string; phoneNumber: string }) => {
-    const {prefix, phoneNumber} = values;
+    const { prefix, phoneNumber } = values;
     const phoneNumberWithPrefix = prefix + phoneNumber;
     if (
       props.currentCodeSentPhoneNumber &&
@@ -19,7 +19,7 @@ export default function InputPhoneNumber(props: PhoneProps) {
     ) {
       return props.onNothingChanged();
     }
-    const {Session} = await call(auth.UserService.SMSSendCode, {
+    const { Session } = await call(auth.UserService.SMSSendCode, {
       PhoneNumber: phoneNumberWithPrefix,
     });
     props.onVerifyCodeSent(phoneNumberWithPrefix, Session);
@@ -28,8 +28,8 @@ export default function InputPhoneNumber(props: PhoneProps) {
   return (
     <>
       <Title level={3}>注册或登录</Title>
-      <Form onFinish={onFinish} initialValues={{prefix: '+86'}}>
-        <Space direction="vertical" size="large" style={{width: '100%'}}>
+      <Form onFinish={onFinish} initialValues={{ prefix: '+86' }}>
+        <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Row justify="center">
             <Col span={20}>
               <Form.Item
@@ -54,7 +54,7 @@ export default function InputPhoneNumber(props: PhoneProps) {
                   size="large"
                   addonBefore={
                     <Form.Item name="prefix" noStyle>
-                      <Select style={{width: 90}}>
+                      <Select style={{ width: 90 }}>
                         <Select.Option value="+86">+86</Select.Option>
                         <Select.Option value="+87">+87</Select.Option>
                       </Select>

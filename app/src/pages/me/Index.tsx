@@ -2,10 +2,10 @@ import SvgFemale from '@/assets/female.svg';
 import Identification from '@/assets/identification.svg';
 import SvgMale from '@/assets/male.svg';
 import SvgQRCode from '@/assets/QRCode.svg';
-import {RightOutlined} from '@ant-design/icons';
-import {Avatar, Badge, Button, Col, Drawer, Row, Space} from 'antd';
-import {useState} from 'react';
-import {history} from 'umi';
+import { RightOutlined } from '@ant-design/icons';
+import { Avatar, Badge, Button, Col, Drawer, Row, Space } from 'antd';
+import { useState } from 'react';
+import { history } from 'umi';
 import Item from './component/Item';
 
 enum Gender {
@@ -42,19 +42,19 @@ export default function Me() {
               <Avatar size={64}></Avatar>
             </Col>
             <Col>
-              <span style={{fontSize: '1.5em', padding: '0.1em'}}>
+              <span style={{ fontSize: '1.5em', padding: '0.1em' }}>
                 Future_000
               </span>
               {gender === Gender.Male ? (
-                <img src={SvgMale} alt="male"/>
+                <img src={SvgMale} alt="male" />
               ) : (
-                <img src={SvgFemale} alt="female"/>
+                <img src={SvgFemale} alt="female" />
               )}
             </Col>
           </Row>
         </Col>
-        <Col style={{marginLeft: 'auto', transform: 'translateY(0.3em)'}}>
-          <img src={SvgQRCode} alt="QRCode"/>
+        <Col style={{ marginLeft: 'auto', transform: 'translateY(0.3em)' }}>
+          <img src={SvgQRCode} alt="QRCode" />
         </Col>
         <Col>
           <RightOutlined
@@ -69,7 +69,7 @@ export default function Me() {
       <Space
         direction="vertical"
         size="middle"
-        style={{width: '100%', marginTop: '2em'}}
+        style={{ width: '100%', marginTop: '2em' }}
       >
         <div>
           {identified ? (
@@ -82,7 +82,7 @@ export default function Me() {
           ) : (
             <>
               <Item label="学生身份" route="/me/identify">
-                <img src={Identification} alt="未认证"/>
+                <img src={Identification} alt="未认证" />
               </Item>
             </>
           )}
@@ -161,7 +161,7 @@ export default function Me() {
         visible={quiting}
       >
         <div
-          style={{color: 'red', padding: '1em'}}
+          style={{ color: 'red', padding: '1em' }}
           onClick={() => {
             setQuiting(false);
           }}

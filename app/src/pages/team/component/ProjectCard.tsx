@@ -1,8 +1,8 @@
-import {MoreOutlined} from '@ant-design/icons';
-import {Col, Row, Space, Tag, Typography} from 'antd';
+import { MoreOutlined } from '@ant-design/icons';
+import { Col, Row, Space, Tag, Typography } from 'antd';
 import style from '@/assets/team/css/expand.css';
 
-const {Title, Paragraph, Text} = Typography;
+const { Title, Paragraph, Text } = Typography;
 
 interface CardProps {
   ProjectName: string;
@@ -23,14 +23,14 @@ export default function ProjectCard(props: CardProps) {
             paddingRight: '5px',
           }}
         >
-          <Space direction="vertical" style={{width: '100%'}}>
+          <Space direction="vertical" style={{ width: '100%' }}>
             <div onClick={props.onClick}>
-              <Title level={4} style={{marginBottom: '-5px'}}>
+              <Title level={4} style={{ marginBottom: '-5px' }}>
                 {props.ProjectName}
               </Title>
             </div>
             <Paragraph
-              ellipsis={{rows: 1, expandable: true, symbol: '查看更多'}}
+              ellipsis={{ rows: 1, expandable: true, symbol: '查看更多' }}
             >
               {props.ProjectDescription}
             </Paragraph>

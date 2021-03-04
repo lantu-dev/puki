@@ -1,11 +1,11 @@
 import React from 'react';
-import {Button, Input, Switch} from 'antd';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import { Button, Input, Switch } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 export default function Homepage() {
   return (
     <>
-      <div style={{backgroundColor: '#3A62D7'}}>
+      <div style={{ backgroundColor: '#3A62D7' }}>
         <div
           style={{
             display: 'flex',
@@ -18,25 +18,25 @@ export default function Homepage() {
           <img src="https://i.loli.net/2021/02/27/lNTx5VL7RQjBXzr.png"></img>
           <Input
             size="large"
-            style={{width: 300}}
+            style={{ width: 300 }}
             placeholder="用户名"
-            prefix={<UserOutlined/>}
+            prefix={<UserOutlined />}
           />
-          <br/>
-          <br/>
+          <br />
+          <br />
           <Input.Password
             size="large"
-            style={{width: 300}}
+            style={{ width: 300 }}
             placeholder="密码"
-            prefix={<LockOutlined/>}
+            prefix={<LockOutlined />}
           />
-          <br/>
-          <br/>
+          <br />
+          <br />
           <Button type="primary" shape="round" size="large">
             登录
           </Button>
         </div>
-        <br/>
+        <br />
         <div
           style={{
             display: 'flex',
@@ -56,7 +56,7 @@ export default function Homepage() {
             }}
           >
             <div>
-              <Switch defaultChecked/>
+              <Switch defaultChecked />
             </div>
             <div
               style={{
@@ -81,7 +81,7 @@ export default function Homepage() {
           </div>
         </div>
 
-        <br/>
+        <br />
         <div
           style={{
             display: 'flex',

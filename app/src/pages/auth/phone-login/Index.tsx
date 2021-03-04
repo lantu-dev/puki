@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
-import {useSetState} from 'react-use';
-import {history} from 'umi';
+import React, { useEffect } from 'react';
+import { useSetState } from 'react-use';
+import { history } from 'umi';
 import InputPhoneNumber from './components/InputPhoneNumber';
 import InputVerifyCode from './components/InputVerifyCode';
 
@@ -33,7 +33,7 @@ export default function Index() {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (state.tick > 0) {
-        setState({tick: state.tick - 1});
+        setState({ tick: state.tick - 1 });
       }
     }, 1000);
     return () => clearTimeout(timer);
@@ -60,10 +60,10 @@ export default function Index() {
             }}
           />,
           <InputVerifyCode
-            onBack={() => setState({step: Step.inputPhoneNumber})}
+            onBack={() => setState({ step: Step.inputPhoneNumber })}
             onLogged={onLogged}
             onResent={(session) => {
-              setState({session: session, tick: 60});
+              setState({ session: session, tick: 60 });
             }}
             phoneNumber={state.phoneNumber}
             session={state.session}

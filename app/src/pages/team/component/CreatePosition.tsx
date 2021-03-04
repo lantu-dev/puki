@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Form} from 'antd';
+import React, { useState } from 'react';
+import { Form } from 'antd';
 
 export default function CreatePosition() {
   const [visible, setVisible] = useState(false);
@@ -17,9 +17,9 @@ export default function CreatePosition() {
   };
   return (
     <Form.Provider
-      onFormFinish={(name, {values, forms}) => {
+      onFormFinish={(name, { values, forms }) => {
         if (name === 'userForm') {
-          const {basicForm} = forms;
+          const { basicForm } = forms;
           const users = basicForm.getFieldValue('users') || [];
           basicForm.setFieldsValue({
             users: [...users, values],

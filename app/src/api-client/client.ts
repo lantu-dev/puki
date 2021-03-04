@@ -1,6 +1,6 @@
-import fly, {FlyResponse} from 'flyio';
+import fly, { FlyResponse } from 'flyio';
 //@ts-ignore
-import {isBrowser} from 'umi';
+import { isBrowser } from 'umi';
 
 export async function setToken(token: string) {
   localStorage.setItem('token', token);
@@ -10,8 +10,7 @@ export async function hasLogged() {
   !!localStorage.getItem('token');
 }
 
-export interface Endpoint<P, R> extends String {
-}
+export interface Endpoint<P, R> extends String {}
 
 //@ts-ignore
 if (ENABLE_GATEWAY && isBrowser()) {
@@ -26,7 +25,7 @@ async function gw_call<P, R>(
 ): Promise<{ data: R; headers: any }> {
   let resp: Promise<FlyResponse>;
   const token = localStorage.getItem('token');
-  let config: any = {headers: {}};
+  let config: any = { headers: {} };
   if (token) {
     config.headers['Authorization'] = token;
   }
@@ -41,7 +40,7 @@ async function gw_call<P, R>(
     const query = new URLSearchParams(params as any).toString();
     resp = fly.get(`${mod}/${ser}/${method}?${query}`, null, config);
   } else {
-    resp = fly.post(`${mod}/${ser}/${method}`, {data: params}, config);
+    resp = fly.post(`${mod}/${ser}/${method}`, { data: params }, config);
   }
 
   return resp!
@@ -56,9 +55,9 @@ async function gw_call<P, R>(
       if (!resp.data) {
         return;
       }
-      const {data, error} = resp.data;
+      const { data, error } = resp.data;
       if (error) {
-        return Promise.reject({status: error.code, message: error.message});
+        return Promise.reject({ status: error.code, message: error.message });
       }
       resp.data = data;
       return resp;
@@ -80,7 +79,7 @@ async function dev_call<P, R>(
         id: Math.floor(Math.random() * 99999999),
       },
       {
-        headers: {Authorization: token || undefined},
+        headers: { Authorization: token || undefined },
       },
     )
     .catch((err) => {
@@ -94,9 +93,9 @@ async function dev_call<P, R>(
       if (!resp.data) {
         return;
       }
-      const {result, error} = resp.data;
+      const { result, error } = resp.data;
       if (error) {
-        return Promise.reject({status: error.code, message: error.message});
+        return Promise.reject({ status: error.code, message: error.message });
       }
       resp.data = result;
       return resp;
@@ -117,7 +116,7 @@ export async function call<P, R>(
     alert('no call adapter');
   }
   try {
-    let {data, headers} = await resp!;
+    let { data, headers } = await resp!;
     const sa = headers['Set-Authorization'];
     if (sa) {
       if (sa.length > 0) {
@@ -144,8 +143,8 @@ export async function call<P, R>(
     }
     //@ts-ignore
     if (BUNDLE_FLAVOR && BUNDLE_FLAVOR === 'webapp') {
-      const {default: message} = require('antd/lib/message');
-      message.error({content: title + ':' + msg});
+      const { default: message } = require('antd/lib/message');
+      message.error({ content: title + ':' + msg });
     }
     throw err;
   }

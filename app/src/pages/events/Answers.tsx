@@ -1,8 +1,8 @@
-import {call, events} from '@/api-client';
-import {Card, List, Typography} from 'antd';
-import {useAsync} from 'react-use';
+import { call, events } from '@/api-client';
+import { Card, List, Typography } from 'antd';
+import { useAsync } from 'react-use';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 interface AnswersProps {
   questionID: string;

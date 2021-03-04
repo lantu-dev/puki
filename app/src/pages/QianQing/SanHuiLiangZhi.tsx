@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {Menu} from 'antd';
-import {Show} from './SanHuiLiangZhi/Show';
-import {PingYi} from './SanHuiLiangZhi/PingYi';
-import {Store} from './SanHuiLiangZhi/store';
+import React, { useState } from 'react';
+import { Menu } from 'antd';
+import { Show } from './SanHuiLiangZhi/Show';
+import { PingYi } from './SanHuiLiangZhi/PingYi';
+import { Store } from './SanHuiLiangZhi/store';
 import 'antd/dist/antd.css';
 
 interface content {
@@ -52,9 +52,9 @@ function MainPage(props: any) {
       case 'Show':
         return <Show {...data}></Show>;
       case 'PingYi':
-        return <PingYi/>;
+        return <PingYi />;
       case 'store':
-        return <Store/>;
+        return <Store />;
       default:
         break;
     }
@@ -83,5 +83,5 @@ function MainPage(props: any) {
 }
 
 export default function () {
-  return <MainPage/>;
+  return <MainPage />;
 }

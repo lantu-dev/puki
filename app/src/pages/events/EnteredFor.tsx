@@ -1,5 +1,5 @@
-import {Button, Result} from 'antd';
-import {history} from 'umi';
+import { Button, Result } from 'antd';
+import { history } from 'umi';
 
 export default function () {
   return (

@@ -1,31 +1,26 @@
-import {Endpoint} from '@/api-client/client';
+import { Endpoint } from '@/api-client/client';
 
 //模型
-export interface Position {
-}
+export interface Position {}
 
-export interface Award {
-}
+export interface Award {}
 
 //获取所有比赛名称
-export interface GetCompetitionNamesReq {
-}
+export interface GetCompetitionNamesReq {}
 
 interface GetCompetitionNamesRes {
   CompetitionNames: string[];
 }
 
 //获取所有比赛类型
-export interface GetCompetitionTypesReq {
-}
+export interface GetCompetitionTypesReq {}
 
 export interface GetCompetitionTypesRes {
   CompetitionTypes: string[];
 }
 
 //获取所有岗位名称
-export interface GetPositionNamesReq {
-}
+export interface GetPositionNamesReq {}
 
 export interface GetPositionNamesRes {
   PositionNames: string[];
@@ -106,24 +101,21 @@ export interface AddProjectRes {
 }
 
 //获取所有岗位的名称
-export interface GetPositionNamesReq {
-}
+export interface GetPositionNamesReq {}
 
 export interface GetPositionNamesRes {
   PositionNames: string[];
 }
 
 //获取项目个数
-export interface GetProjectNumReq {
-}
+export interface GetProjectNumReq {}
 
 export interface GetProjectNumRes {
   ProjectNum: number;
 }
 
 //获取项目ID
-export interface GetProjectIDReq {
-}
+export interface GetProjectIDReq {}
 
 export interface GetProjectIDRes {
   ProjectID: number[];
@@ -142,29 +134,47 @@ export interface GetProjectSimplesRes {
 export default {
   CommentService: {},
   CompetitionService: {
-    GetCompetitionNames: 'team/CompetitionService.GetCompetitionNames' as Endpoint<GetCompetitionNamesReq,
-      GetCompetitionNamesRes>,
-    GetCompetitionTypes: 'team/CompetitionService.GetCompetitionTypes' as Endpoint<GetCompetitionTypesReq,
-      GetCompetitionTypesRes>,
+    GetCompetitionNames: 'team/CompetitionService.GetCompetitionNames' as Endpoint<
+      GetCompetitionNamesReq,
+      GetCompetitionNamesRes
+    >,
+    GetCompetitionTypes: 'team/CompetitionService.GetCompetitionTypes' as Endpoint<
+      GetCompetitionTypesReq,
+      GetCompetitionTypesRes
+    >,
   },
   ConversationService: {},
   FileService: {},
   PositionService: {
-    GetPositionNames: 'team/PositionService.GetPositionNames' as Endpoint<GetPositionNamesReq,
-      GetPositionNamesRes>,
+    GetPositionNames: 'team/PositionService.GetPositionNames' as Endpoint<
+      GetPositionNamesReq,
+      GetPositionNamesRes
+    >,
   },
   ProjectService: {
-    GetProjectSimple: 'team/ProjectService.GetProjectSimple' as Endpoint<GetProjectSimpleReq,
-      GetProjectSimpleRes>,
-    GetProjectSimples: 'team/ProjectService.GetProjectSimples' as Endpoint<GetProjectSimplesReq,
-      GetProjectSimplesRes>,
-    AddProject: 'team/ProjectService.AddProject' as Endpoint<AddProjectReq,
-      AddProjectRes>,
-    GetProjectDetail: 'team/ProjectService.GetProjectDetail' as Endpoint<GetProjectDetailReq,
-      GetProjectDetailRes>,
-    GetProjectNum: 'team/ProjectService.GetProjectNum' as Endpoint<GetProjectNumReq,
-      GetProjectNumRes>,
-    GetProjectID: 'team/ProjectService.GetProjectID' as Endpoint<GetProjectIDReq,
-      GetProjectIDRes>,
+    GetProjectSimple: 'team/ProjectService.GetProjectSimple' as Endpoint<
+      GetProjectSimpleReq,
+      GetProjectSimpleRes
+    >,
+    GetProjectSimples: 'team/ProjectService.GetProjectSimples' as Endpoint<
+      GetProjectSimplesReq,
+      GetProjectSimplesRes
+    >,
+    AddProject: 'team/ProjectService.AddProject' as Endpoint<
+      AddProjectReq,
+      AddProjectRes
+    >,
+    GetProjectDetail: 'team/ProjectService.GetProjectDetail' as Endpoint<
+      GetProjectDetailReq,
+      GetProjectDetailRes
+    >,
+    GetProjectNum: 'team/ProjectService.GetProjectNum' as Endpoint<
+      GetProjectNumReq,
+      GetProjectNumRes
+    >,
+    GetProjectID: 'team/ProjectService.GetProjectID' as Endpoint<
+      GetProjectIDReq,
+      GetProjectIDRes
+    >,
   },
 };

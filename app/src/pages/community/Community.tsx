@@ -1,5 +1,5 @@
 import React from 'react';
-import {Avatar, Button, Menu, Pagination, Typography} from 'antd';
+import { Avatar, Button, Menu, Pagination, Typography } from 'antd';
 import {
   EditOutlined,
   HeartOutlined,
@@ -13,7 +13,7 @@ import {
   WeiboOutlined,
 } from '@ant-design/icons';
 
-const {Title} = Typography;
+const { Title } = Typography;
 
 interface PageProps {
   partName: string;
@@ -46,7 +46,7 @@ const data: PageProps = {
 };
 
 export default function CommunityPage() {
-  const {partName, introduction} = data;
+  const { partName, introduction } = data;
   return (
     <>
       <div
@@ -135,8 +135,8 @@ export default function CommunityPage() {
             backgroundColor: '#3C44F1',
           }}
         >
-          <br/>
-          <br/>
+          <br />
+          <br />
           <div
             style={{
               color: 'white',
@@ -146,7 +146,7 @@ export default function CommunityPage() {
             <b>{partName}</b>
           </div>
 
-          <br/>
+          <br />
 
           <div
             style={{
@@ -160,11 +160,11 @@ export default function CommunityPage() {
           >
             <text>{introduction}</text>
           </div>
-          <br/>
-          <br/>
+          <br />
+          <br />
         </div>
-        <br/>
-        <br/>
+        <br />
+        <br />
         {/*以下左侧导航栏 */}
         <div
           style={{
@@ -186,7 +186,7 @@ export default function CommunityPage() {
                 backgroundColor: '#3C44F1',
               }}
             >
-              <br/>
+              <br />
               <div>
                 <div
                   style={{
@@ -195,12 +195,12 @@ export default function CommunityPage() {
                     marginLeft: '5px',
                   }}
                 >
-                  <Button icon={<SnippetsOutlined/>} size="large" ghost>
+                  <Button icon={<SnippetsOutlined />} size="large" ghost>
                     开源代码
                   </Button>
                 </div>
               </div>
-              <br/>
+              <br />
             </div>
             <div
               style={{
@@ -208,22 +208,22 @@ export default function CommunityPage() {
                 flexDirection: 'column',
               }}
             >
-              <Button icon={<TeamOutlined/>} size="large" type="link">
+              <Button icon={<TeamOutlined />} size="large" type="link">
                 xxxxxxxx
               </Button>
-              <Button icon={<UserOutlined/>} size="large" type="link">
+              <Button icon={<UserOutlined />} size="large" type="link">
                 xxxxxxxx
               </Button>
-              <Button icon={<UserAddOutlined/>} size="large" type="link">
+              <Button icon={<UserAddOutlined />} size="large" type="link">
                 xxxxxxxx
               </Button>
-              <Button icon={<TeamOutlined/>} size="large" type="link">
+              <Button icon={<TeamOutlined />} size="large" type="link">
                 xxxxxxxx
               </Button>
-              <Button icon={<HeartOutlined/>} size="large" type="link">
+              <Button icon={<HeartOutlined />} size="large" type="link">
                 xxxxxxxx
               </Button>
-              <Button icon={<TeamOutlined/>} size="large" type="link">
+              <Button icon={<TeamOutlined />} size="large" type="link">
                 xxxxxxxx
               </Button>
             </div>
@@ -271,7 +271,7 @@ export default function CommunityPage() {
                       }}
                     >
                       <div>
-                        <Avatar icon={<UserOutlined/>}/>
+                        <Avatar icon={<UserOutlined />} />
                         <text>126人评价</text>
                       </div>
                       <div
@@ -279,7 +279,7 @@ export default function CommunityPage() {
                           marginLeft: '32px',
                         }}
                       >
-                        <Avatar icon={<EditOutlined/>}/>
+                        <Avatar icon={<EditOutlined />} />
                         <text>27人参与讨论</text>
                       </div>
                       <div
@@ -287,7 +287,7 @@ export default function CommunityPage() {
                           marginLeft: '254px',
                         }}
                       >
-                        <Avatar icon={<StarOutlined/>}/>
+                        <Avatar icon={<StarOutlined />} />
                         <text>4.7</text>
                       </div>
                     </div>
@@ -313,7 +313,7 @@ export default function CommunityPage() {
           marginLeft: '600px',
         }}
       >
-        <Pagination defaultCurrent={1} total={50}/>
+        <Pagination defaultCurrent={1} total={50} />
       </div>
       {/* 以下底部蓝框 */}
       <div>
@@ -326,8 +326,8 @@ export default function CommunityPage() {
             marginTop: '82px',
           }}
         >
-          <br/>
-          <br/>
+          <br />
+          <br />
           <div
             style={{
               display: 'flex',
@@ -352,7 +352,7 @@ export default function CommunityPage() {
               <b>蓝图开放平台</b>
             </div>
           </div>
-          <br/>
+          <br />
           <div
             style={{
               display: 'flex',
@@ -367,18 +367,18 @@ export default function CommunityPage() {
             >
               <Button size="large">了解更多</Button>
             </div>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
           </div>
         </div>
       </div>
       {/**以下最底部白色文字跳转 */}
-      <br/>
-      <br/>
-      <br/>
+      <br />
+      <br />
+      <br />
       <div
         style={{
           display: 'flex',
@@ -399,11 +399,11 @@ export default function CommunityPage() {
             }}
           >
             <Button type="text">产品</Button>
-            <Button type="text" style={{marginLeft: '188px'}}>
+            <Button type="text" style={{ marginLeft: '188px' }}>
               企业介绍
             </Button>
           </div>
-          <br/>
+          <br />
           <div
             style={{
               display: 'flex',
@@ -412,7 +412,7 @@ export default function CommunityPage() {
             }}
           >
             <Button type="text">产品介绍</Button>
-            <Button type="text" style={{marginLeft: '159px'}}>
+            <Button type="text" style={{ marginLeft: '159px' }}>
               关于我们
             </Button>
           </div>
@@ -424,7 +424,7 @@ export default function CommunityPage() {
             }}
           >
             <Button type="text">产品服务</Button>
-            <Button type="text" style={{marginLeft: '159px'}}>
+            <Button type="text" style={{ marginLeft: '159px' }}>
               社区
             </Button>
           </div>
@@ -438,11 +438,11 @@ export default function CommunityPage() {
           }}
         >
           <Title level={4}>蓝图开放平台</Title>
-          <br/>
+          <br />
           <text>来自：北京邮电大学计算机学院</text>
           <text>电话：XXXXXXXXX</text>
           <text>邮箱：XXXXXXX@XXX.COM</text>
-          <br/>
+          <br />
 
           <div
             style={{
@@ -451,17 +451,17 @@ export default function CommunityPage() {
             }}
           >
             <div>
-              <Avatar icon={<WeiboOutlined/>}/>
+              <Avatar icon={<WeiboOutlined />} />
             </div>
-            <div style={{marginLeft: '15px'}}>
-              <Avatar icon={<WechatOutlined/>}/>
+            <div style={{ marginLeft: '15px' }}>
+              <Avatar icon={<WechatOutlined />} />
             </div>
-            <div style={{marginLeft: '15px'}}>
-              <Avatar icon={<TwitterOutlined/>}/>
+            <div style={{ marginLeft: '15px' }}>
+              <Avatar icon={<TwitterOutlined />} />
             </div>
           </div>
-          <br/>
-          <br/>
+          <br />
+          <br />
         </div>
       </div>
     </>
@@ -506,7 +506,7 @@ function ThreadView(props: Thread) {
                 }}
               >
                 <div>
-                  <Avatar icon={<UserOutlined/>}/>
+                  <Avatar icon={<UserOutlined />} />
                   <text>{props.commentNumber}人评价</text>
                 </div>
                 <div
@@ -514,7 +514,7 @@ function ThreadView(props: Thread) {
                     marginLeft: '32px',
                   }}
                 >
-                  <Avatar icon={<EditOutlined/>}/>
+                  <Avatar icon={<EditOutlined />} />
                   <text>{props.participantsNumber}人参与讨论</text>
                 </div>
                 <div
@@ -522,7 +522,7 @@ function ThreadView(props: Thread) {
                     marginLeft: '254px',
                   }}
                 >
-                  <Avatar icon={<StarOutlined/>}/>
+                  <Avatar icon={<StarOutlined />} />
                   <text>{props.score}</text>
                 </div>
               </div>

@@ -1,6 +1,6 @@
-import {RightOutlined} from '@ant-design/icons';
-import {Col, Row} from 'antd';
-import {history} from 'umi';
+import { RightOutlined } from '@ant-design/icons';
+import { Col, Row } from 'antd';
+import { history } from 'umi';
 import style from './Item.less';
 
 interface ItemProps {
@@ -18,7 +18,7 @@ export default function Item(props: ItemProps) {
       className={style.myButton}
     >
       <Row justify="space-between">
-        <Col offset={1} style={{display: 'flex', alignItems: 'center'}}>
+        <Col offset={1} style={{ display: 'flex', alignItems: 'center' }}>
           {props.label}
         </Col>
         <Col>

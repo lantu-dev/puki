@@ -1,12 +1,12 @@
 //定义首屏为项目列表，供浏览正在招募中的项目
-import React, {useEffect} from 'react';
-import {Button, Form, Input, Typography} from 'antd';
-import {call} from '@/api-client';
+import React, { useEffect } from 'react';
+import { Button, Form, Input, Typography } from 'antd';
+import { call } from '@/api-client';
 
-const {Title} = Typography;
+const { Title } = Typography;
 const layout = {
-  labelCol: {span: 8},
-  wrapperCol: {span: 16},
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 const onFinish = (values: any) => {
@@ -40,10 +40,10 @@ export default function () {
       </div>
 
       <Form
-        style={{width: '95%', margin: 'auto', marginTop: '10px'}}
+        style={{ width: '95%', margin: 'auto', marginTop: '10px' }}
         {...layout}
         name="basic"
-        initialValues={{remember: false}}
+        initialValues={{ remember: false }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         layout={'vertical'}
@@ -58,7 +58,7 @@ export default function () {
             },
           ]}
         >
-          <Input/>
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -71,7 +71,7 @@ export default function () {
             },
           ]}
         >
-          <Input.TextArea/>
+          <Input.TextArea />
         </Form.Item>
 
         <Form.Item>

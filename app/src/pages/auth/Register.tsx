@@ -1,10 +1,20 @@
-import {auth, call} from '@/api-client';
-import {Button, Checkbox, Col, Form, Input, message, Row, Space, Typography,} from 'antd';
+import { auth, call } from '@/api-client';
+import {
+  Button,
+  Checkbox,
+  Col,
+  Form,
+  Input,
+  message,
+  Row,
+  Space,
+  Typography,
+} from 'antd';
 import React from 'react';
-import {useAsync} from 'react-use';
-import {history} from 'umi';
+import { useAsync } from 'react-use';
+import { history } from 'umi';
 
-const {Title} = Typography;
+const { Title } = Typography;
 
 interface IForm {
   phoneNumber: string;
@@ -24,16 +34,16 @@ export default function Register() {
   const [form] = Form.useForm<IForm>();
 
   const phoneNumberState = useAsync(async () => {
-    const {User} = await call(auth.UserService.GetProfile, {});
+    const { User } = await call(auth.UserService.GetProfile, {});
     if (User.RealName && User.RealName.length > 0) {
-      message.error({content: '用户已完成注册'});
+      message.error({ content: '用户已完成注册' });
     }
-    form.setFieldsValue({phoneNumber: '+' + User.PhoneNumber});
+    form.setFieldsValue({ phoneNumber: '+' + User.PhoneNumber });
     return User.PhoneNumber;
   });
 
   const onFinish = async (values: IForm) => {
-    const {Registered} = await call(auth.UserService.Register, {
+    const { Registered } = await call(auth.UserService.Register, {
       RealName: values.realName,
       NickName: values.nickName || '',
       UserName: values.userName || '',
@@ -43,7 +53,7 @@ export default function Register() {
     });
 
     if (Registered) {
-      message.success({content: '注册成功！'});
+      message.success({ content: '注册成功！' });
       if (history.location.query?.redirect) {
         history.push(history.location.query.redirect as string);
       } else {
@@ -65,9 +75,9 @@ export default function Register() {
           fillUserName: true,
         }}
       >
-        <Space direction="vertical" style={{width: '100%', padding: '25px'}}>
+        <Space direction="vertical" style={{ width: '100%', padding: '25px' }}>
           <Form.Item name="phoneNumber" label="手机号">
-            <Input disabled/>
+            <Input disabled />
           </Form.Item>
 
           <Form.Item
@@ -88,7 +98,7 @@ export default function Register() {
               },
             ]}
           >
-            <Input placeholder="请输入"/>
+            <Input placeholder="请输入" />
           </Form.Item>
 
           <Form.Item
@@ -111,7 +121,7 @@ export default function Register() {
               },
             ]}
           >
-            <Input placeholder="请输入"/>
+            <Input placeholder="请输入" />
           </Form.Item>
 
           <Form.Item name="fillStudentInfo" valuePropName="checked" noStyle>
@@ -136,13 +146,13 @@ export default function Register() {
                         message: '请填写学号',
                         required: true,
                       },
-                      ({setFieldsValue}) => ({
+                      ({ setFieldsValue }) => ({
                         validator(_, value) {
                           if (value.length === 10) {
                             // TODO 查找学院
                             let school = '计算机学院';
                             if (school) {
-                              setFieldsValue({school});
+                              setFieldsValue({ school });
                               return Promise.resolve();
                             } else {
                               return Promise.reject('该学号不存在');
@@ -153,11 +163,11 @@ export default function Register() {
                       }),
                     ]}
                   >
-                    <Input placeholder="请输入" type="number"/>
+                    <Input placeholder="请输入" type="number" />
                   </Form.Item>
 
                   <Form.Item name="school" label="学院">
-                    <Input disabled/>
+                    <Input disabled />
                   </Form.Item>
                 </>
               )
@@ -241,7 +251,7 @@ export default function Register() {
                     },
                   ]}
                 >
-                  <Input.Password placeholder="请输入"/>
+                  <Input.Password placeholder="请输入" />
                 </Form.Item>
               )
             }
