@@ -1,13 +1,8 @@
 import { auth, call } from '@/api-client';
-import SvgFemale from '@/assets/female.svg';
-import Identification from '@/assets/identification.svg';
-import SvgMale from '@/assets/male.svg';
-import SvgQRCode from '@/assets/QRCode.svg';
-import { RightOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Button, Col, Drawer, Row, Space } from 'antd';
 import { useAsync, useSetState } from 'react-use';
-import { history } from 'umi';
 import Item from './component/Item';
+import { Male, Female, Identification } from './component/Svg';
 
 export default function Me() {
   const [state, setState] = useSetState({ quiting: false });
@@ -41,9 +36,21 @@ export default function Me() {
               </span>
               {(() => {
                 if (profile?.Gender === true) {
-                  return <img src={SvgMale} alt="male" />;
+                  return (
+                    <Male
+                      style={{
+                        color: '#52C1D5',
+                      }}
+                    />
+                  );
                 } else if (profile?.Gender === false) {
-                  return <img src={SvgFemale} alt="female" />;
+                  return (
+                    <Female
+                      style={{
+                        color: '#EEA5B6',
+                      }}
+                    />
+                  );
                 }
               })()}
             </Col>
@@ -68,7 +75,7 @@ export default function Me() {
           ) : (
             <>
               <Item label="学生身份" route="/me/identify">
-                <img src={Identification} alt="未认证" />
+                <Identification />
               </Item>
             </>
           )}

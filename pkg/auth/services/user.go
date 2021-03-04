@@ -111,7 +111,7 @@ func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetPr
 	tx := s.db.Begin()
 
 	if !tu.IsAnon() {
-		res.User = tu.User(tx)
+		res.User = *tu.User(tx)
 		tx.First(&res.Student, tu.ID)
 	}
 
@@ -120,13 +120,14 @@ func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetPr
 }
 
 type CompleteProfileReq struct {
-	RealName string
-	UserName null.String
-	NickName string
-	Password string
-
-	StudentID string
-	School    string
+	Gender      null.Bool
+	NickName    string
+	Password    string
+	RealName    string
+	School      string
+	UntrustedID string
+	TrustedID   string
+	UserName    null.String
 }
 type CompleteProfileRes struct {
 	Completed bool
@@ -145,62 +146,68 @@ func (s *UserService) CompleteProfile(r *http.Request, req *CompleteProfileReq, 
 		return base.UserErrorf("login required")
 	}
 
-	s.db.Transaction(func(tx *gorm.DB) (err error) {
+	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
 		user := tu.User(tx)
+		stu, err := models.FindOrCreateStudentFromUser(tx, user)
+		if err != nil {
+			return err
+		}
 
-		// 如果请求修改真实姓名
-		if req.RealName != "" {
-			// 校验并设置真实姓名
-			if err = user.SetRealName(req.RealName); err != nil {
+		// 如果请求修改性别
+		if !req.Gender.Equal(null.NewBool(false, false)) {
+			// 校验并设置性别
+			if err = user.SetGender(req.Gender); err != nil {
 				return err
 			}
 		}
 
-		// 如果请求修改用户名
-		if !req.UserName.Equal(null.StringFrom("")) {
-			// 校验并设置用户名
-			if err = user.SetUserName(tx, req.UserName); err != nil {
-				return err
-			}
-		}
-
-		// 如果请求修改昵称
 		if req.NickName != "" {
-			// 校验并设置昵称
 			if err = user.SetNickName(req.NickName); err != nil {
 				return err
 			}
 		}
 
-		// 如果请求修改密码
 		if req.Password != "" {
-			// 校验并设置密码
 			if err = user.SetPassword(req.Password); err != nil {
 				return err
 			}
 		}
 
-		// 如果请求修改学号
-		if req.StudentID != "" {
-			stu, err := models.FindOrCreateStudentFromUser(tx, &user)
-			if err != nil {
-				return err
-			}
-			stu.UntrustedID = req.StudentID
-			stu.School = req.School
-			if err = tx.Save(stu).Error; err != nil {
+		if req.RealName != "" {
+			if err = user.SetRealName(req.RealName); err != nil {
 				return err
 			}
 		}
 
-		if err = tx.Save(&user).Error; err != nil {
+		if req.School != "" {
+			// TODO 校验学校
+			stu.School = req.School
+		}
+
+		if req.UntrustedID != "" {
+			// TODO 校验学号
+			stu.UntrustedID = req.UntrustedID
+		}
+
+		if !req.UserName.Equal(null.NewString("", false)) {
+			if err = user.SetUserName(tx, req.UserName); err != nil {
+				return err
+			}
+		}
+
+		if err = tx.Save(stu).Error; err != nil {
+			return err
+		}
+		if err = tx.Save(user).Error; err != nil {
 			return err
 		}
 
 		res.Completed = true
 
 		return nil
-	})
+	}); err != nil {
+		return err
+	}
 
 	return nil
 }
