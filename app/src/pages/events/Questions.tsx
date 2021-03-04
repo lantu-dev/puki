@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Drawer, Typography } from 'antd';
 import { useAsync, useMethods } from 'react-use';
 import { history } from 'umi';
-import Answers from './Answers';
+import Answers from './components/Answers';
 
 const { Paragraph, Title } = Typography;
 

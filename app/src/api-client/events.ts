@@ -8,7 +8,7 @@ export enum EventType {
   EventTypeHackathon,
 }
 
-interface Event {
+export interface Event {
   ID: number;
   Organizer: string;
   Title: string;
@@ -24,8 +24,7 @@ export interface GetEventsListReq {
 }
 export type GetEventsListRes = Event[];
 
-interface LectureInfo {
-  EventType: EventType.EventTypeLecture;
+export interface LectureInfo {
   Schedules: {
     Title: string;
     StartedAt: string;
@@ -36,8 +35,7 @@ interface LectureInfo {
     TalkerDescription: string;
   }[];
 }
-interface SalonInfo {
-  EventType: EventType.EventTypeSalon;
+export interface SalonInfo {
   Schedules: {
     Title: string;
     StartedAt: string;
@@ -48,8 +46,7 @@ interface SalonInfo {
     TalkerDescription: string;
   }[];
 }
-interface HackathonInfo {
-  EventType: EventType.EventTypeHackathon;
+export interface HackathonInfo {
   Hackathon: {
     Steps: string;
   };
