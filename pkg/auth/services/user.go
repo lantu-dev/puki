@@ -98,19 +98,21 @@ func (s *UserService) SMSCodeLogin(r *http.Request, req *SMSCodeLoginReq, res *S
 type GetProfileReq struct {
 }
 type GetProfileRes struct {
-	User models.User
+	User    models.User
+	Student models.Student
 }
 
 func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetProfileRes) (err error) {
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil {
-		return err
+		return base.UserErrorf("请通过手机号登录账户")
 	}
 
 	tx := s.db.Begin()
 
 	if !tu.IsAnon() {
 		res.User = tu.User(tx)
+		tx.First(&res.Student, tu.ID)
 	}
 
 	err = tx.Commit().Error
@@ -134,7 +136,8 @@ func (s *UserService) CompleteProfile(r *http.Request, req *CompleteProfileReq, 
 	// 检查用户登录
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil {
-		return err
+		// 用户请求头没有Token字段
+		return base.UserErrorf("请登录/注册账户")
 	}
 
 	// 以后的游客权限

@@ -1,5 +1,30 @@
 import { Endpoint } from './client';
 
+interface User {
+  ID: number;
+  UserName: string;
+  PhoneNumber: number;
+  RealName: string;
+  AvatarURI: string;
+  NickName: string;
+  Gender: boolean | null;
+  IsStaff: boolean;
+  IsSuper: boolean;
+  IsDisabled: boolean;
+  UpdatedAt: string;
+  CreatedAt: string;
+}
+
+interface Student {
+  UserID: number;
+  University: string;
+  School: string;
+  ClassID: string;
+  UntrustedID: string;
+  TrustedID: string;
+  VerifyImageURL: string;
+}
+
 export interface SMSSendCodeReq {
   PhoneNumber: string;
 }
@@ -16,11 +41,12 @@ export interface SMSCodeLoginReq {
 
 export interface SMSCodeLoginRes {
   Token: string;
-  User: { RealName: string };
+  User: User;
 }
 
 export interface GetProfileRes {
-  User: { PhoneNumber: string; RealName: string };
+  User: User;
+  Student: Student;
 }
 
 export interface CompleteProfileReq {

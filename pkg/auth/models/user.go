@@ -33,6 +33,9 @@ type User struct {
 	// 「昵称」用于对外展示
 	NickName string `gorm:"not null"`
 
+	// 「性别」，true为男性, false为女性
+	Gender null.Bool `gorm:"default:null"`
+
 	// 「是否为内部用户」，内部用户可登陆后台管理页面
 	IsStaff null.Bool `gorm:"not null;default:false"`
 
