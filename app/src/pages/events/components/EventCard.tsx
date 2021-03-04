@@ -7,6 +7,7 @@ interface EventCardProps {
   ImageUrl: string;
   Title: string;
   Description: string;
+  style?: React.CSSProperties;
 }
 
 export default function EventCard(props: EventCardProps) {
@@ -15,7 +16,7 @@ export default function EventCard(props: EventCardProps) {
       bodyStyle={{ height: 'fit-content' }}
       hoverable
       size="small"
-      style={{ padding: '10px', height: '250px' }}
+      style={{ padding: '10px', height: '250px', ...props.style }}
       cover={
         <div className={style.image}>
           <Image src={props.ImageUrl} />
