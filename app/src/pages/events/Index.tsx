@@ -16,12 +16,14 @@ export default function () {
     menu: 'recommend',
   });
 
-  const eventsList = useAsync(async () => {
-    const res = await call(events.EventService.GetEventsList, {
+  const { value: eventsList } = useAsync(async () => {
+    return await call(events.EventService.GetEventsList, {
       EventIDs: [],
     });
-    console.log(res);
-    return res;
+  });
+
+  const { value: userEvents } = useAsync(async () => {
+    return await call(events.EventService.GetUserEnrolledEvents, {});
   });
 
   return (
@@ -42,7 +44,10 @@ export default function () {
               }}
             >
               <Col flex={1} style={{ textAlign: 'center' }}>
-                您有 <span style={{ color: '#1890FF' }}>2</span>{' '}
+                您有{' '}
+                <span style={{ color: '#1890FF' }}>
+                  {userEvents?.Events.length || 0}
+                </span>{' '}
                 场正在进行的活动
               </Col>
               <Col>
@@ -50,6 +55,9 @@ export default function () {
                   size="small"
                   type="primary"
                   style={{ borderRadius: '5px' }}
+                  onClick={() => {
+                    history.push('/me/events');
+                  }}
                 >
                   查看
                 </Button>
@@ -75,7 +83,7 @@ export default function () {
             style={{ margin: '1em' }}
             autoplay
           >
-            {eventsList.value?.map((v) => {
+            {eventsList?.map((v) => {
               return (
                 <div
                   key={v.ID}
@@ -118,7 +126,7 @@ export default function () {
             vertical
             verticalSwiping
           >
-            {eventsList.value?.map((v) => (
+            {eventsList?.map((v) => (
               <div
                 key={v.ID}
                 onClick={() => {

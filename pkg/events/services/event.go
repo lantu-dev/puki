@@ -1,6 +1,9 @@
 package services
 
 import (
+	"github.com/lantu-dev/puki/pkg/auth"
+	models2 "github.com/lantu-dev/puki/pkg/auth/models"
+	"github.com/lantu-dev/puki/pkg/base"
 	"github.com/lantu-dev/puki/pkg/events/models"
 	"gorm.io/gorm"
 	"net/http"
@@ -59,7 +62,7 @@ func (s EventService) GetEventMoreInfo(r *http.Request, req *GetEventMoreInfoReq
 		EventType uint16
 	}
 
-	s.db.Transaction(func(tx *gorm.DB) (err error) {
+	err = s.db.Transaction(func(tx *gorm.DB) (err error) {
 		if err = tx.Model(&models.Event{}).First(&Event, req.EventID).Error; err != nil {
 			return
 		}
@@ -91,4 +94,60 @@ func (s EventService) GetEventMoreInfo(r *http.Request, req *GetEventMoreInfoReq
 	})
 
 	return
+}
+
+type EnrollForEventReq struct {
+	EventID int64
+}
+
+type EnrollForEventRes struct {
+	Success bool
+}
+
+func (s EventService) EnrollForEvent(r *http.Request, req *EnrollForEventReq, res *EnrollForEventRes) (err error) {
+	tu, err := auth.ExtractTokenUser(r)
+	if err != nil || tu.IsAnon() {
+		// 用户请求头没有Token字段
+		return base.UserErrorf("请登录/注册账户")
+	}
+
+	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
+		var user models2.User
+		tx.First(&user, tu.ID)
+		user.Events = append(user.Events, models.Event{ID: req.EventID})
+		tx.Set("gorm:save_associations", false).Save(&user)
+		res.Success = true
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type GetUserEnrolledEventsReq struct {
+}
+
+type GetUserEnrolledEventsRes struct {
+	Events []models.Event
+}
+
+func (s EventService) GetUserEnrolledEvents(r *http.Request, req *GetUserEnrolledEventsReq, res *GetUserEnrolledEventsRes) (err error) {
+	tu, err := auth.ExtractTokenUser(r)
+	if err != nil || tu.IsAnon() {
+		return base.UserErrorf("请登录/注册账户")
+	}
+
+	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
+		a := tx.Model(&models2.User{ID: tu.ID}).Association("Events")
+		if err = a.Find(&res.Events); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
 }
