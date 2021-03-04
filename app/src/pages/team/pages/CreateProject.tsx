@@ -1,25 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Form,
-  Input,
-  Button,
-  Radio,
-  Select,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
-  Typography,
-} from 'antd';
-import { useAsync } from 'react-use';
-import { call } from '@/api-client';
-import team, { Position } from '@/api-client/team';
-import { PubSub } from 'pubsub-ts';
-import { history } from 'umi';
+import React from 'react';
+import {Button, DatePicker, Form, Input, Select, Typography} from 'antd';
+import {call} from '@/api-client';
+import team from '@/api-client/team';
+import {PubSub} from 'pubsub-ts';
 
-const { Title } = Typography;
-const { Option } = Select;
+const {Title} = Typography;
+const {Option} = Select;
 
 interface CreateProjectProps {
   competitionNames: string[];
@@ -73,30 +59,30 @@ export default function CreateProject(props: CreateProjectProps) {
   };
   return (
     <Form
-      style={{ padding: '5%' }}
-      labelCol={{ span: 4 }}
-      wrapperCol={{ span: 14 }}
+      style={{padding: '5%'}}
+      labelCol={{span: 4}}
+      wrapperCol={{span: 14}}
       layout="vertical"
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
     >
-      <Title level={3} style={{ marginBottom: '20px' }}>
+      <Title level={3} style={{marginBottom: '20px'}}>
         创建招募卡片
       </Title>
       <Form.Item
         label="项目名称"
         name="ProjectName"
         required={true}
-        rules={[{ required: true, message: '请输入项目名称!' }]}
+        rules={[{required: true, message: '请输入项目名称!'}]}
       >
-        <Input />
+        <Input/>
       </Form.Item>
       <Form.Item
         label="项目类型"
         name="ProjectType"
         hasFeedback
         required={true}
-        rules={[{ required: true, message: '请选择项目类型!' }]}
+        rules={[{required: true, message: '请选择项目类型!'}]}
       >
         <Select>
           {props.competitionTypes
@@ -112,16 +98,16 @@ export default function CreateProject(props: CreateProjectProps) {
         label="项目简介"
         name="ProjectDescribeSimple"
         required={true}
-        rules={[{ required: true, message: '请输入项目简介!' }]}
+        rules={[{required: true, message: '请输入项目简介!'}]}
       >
-        <Input.TextArea autoSize={true} />
+        <Input.TextArea autoSize={true}/>
       </Form.Item>
       <Form.Item
         label="项目所需的岗位"
         name="ProjectPositions"
         hasFeedback
         required={true}
-        rules={[{ required: true, message: '请选择项目所属的岗位' }]}
+        rules={[{required: true, message: '请选择项目所属的岗位'}]}
       >
         <Select mode={'multiple'}>
           {props.positionNames
@@ -138,7 +124,7 @@ export default function CreateProject(props: CreateProjectProps) {
         name="ProjectCompetitions"
         hasFeedback
         required={true}
-        rules={[{ required: true, message: '请选择项目所属比赛!' }]}
+        rules={[{required: true, message: '请选择项目所属比赛!'}]}
       >
         <Select mode={'multiple'}>
           {props.competitionNames
@@ -155,12 +141,12 @@ export default function CreateProject(props: CreateProjectProps) {
         label="项目报名截止日期"
         name="ProjectEndTime"
         required={true}
-        rules={[{ required: true, message: '请输入报名截止日期!' }]}
+        rules={[{required: true, message: '请输入报名截止日期!'}]}
       >
-        <DatePicker style={{ width: '100%' }} size={'large'} />
+        <DatePicker style={{width: '100%'}} size={'large'}/>
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+        <Button type="primary" htmlType="submit" style={{width: '100%'}}>
           创建项目
         </Button>
       </Form.Item>

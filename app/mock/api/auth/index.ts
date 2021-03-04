@@ -1,3 +1,3 @@
 import UserService from './UserService';
 
-export default { UserService };
+export default {UserService};

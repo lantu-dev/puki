@@ -1,7 +1,7 @@
-import { auth, call, setToken } from '@/api-client';
-import { Button, Col, Form, Input, Row, Space, Typography } from 'antd';
+import {auth, call, setToken} from '@/api-client';
+import {Button, Col, Form, Input, Row, Space, Typography} from 'antd';
 
-const { Title } = Typography;
+const {Title} = Typography;
 
 interface InputVerifyCodeProps {
   onBack: () => void;
@@ -13,9 +13,9 @@ interface InputVerifyCodeProps {
 }
 
 export default function InputVerifyCode(props: InputVerifyCodeProps) {
-  const onFinish = async ({ verifyCode }: any) => {
+  const onFinish = async ({verifyCode}: any) => {
     console.log(props);
-    const { Token, User } = await call(auth.UserService.SMSCodeLogin, {
+    const {Token, User} = await call(auth.UserService.SMSCodeLogin, {
       PhoneNumber: props.phoneNumber,
       Session: props.session,
       Code: verifyCode,
@@ -31,7 +31,7 @@ export default function InputVerifyCode(props: InputVerifyCodeProps) {
   };
 
   const onResend = async () => {
-    const { Session } = await call(auth.UserService.SMSSendCode, {
+    const {Session} = await call(auth.UserService.SMSSendCode, {
       PhoneNumber: props.phoneNumber,
     });
     props.onResent(Session);
@@ -41,7 +41,7 @@ export default function InputVerifyCode(props: InputVerifyCodeProps) {
     <>
       <Title level={3}>蓝图未来</Title>
       <Form onFinish={onFinish}>
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Space direction="vertical" size="large" style={{width: '100%'}}>
           <Row justify="center">
             <Col span={20}>
               <Form.Item
@@ -64,7 +64,7 @@ export default function InputVerifyCode(props: InputVerifyCodeProps) {
                   suffix={
                     <Button
                       type="link"
-                      style={{ padding: '0' }}
+                      style={{padding: '0'}}
                       disabled={!!props.tick}
                       onClick={onResend}
                     >
@@ -75,7 +75,7 @@ export default function InputVerifyCode(props: InputVerifyCodeProps) {
               </Form.Item>
             </Col>
           </Row>
-          <Row justify="center" style={{ textAlign: 'center' }}>
+          <Row justify="center" style={{textAlign: 'center'}}>
             <Col span={8}>
               <Button size="large" onClick={props.onBack}>
                 修改手机号

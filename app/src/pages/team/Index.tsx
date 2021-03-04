@@ -1,13 +1,13 @@
-import { call, team } from '@/api-client';
-import { ProjectSimple } from '@/api-client/team';
-import { Drawer, List } from 'antd';
-import { useAsync, useSetState } from 'react-use';
+import {call, team} from '@/api-client';
+import {ProjectSimple} from '@/api-client/team';
+import {Drawer, List} from 'antd';
+import {useAsync, useSetState} from 'react-use';
 import Filter from './component/Filter';
 import ProjectCard from './component/ProjectCard';
 import ProjectDetail from './component/ProjectDetail';
-import { PubSub } from 'pubsub-ts';
+import {PubSub} from 'pubsub-ts';
 import CreateProject from '@/pages/team/pages/CreateProject';
-import { DownOutlined, RightOutlined } from '@ant-design/icons';
+import {DownOutlined, RightOutlined} from '@ant-design/icons';
 
 export default function Index(key?: string) {
   const [state, setState] = useSetState({
@@ -40,14 +40,14 @@ export default function Index(key?: string) {
 
   let subscriber = new PubSub.Subscriber();
   subscriber.on('createProjectDrawerVisible', (n: PubSub.Notification) => {
-    setState({ createProjectDrawerVisible: n.body });
+    setState({createProjectDrawerVisible: n.body});
   });
   subscriber.on('typeList', (n: PubSub.Notification) => {
-    setState({ typeList: n.body });
+    setState({typeList: n.body});
   });
   subscriber.on('projectCreateInfo', (n: PubSub.Notification) => {
-    setState({ projectSimple: n.body });
-    setState({ projectDetailDrawerVisible: true });
+    setState({projectSimple: n.body});
+    setState({projectDetailDrawerVisible: true});
   });
   subscriber.start();
 
@@ -85,7 +85,7 @@ export default function Index(key?: string) {
 
       <Drawer
         destroyOnClose
-        closeIcon={<DownOutlined />}
+        closeIcon={<DownOutlined/>}
         onClose={() => {
           setState({
             projectDetailDrawerVisible: false,
@@ -94,7 +94,7 @@ export default function Index(key?: string) {
         visible={state.projectDetailDrawerVisible}
         height="100%"
         width="100%"
-        bodyStyle={{ padding: '0' }}
+        bodyStyle={{padding: '0'}}
         placement={'bottom'}
       >
         <ProjectDetail {...state.projectSimple} />
@@ -102,7 +102,7 @@ export default function Index(key?: string) {
 
       <Drawer
         destroyOnClose
-        closeIcon={<RightOutlined />}
+        closeIcon={<RightOutlined/>}
         onClose={() => {
           setState({
             createProjectDrawerVisible: false,
@@ -110,7 +110,7 @@ export default function Index(key?: string) {
         }}
         visible={state.createProjectDrawerVisible}
         width="100%"
-        bodyStyle={{ padding: '0' }}
+        bodyStyle={{padding: '0'}}
       >
         <CreateProject
           competitionNames={state.typeList.competitionNames}

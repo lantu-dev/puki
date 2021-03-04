@@ -1,4 +1,4 @@
-import { Endpoint } from './client';
+import {Endpoint} from './client';
 
 export interface SMSSendCodeReq {
   PhoneNumber: string;
@@ -40,14 +40,10 @@ export interface RegisterRes {
 
 export default {
   UserService: {
-    SMSSendCode: 'auth/UserService.SMSSendCode' as Endpoint<
-      SMSSendCodeReq,
-      SMSSendCodeRes
-    >,
-    SMSCodeLogin: 'auth/UserService.SMSCodeLogin' as Endpoint<
-      SMSCodeLoginReq,
-      SMSCodeLoginRes
-    >,
+    SMSSendCode: 'auth/UserService.SMSSendCode' as Endpoint<SMSSendCodeReq,
+      SMSSendCodeRes>,
+    SMSCodeLogin: 'auth/UserService.SMSCodeLogin' as Endpoint<SMSCodeLoginReq,
+      SMSCodeLoginRes>,
     GetProfile: 'auth/UserService.GetProfile' as Endpoint<{}, GetProfileRes>,
     Register: 'auth/UserService.Register' as Endpoint<RegisterReq, RegisterRes>,
   },

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Select } from 'antd';
-import { Row, Col, Button } from 'antd';
+import React, {useState} from 'react';
+import {Button, Col, Row, Select} from 'antd';
 import 'antd/dist/antd.css';
-const { Option } = Select;
+
+const {Option} = Select;
 
 interface student {
   id: number;
@@ -56,11 +56,11 @@ export function PingYi() {
   };
   return (
     <div>
-      <Row justify="space-between" align="middle" style={{ marginTop: '60px' }}>
-        <Col span={8} style={{ position: 'relative' }}>
+      <Row justify="space-between" align="middle" style={{marginTop: '60px'}}>
+        <Col span={8} style={{position: 'relative'}}>
           <Select
             showSearch
-            style={{ width: 200, marginTop: '5%' }}
+            style={{width: 200, marginTop: '5%'}}
             placeholder="学号"
             optionFilterProp="children"
             allowClear
@@ -76,7 +76,7 @@ export function PingYi() {
             ))}
           </Select>
         </Col>
-        <Col span={16} style={{ textAlign: 'center', position: 'relative' }}>
+        <Col span={16} style={{textAlign: 'center', position: 'relative'}}>
           <p
             style={{
               border: '1px solid black',

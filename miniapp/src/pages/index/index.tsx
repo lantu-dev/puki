@@ -1,17 +1,22 @@
-import React, { Component } from 'react';
-import { View, Text } from '@tarojs/components';
+import React, {Component} from 'react';
+import {Text, View} from '@tarojs/components';
 import './index.less';
 
 export default class Index extends Component {
-  componentWillMount() {}
+  componentWillMount() {
+  }
 
-  componentDidMount() {}
+  componentDidMount() {
+  }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+  }
 
-  componentDidShow() {}
+  componentDidShow() {
+  }
 
-  componentDidHide() {}
+  componentDidHide() {
+  }
 
   render() {
     return (

@@ -1,9 +1,9 @@
 import {
-  GetEventsListRes,
   EventMoreInfoReq,
   EventMoreInfoRes,
   GetAnswersListReq,
   GetAnswersListRes,
+  GetEventsListRes,
   GetQuestionsListReq,
   GetQuestionsListRes,
 } from '@/api-client/events';

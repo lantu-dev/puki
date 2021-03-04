@@ -1,11 +1,11 @@
 import {
+  GetProfileRes,
   RegisterReq,
   RegisterRes,
   SMSCodeLoginReq,
   SMSCodeLoginRes,
   SMSSendCodeReq,
   SMSSendCodeRes,
-  GetProfileRes,
 } from '@/api-client/auth';
 // @ts-ignore
 import Mock from 'mockjs';

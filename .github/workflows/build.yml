@@ -80,7 +80,7 @@ jobs:
 
       - run: cd app && yarn
       - run: cd site && yarn
-      
+
       - name: Fontend code style check
         run: cd app && yarn prettier:check > /tmp/prettierout 2>&1
 

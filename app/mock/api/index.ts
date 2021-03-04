@@ -8,7 +8,7 @@ const serve = {
 
 export default {
   'POST /api/': (req: any, res: any) => {
-    const { method, params } = req.body;
+    const {method, params} = req.body;
 
     const [, Module, Service, Method] = /^(\w+)\/(\w+)\.(\w+)$/.exec(
       method,
@@ -26,7 +26,7 @@ export default {
     } catch (err) {
       console.log(err);
     }
-    res.send({ result }).end();
+    res.send({result}).end();
 
     console.log('Module: ', Module);
     console.log('Service: ', Service);

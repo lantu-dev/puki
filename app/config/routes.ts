@@ -110,12 +110,12 @@ export default [
     component: '@/pages/QianQing/SanHuiLiangZhi',
   },
 
-    {
+  {
     exact: true,
     path: '/community/Community',
     component: '@/pages/community/Community',
   },
-      {
+  {
     exact: true,
     path: '/homepage/Homepage',
     component: '@/pages/homepage/Homepage',

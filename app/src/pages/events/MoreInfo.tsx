@@ -1,4 +1,4 @@
-import { call, events } from '@/api-client';
+import {call, events} from '@/api-client';
 import {
   CalendarOutlined,
   EnvironmentOutlined,
@@ -24,11 +24,11 @@ import {
   Typography,
 } from 'antd';
 import moment from 'moment';
-import { useAsync, useSetState } from 'react-use';
-import { history } from 'umi';
+import {useAsync, useSetState} from 'react-use';
+import {history} from 'umi';
 import style from './MoreInfo.less';
 
-const { Title, Paragraph, Text } = Typography;
+const {Title, Paragraph, Text} = Typography;
 
 enum EnterForSteps {
   Confirm,
@@ -60,10 +60,10 @@ export default function MoreInfo() {
           // TODO 检查登录状态/是否已经报名
           if (eventMoreInfo.value!.type !== 'h') {
             // TODO 发送报名请求
-            setState({ enterFor: false });
+            setState({enterFor: false});
             history.push('/events/entered-for');
           } else {
-            setState({ enterForSteps: EnterForSteps.TeamUp });
+            setState({enterForSteps: EnterForSteps.TeamUp});
           }
         } else {
           // hackathon组队报名
@@ -88,9 +88,9 @@ export default function MoreInfo() {
       }}
     >
       {
-        [<Title level={3}>是否确认报名</Title>, <TeamUpForm form={form} />][
+        [<Title level={3}>是否确认报名</Title>, <TeamUpForm form={form}/>][
           state.enterForSteps
-        ]
+          ]
       }
     </Modal>
   );
@@ -102,22 +102,22 @@ export default function MoreInfo() {
       </div>
       <Space
         direction="vertical"
-        style={{ width: '100%', padding: '0 1em 1em 1em' }}
+        style={{width: '100%', padding: '0 1em 1em 1em'}}
       >
         <Title level={3}>{eventMoreInfo.value.title}</Title>
         <Row wrap={false} align="middle">
           <Col span={12}>
             <Row align="middle" wrap={false} gutter={5}>
               <Col>
-                <CalendarOutlined style={{ fontSize: '1.5em' }} />
+                <CalendarOutlined style={{fontSize: '1.5em'}}/>
               </Col>
               <Col>
                 {eventMoreInfo.value.type === 'h'
                   ? `${moment(eventMoreInfo.value.startTime).format(
-                      'HH:mm A(DD号)',
-                    )}-${moment(eventMoreInfo.value.endTime).format(
-                      'HH:mm A(DD号)',
-                    )}`
+                    'HH:mm A(DD号)',
+                  )}-${moment(eventMoreInfo.value.endTime).format(
+                    'HH:mm A(DD号)',
+                  )}`
                   : moment(eventMoreInfo.value.startTime).format('HH:mm A')}
               </Col>
             </Row>
@@ -125,19 +125,19 @@ export default function MoreInfo() {
           <Col span={12}>
             <Row align="middle" wrap={false} gutter={5}>
               <Col>
-                <EnvironmentOutlined style={{ fontSize: '1.5em' }} />
+                <EnvironmentOutlined style={{fontSize: '1.5em'}}/>
               </Col>
               <Col>{eventMoreInfo.value.location}</Col>
             </Row>
           </Col>
         </Row>
-        <Text strong style={{ fontSize: '1.2em' }}>
+        <Text strong style={{fontSize: '1.2em'}}>
           {eventMoreInfo.value.type === 'l' && '具体信息'}
           {eventMoreInfo.value.type === 's' && '沙龙核心议题'}
           {eventMoreInfo.value.type === 'h' && '活动介绍'}
         </Text>
         <Paragraph>{eventMoreInfo.value.description}</Paragraph>
-        <Text strong style={{ fontSize: '1.2em' }}>
+        <Text strong style={{fontSize: '1.2em'}}>
           {eventMoreInfo.value.type === 'l' && '主讲人'}
           {eventMoreInfo.value.type === 's' && '具体安排'}
           {eventMoreInfo.value.type === 'h' && '活动流程'}
@@ -150,7 +150,7 @@ export default function MoreInfo() {
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar src={item.photoUrl} />}
+                  avatar={<Avatar src={item.photoUrl}/>}
                   title={item.personName}
                   description={item.description}
                 />
@@ -164,7 +164,7 @@ export default function MoreInfo() {
               <Card
                 extra={moment(v.startTime).format('HH:mm A')}
                 key={v.personName}
-                style={{ width: 300 }}
+                style={{width: 300}}
                 title={`${v.personName} ${v.title}`}
               >
                 <Paragraph>{v.description}</Paragraph>
@@ -188,9 +188,9 @@ export default function MoreInfo() {
           shape="circle"
           size="large"
           type="primary"
-          icon={<UserAddOutlined />}
+          icon={<UserAddOutlined/>}
           onClick={() => {
-            setState({ enterFor: true });
+            setState({enterFor: true});
           }}
         ></Button>
         {EnterForModel()}
@@ -198,7 +198,7 @@ export default function MoreInfo() {
           shape="circle"
           size="large"
           type="primary"
-          icon={<QuestionOutlined />}
+          icon={<QuestionOutlined/>}
           onClick={() => {
             history.push({
               pathname: '/events/questions',
@@ -212,7 +212,7 @@ export default function MoreInfo() {
           shape="circle"
           size="large"
           type="primary"
-          icon={<ShareAltOutlined />}
+          icon={<ShareAltOutlined/>}
         ></Button>
       </Space>
     </div>
@@ -267,11 +267,11 @@ function TeamUpForm(props: { form: ReturnType<typeof Form.useForm>[0] }) {
           },
         ]}
       >
-        {(fields, { add, remove }, { errors }) => {
+        {(fields, {add, remove}, {errors}) => {
           return (
             <>
               {fields.map((field, index) => (
-                <Row key={field.key} style={{ width: '100%' }} align="middle">
+                <Row key={field.key} style={{width: '100%'}} align="middle">
                   <Col flex={1}>
                     <Form.Item
                       {...field}
@@ -300,13 +300,13 @@ function TeamUpForm(props: { form: ReturnType<typeof Form.useForm>[0] }) {
                     {fields.length > 1 && (
                       <Button
                         danger
-                        icon={<MinusOutlined />}
+                        icon={<MinusOutlined/>}
                         shape="circle"
                         type="primary"
                         onClick={() => {
                           remove(field.name);
                         }}
-                        style={{ transform: 'translate(5px,7px)' }}
+                        style={{transform: 'translate(5px,7px)'}}
                       ></Button>
                     )}
                   </Col>
@@ -321,7 +321,7 @@ function TeamUpForm(props: { form: ReturnType<typeof Form.useForm>[0] }) {
                 >
                   添加成员
                 </Button>
-                <Form.ErrorList errors={errors} />
+                <Form.ErrorList errors={errors}/>
               </Form.Item>
             </>
           );

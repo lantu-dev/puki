@@ -1,24 +1,10 @@
 import avatar from '@/assets/avatar.png';
-import {
-  ArrowLeftOutlined,
-  EllipsisOutlined,
-  LikeOutlined,
-  MessageOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
-import {
-  Affix,
-  Alert,
-  Avatar,
-  Button,
-  Divider,
-  Image,
-  Menu,
-  Typography,
-} from 'antd';
+import {ArrowLeftOutlined, EllipsisOutlined, LikeOutlined, MessageOutlined, PlusOutlined,} from '@ant-design/icons';
+import {Affix, Alert, Avatar, Button, Divider, Image, Menu, Typography,} from 'antd';
 import moment from 'moment';
-import React, { useState } from 'react';
-const { Title, Paragraph, Text } = Typography;
+import React, {useState} from 'react';
+
+const {Title, Paragraph, Text} = Typography;
 
 interface PageProps {
   avatarUrl: string;
@@ -68,7 +54,7 @@ export default function () {
 function Page(props: PageProps) {
   const [selected, setSelected] = useState(['topic']);
 
-  const onMenuClick = function ({ key, keyPath }: { key: any; keyPath: any }) {
+  const onMenuClick = function ({key, keyPath}: { key: any; keyPath: any }) {
     console.log(key);
     setSelected(keyPath);
   };
@@ -134,7 +120,7 @@ function Page(props: PageProps) {
               }}
               type="primary"
               shape="circle"
-              icon={<PlusOutlined />}
+              icon={<PlusOutlined/>}
             ></Button>
           </div>
         </div>
@@ -147,7 +133,7 @@ function Page(props: PageProps) {
           ))}
         </div>
       ) : (
-        <div />
+        <div/>
       )}
     </>
   );
@@ -155,7 +141,7 @@ function Page(props: PageProps) {
 
 function Thread(props: ThreadProps) {
   return (
-    <div style={{ margin: '10px 10px' }}>
+    <div style={{margin: '10px 10px'}}>
       <div
         style={{
           display: 'flex',
@@ -163,7 +149,7 @@ function Thread(props: ThreadProps) {
         }}
       >
         <Avatar
-          style={{ alignSelf: 'center', marginRight: '10px' }}
+          style={{alignSelf: 'center', marginRight: '10px'}}
           src={props.avatarUrl}
         ></Avatar>
         <div>
@@ -190,8 +176,8 @@ function Thread(props: ThreadProps) {
             </Text>
           </div>
         </div>
-        <div style={{ flexGrow: 1 }}></div>
-        <div style={{ alignSelf: 'flex-end' }}>
+        <div style={{flexGrow: 1}}></div>
+        <div style={{alignSelf: 'flex-end'}}>
           {props.tags.map((v) => (
             <Text code key={v}>
               {v}
@@ -199,7 +185,7 @@ function Thread(props: ThreadProps) {
           ))}
         </div>
       </div>
-      <div style={{ margin: '0 5px' }}>
+      <div style={{margin: '0 5px'}}>
         <div>
           <Paragraph
             ellipsis={{
@@ -213,7 +199,7 @@ function Thread(props: ThreadProps) {
           >
             {props.content}
           </Paragraph>
-          <div style={{ display: 'flex' }}>
+          <div style={{display: 'flex'}}>
             {props.images.map((v, i) => (
               <div
                 key={i}
@@ -253,15 +239,15 @@ function Thread(props: ThreadProps) {
               marginRight: '20px',
             }}
           >
-            <LikeOutlined />
+            <LikeOutlined/>
             {props.votesCount}
           </div>
           <div>
-            <MessageOutlined />
+            <MessageOutlined/>
             {props.commentsCount}
           </div>
-          <div style={{ flexGrow: 1 }}></div>
-          <EllipsisOutlined style={{ marginRight: '10px' }} />
+          <div style={{flexGrow: 1}}></div>
+          <EllipsisOutlined style={{marginRight: '10px'}}/>
         </div>
       </div>
       <Divider

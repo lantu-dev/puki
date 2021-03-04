@@ -1,4 +1,4 @@
-import { Endpoint } from './client';
+import {Endpoint} from './client';
 
 interface EventBriefInfo {
   description: string;
@@ -53,41 +53,38 @@ export interface AnswerInfo {
   time: string;
 }
 
-export interface GetEventsListReq {}
+export interface GetEventsListReq {
+}
+
 export type GetEventsListRes = EventBriefInfo[];
 
 export interface EventMoreInfoReq {
   eventID: string;
 }
+
 export type EventMoreInfoRes = LectureInfo | SalonInfo | HackathonInfo;
 
 export interface GetQuestionsListReq {
   eventID: string;
 }
+
 export type GetQuestionsListRes = QuestionInfo[];
 
 export interface GetAnswersListReq {
   questionID: string;
 }
+
 export type GetAnswersListRes = AnswerInfo[];
 
 export default {
   Info: {
-    GetEventsList: 'events/Info.GetEventsList' as Endpoint<
-      {},
-      GetEventsListRes
-    >,
-    GetEventMoreInfo: 'events/Info.GetEventMoreInfo' as Endpoint<
-      EventMoreInfoReq,
-      EventMoreInfoRes
-    >,
-    GetQuestionsList: 'events/Info.GetQuestionsList' as Endpoint<
-      GetQuestionsListReq,
-      GetQuestionsListRes
-    >,
-    GetAnswersList: 'events/Info.GetAnswersList' as Endpoint<
-      GetAnswersListReq,
-      GetAnswersListRes
-    >,
+    GetEventsList: 'events/Info.GetEventsList' as Endpoint<{},
+      GetEventsListRes>,
+    GetEventMoreInfo: 'events/Info.GetEventMoreInfo' as Endpoint<EventMoreInfoReq,
+      EventMoreInfoRes>,
+    GetQuestionsList: 'events/Info.GetQuestionsList' as Endpoint<GetQuestionsListReq,
+      GetQuestionsListRes>,
+    GetAnswersList: 'events/Info.GetAnswersList' as Endpoint<GetAnswersListReq,
+      GetAnswersListRes>,
   },
 };

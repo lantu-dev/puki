@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-/* 
+/*
 imgSrc: string;图片链接
 textMain: string;活动描述
 contentSrc: string;详细内容链接
@@ -45,7 +45,7 @@ const data: contentProps = {
 };
 
 function SvgImg(props: content) {
-  const { imgSrc, textMain, contentSrc } = props;
+  const {imgSrc, textMain, contentSrc} = props;
   return (
     <div
       style={{
@@ -60,7 +60,7 @@ function SvgImg(props: content) {
           color: 'black',
         }}
       >
-        <img src={imgSrc} width="884px" height="166px" />
+        <img src={imgSrc} width="884px" height="166px"/>
         <span
           style={{
             fontSize: '28px',
@@ -80,7 +80,7 @@ function SvgImg(props: content) {
 export function Page(props: contentProps) {
   const [selected, setSelected] = useState(['topic']);
 
-  const onMenuClick = function ({ key, keyPath }: { key: any; keyPath: any }) {
+  const onMenuClick = function ({key, keyPath}: { key: any; keyPath: any }) {
     console.log(key);
     setSelected(keyPath);
   };
@@ -93,7 +93,7 @@ export function Page(props: contentProps) {
           ))}
         </div>
       ) : (
-        <div />
+        <div/>
       )}
     </>
   );

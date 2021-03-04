@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { Menu, Button } from 'antd';
-import { Page, contentProps } from '../QingNianDaXueXi';
-import { Link } from 'umi';
+import React, {useState} from 'react';
+import {Button, Menu} from 'antd';
+import {contentProps, Page} from '../QingNianDaXueXi';
 import 'antd/dist/antd.css';
 
 export function Show(props: contentProps) {
@@ -41,7 +40,7 @@ export function Show(props: contentProps) {
           right: 20,
         }}
       >
-        <Button style={{ background: 'green' }} href="" /*添加活动的跳转*/>
+        <Button style={{background: 'green'}} href="" /*添加活动的跳转*/>
           添加新活动
         </Button>
       </div>

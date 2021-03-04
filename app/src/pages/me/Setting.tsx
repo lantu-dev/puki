@@ -1,10 +1,10 @@
-import { Space } from 'antd';
+import {Space} from 'antd';
 import Item from './component/Item';
 
 export default function Setting() {
   return (
     <>
-      <Space direction="vertical" style={{ width: '100%' }} size="small">
+      <Space direction="vertical" style={{width: '100%'}} size="small">
         <div>
           <Item label="修改密码"></Item>
           <Item label="修改认证信息"></Item>

@@ -1,12 +1,12 @@
-import { call, events } from '@/api-client';
-import { QuestionInfo } from '@/api-client/events';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Drawer, Typography } from 'antd';
-import { useAsync, useMethods } from 'react-use';
-import { history } from 'umi';
+import {call, events} from '@/api-client';
+import {QuestionInfo} from '@/api-client/events';
+import {PlusOutlined} from '@ant-design/icons';
+import {Button, Card, Drawer, Typography} from 'antd';
+import {useAsync, useMethods} from 'react-use';
+import {history} from 'umi';
 import Answers from './Answers';
 
-const { Paragraph, Title } = Typography;
+const {Paragraph, Title} = Typography;
 
 const initialState = {
   visible: false,
@@ -14,10 +14,10 @@ const initialState = {
 };
 const createMethods = (state: typeof initialState) => ({
   openQuestion(questionInfo: QuestionInfo) {
-    return { ...state, questionInfo, visible: true };
+    return {...state, questionInfo, visible: true};
   },
   closeQuestion() {
-    return { ...state, visible: false };
+    return {...state, visible: false};
   },
 });
 
@@ -47,7 +47,7 @@ export default function Questions() {
 
       <Drawer
         destroyOnClose
-        headerStyle={{ paddingTop: '24px' }}
+        headerStyle={{paddingTop: '24px'}}
         onClose={methods.closeQuestion}
         title={<Question {...state.questionInfo}></Question>}
         visible={state.visible}
@@ -65,7 +65,7 @@ export default function Questions() {
         }}
       >
         <Button
-          icon={<PlusOutlined />}
+          icon={<PlusOutlined/>}
           shape="circle"
           size="large"
           type="primary"

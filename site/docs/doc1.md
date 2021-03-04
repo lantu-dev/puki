@@ -1,8 +1,5 @@
 ---
-id: doc1
-title: Style Guide
-sidebar_label: Style Guide
-slug: /
+id: doc1 title: Style Guide sidebar_label: Style Guide slug: /
 ---
 
 You can write content using [GitHub-flavored Markdown syntax](https://github.github.com/gfm/).
@@ -43,9 +40,9 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 1. First ordered list item
 1. Another item
-   - Unordered sub-list.
+    - Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-   1. Ordered sub-list
+    1. Ordered sub-list
 1. And another item.
 
 * Unordered list can use asterisks
@@ -68,12 +65,15 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 Or leave it empty and use the [link text itself].
 
-URLs and URLs in angle brackets will automatically get turned into links. http://www.example.com/ or <http://www.example.com/> and sometimes example.com (but not on GitHub, for example).
+URLs and URLs in angle brackets will automatically get turned into links. http://www.example.com/
+or <http://www.example.com/> and sometimes example.com (but not on GitHub, for example).
 
 Some text to show that the reference links can follow later.
 
 [arbitrary case-insensitive reference text]: https://www.mozilla.org/
+
 [1]: http://slashdot.org/
+
 [link text itself]: http://www.reddit.com/
 
 ---
@@ -113,7 +113,7 @@ But let's throw in a <b>tag</b>.
 
 ```js {2}
 function highlightMe() {
-  console.log('This line can be highlighted!');
+    console.log('This line can be highlighted!');
 }
 ```
 
@@ -129,7 +129,8 @@ Colons can be used to align columns.
 | col 2 is      |   centered    |   \$12 |
 | zebra stripes |   are neat    |    \$1 |
 
-There must be at least 3 dashes separating each header cell. The outer pipes (|) are optional, and you don't need to make the raw Markdown line up prettily. You can also use inline Markdown.
+There must be at least 3 dashes separating each header cell. The outer pipes (|) are optional, and you don't need to
+make the raw Markdown line up prettily. You can also use inline Markdown.
 
 | Markdown | Less      | Pretty     |
 | -------- | --------- | ---------- |
@@ -166,7 +167,8 @@ Here's a line for us to start with.
 
 This line is separated from the one above by two newlines, so it will be a _separate paragraph_.
 
-This line is also a separate paragraph, but... This line is only separated by a single newline, so it's a separate line in the _same paragraph_.
+This line is also a separate paragraph, but... This line is only separated by a single newline, so it's a separate line
+in the _same paragraph_.
 
 ---
 

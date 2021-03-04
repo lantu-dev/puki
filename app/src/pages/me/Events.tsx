@@ -1,6 +1,7 @@
-import { DoubleLeftOutlined } from '@ant-design/icons';
-import { Button, Empty, Typography } from 'antd';
-const { Title, Text } = Typography;
+import {DoubleLeftOutlined} from '@ant-design/icons';
+import {Button, Empty, Typography} from 'antd';
+
+const {Title, Text} = Typography;
 
 export default function Events() {
   return (
@@ -16,7 +17,7 @@ export default function Events() {
       }
     >
       <Button type="primary" size="large">
-        <DoubleLeftOutlined />
+        <DoubleLeftOutlined/>
         添加活动
       </Button>
     </Empty>
