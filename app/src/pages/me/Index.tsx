@@ -1,83 +1,69 @@
+import { auth, call } from '@/api-client';
 import SvgFemale from '@/assets/female.svg';
 import Identification from '@/assets/identification.svg';
 import SvgMale from '@/assets/male.svg';
 import SvgQRCode from '@/assets/QRCode.svg';
 import { RightOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Button, Col, Drawer, Row, Space } from 'antd';
-import { useState } from 'react';
+import { useAsync, useSetState } from 'react-use';
 import { history } from 'umi';
 import Item from './component/Item';
 
-enum Gender {
-  Male,
-  Female,
-}
-
 export default function Me() {
-  const [gender, setGender] = useState(Gender.Male);
-  const [quiting, setQuiting] = useState(false);
-  const [identified, setIdentified] = useState(false);
-  // TODO WhoAmI 接口
+  const [state, setState] = useSetState({ quiting: false });
+
+  const { value: profile } = useAsync(async () => {
+    const { User, Student } = await call(auth.UserService.GetProfile, {});
+    return { ...User, ...Student };
+  });
 
   return (
     <>
-      <Row
-        align="middle"
-        style={{
-          padding: '2em 0.9375em 2em 2em',
-          fontSize: '16px',
-          borderTop: '1px solid #f5f5f5',
-          borderBottom: '1px solid #f5f5f5',
-        }}
-        wrap={false}
-      >
-        <Col>
+      <Item
+        route="/me/account"
+        label={
           <Row
             align="middle"
-            onClick={() => {
-              history.push('/me/account');
+            style={{
+              padding: '2em 0',
+              fontSize: '16px',
+              borderTop: '1px solid #f5f5f5',
+              borderBottom: '1px solid #f5f5f5',
             }}
+            wrap={false}
           >
             <Col>
               <Avatar size={64}></Avatar>
             </Col>
             <Col>
               <span style={{ fontSize: '1.5em', padding: '0.1em' }}>
-                Future_000
+                {profile?.NickName}
               </span>
-              {gender === Gender.Male ? (
-                <img src={SvgMale} alt="male" />
-              ) : (
-                <img src={SvgFemale} alt="female" />
-              )}
+              {(() => {
+                if (profile?.Gender === true) {
+                  return <img src={SvgMale} alt="male" />;
+                } else if (profile?.Gender === false) {
+                  return <img src={SvgFemale} alt="female" />;
+                }
+              })()}
             </Col>
           </Row>
-        </Col>
-        <Col style={{ marginLeft: 'auto', transform: 'translateY(0.3em)' }}>
-          <img src={SvgQRCode} alt="QRCode" />
-        </Col>
-        <Col>
-          <RightOutlined
-            style={{
-              fontSize: '0.8em',
-              color: '#bbb',
-              transform: 'translateX(0.5em)',
-            }}
-          />
-        </Col>
-      </Row>
+        }
+      ></Item>
       <Space
         direction="vertical"
         size="middle"
         style={{ width: '100%', marginTop: '2em' }}
       >
         <div>
-          {identified ? (
+          <Item label="姓名">{profile?.RealName}</Item>
+          {profile ? (
             <>
-              <Item label="姓名">宝蕴</Item>
-              <Item label="学校">北京邮电大学</Item>
-              <Item label="学院">计算机学院</Item>
-              <Item label="学号">2019123456</Item>
+              <Item label="学校">{profile.University}</Item>
+              <Item label="学院">{profile.School}</Item>
+              <Item label="学号">
+                {profile.TrustedID || profile.UntrustedID}
+              </Item>
             </>
           ) : (
             <>
@@ -86,8 +72,8 @@ export default function Me() {
               </Item>
             </>
           )}
-          <Item label="联系方式" route="/me/contact">
-            12345678912
+          <Item label="联系方式">
+            {profile?.PhoneNumber.toString().slice(2)}
           </Item>
         </div>
         <Item label="我的活动" route="/me/activity">
@@ -117,7 +103,7 @@ export default function Me() {
           size="large"
           type="primary"
           onClick={() => {
-            setQuiting(true);
+            setState({ quiting: true });
           }}
         >
           退出账户
@@ -133,7 +119,7 @@ export default function Me() {
           height: 'auto',
         }}
         onClose={() => {
-          setQuiting(false);
+          setState({ quiting: false });
         }}
         placement="bottom"
         title={
@@ -152,18 +138,18 @@ export default function Me() {
               textAlign: 'center',
             }}
             onClick={() => {
-              setQuiting(false);
+              setState({ quiting: false });
             }}
           >
             取消
           </div>
         }
-        visible={quiting}
+        visible={state.quiting}
       >
         <div
           style={{ color: 'red', padding: '1em' }}
           onClick={() => {
-            setQuiting(false);
+            setState({ quiting: false });
           }}
         >
           退出登录

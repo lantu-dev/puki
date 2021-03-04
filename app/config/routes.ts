@@ -51,11 +51,6 @@ export default [
   },
   {
     exact: true,
-    path: '/me/contact',
-    component: '@/pages/me/Contact',
-  },
-  {
-    exact: true,
     path: '/me/identify',
     component: '@/pages/me/Identify',
   },
@@ -100,15 +95,14 @@ export default [
     component: '@/pages/QianQing/SanHuiLiangZhi',
   },
 
-    {
+  {
     exact: true,
     path: '/community/Community',
     component: '@/pages/community/Community',
   },
-      {
+  {
     exact: true,
     path: '/homepage/Homepage',
     component: '@/pages/homepage/Homepage',
-
   },
 ];
