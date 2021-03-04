@@ -83,7 +83,7 @@ export default function Me() {
             {profile?.PhoneNumber.toString().slice(2)}
           </Item>
         </div>
-        <Item label="我的活动" route="/me/activity">
+        <Item label="我的活动" route="/me/events">
           <span
             style={{
               backgroundColor: 'red',
