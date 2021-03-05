@@ -12,48 +12,67 @@ export default function Setting() {
     return { ...User, ...Student };
   });
 
-  const validator = {
-    RealName: [
-      {
-        message: '请填写真实姓名(如有问题请联系管理员)',
-        reg: /^[\u4E00-\u9FA5\·]+$/,
-      },
-    ],
-    NickName: [
-      { message: '昵称长度在2-10位之间', reg: /^.{2,10}$/ },
-      {
-        message: '昵称仅支持中英文与数字',
-        reg: /^[0-9a-zA-Z\u4e00-\u9fa5]*$/,
-      },
-    ],
-    PhoneNumber: [
-      {
-        message: '手机号格式错误',
-        reg: /^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
-      },
-    ],
-  };
+  const data = [
+    {
+      key: 'NickName',
+      label: '昵称',
+      validator: [
+        { message: '昵称长度在2-10位之间', reg: /^.{2,10}$/ },
+        {
+          message: '昵称仅支持中英文与数字',
+          reg: /^[0-9a-zA-Z\u4e00-\u9fa5]*$/,
+        },
+      ],
+    },
+    {
+      key: 'RealName',
+      label: '姓名',
+      validator: [
+        {
+          message: '请填写真实姓名(如有问题请联系管理员)',
+          reg: /^[\u4E00-\u9FA5\·]+$/,
+        },
+      ],
+    },
+    {
+      key: 'University',
+      label: '学校',
+      validator: [
+        {
+          message: '请填写真实学校',
+          reg: /^[\u4E00-\u9FA5\s]+$/,
+        },
+      ],
+    },
+    {
+      key: 'PhoneNumber',
+      label: '手机号',
+      validator: [
+        {
+          message: '手机号格式错误',
+          reg: /^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
+        },
+      ],
+    },
+  ] as {
+    key: 'NickName' | 'RealName' | 'University' | 'PhoneNumber';
+    label: string;
+    validator: { message: string; reg: RegExp }[];
+  }[];
 
   return (
     <>
       <Item label="头像">
         <Avatar size={64} src={profile?.AvatarURI}></Avatar>
       </Item>
-      {([
-        { key: 'RealName', label: '姓名' },
-        { key: 'NickName', label: '昵称' },
-        { key: 'PhoneNumber', label: '手机号' },
-      ] as {
-        key: 'RealName' | 'NickName' | 'PhoneNumber';
-        label: string;
-      }[]).map((v) => (
+      {data.map((v) => (
         <Item
           key={v.key}
           label={v.label}
           editable={{
             onChange: async (value) => {
               if (profile && value !== profile[v.key].toString()) {
-                for (let val of validator[v.key]) {
+                for (let val of v.validator) {
                   if (!val.reg.test(value)) {
                     return message.warning(val.message);
                   }
