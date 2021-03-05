@@ -45,7 +45,7 @@ export default function Register() {
   });
 
   const onFinish = async (values: IForm) => {
-    const { Completed } = await call(auth.UserService.CompleteProfile, {
+    const { Completed } = await call(auth.UserService.PatchProfile, {
       RealName: values.realName,
       NickName: values.nickName || '',
       UserName: values.userName || '',

@@ -119,7 +119,7 @@ func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetPr
 	return
 }
 
-type CompleteProfileReq struct {
+type PatchProfileReq struct {
 	Gender      null.Bool
 	NickName    string
 	Password    string
@@ -130,11 +130,11 @@ type CompleteProfileReq struct {
 	TrustedID   string
 	UserName    null.String
 }
-type CompleteProfileRes struct {
+type PatchProfileRes struct {
 	Completed bool
 }
 
-func (s *UserService) CompleteProfile(r *http.Request, req *CompleteProfileReq, res *CompleteProfileRes) error {
+func (s *UserService) PatchProfile(r *http.Request, req *PatchProfileReq, res *PatchProfileRes) error {
 	// 检查用户登录
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil {

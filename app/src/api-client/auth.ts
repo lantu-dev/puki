@@ -50,13 +50,13 @@ export interface GetProfileRes {
   Student: Student;
 }
 
-type CompleteProfileReq = {
+type PatchProfileReq = {
   [key in keyof User]?: User[key];
 } &
   {
     [key in keyof Student]?: Student[key];
   };
-export interface CompleteProfileRes {
+export interface PatchProfileRes {
   Completed: boolean;
 }
 
@@ -71,9 +71,9 @@ export default {
       SMSCodeLoginRes
     >,
     GetProfile: 'auth/UserService.GetProfile' as Endpoint<{}, GetProfileRes>,
-    CompleteProfile: 'auth/UserService.CompleteProfile' as Endpoint<
-      CompleteProfileReq,
-      CompleteProfileRes
+    PatchProfile: 'auth/UserService.PatchProfile' as Endpoint<
+      PatchProfileReq,
+      PatchProfileRes
     >,
   },
 };
