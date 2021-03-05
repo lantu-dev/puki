@@ -85,8 +85,11 @@ export default function () {
           >
             {eventsList?.map((v) => {
               return (
-                <div
+                <EventCard
                   key={v.ID}
+                  ImageUrl={v.ImageUrl}
+                  Title={v.Title}
+                  Description={v.Description}
                   onClick={() => {
                     history.push({
                       pathname: '/events/more-info',
@@ -95,13 +98,7 @@ export default function () {
                       },
                     });
                   }}
-                >
-                  <EventCard
-                    ImageUrl={v.ImageUrl}
-                    Title={v.Title}
-                    Description={v.Description}
-                  />
-                </div>
+                />
               );
             })}
           </Slider>

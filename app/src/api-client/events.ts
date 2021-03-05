@@ -63,6 +63,13 @@ export interface EnrollForEventRes {
   Status: number;
 }
 
+export interface QuitEventReq {
+  EventID: number;
+}
+export interface QuitEventRes {
+  Status: number;
+}
+
 export interface GetUserEnrolledEventsReq {}
 export interface GetUserEnrolledEventsRes {
   Events: Event[];
@@ -107,7 +114,10 @@ export default {
       EnrollForEventReq,
       EnrollForEventRes
     >,
-
+    QuitEvent: 'events/EventService.QuitEvent' as Endpoint<
+      QuitEventReq,
+      QuitEventRes
+    >,
     GetUserEnrolledEvents: 'events/EventService.GetUserEnrolledEvents' as Endpoint<
       GetUserEnrolledEventsReq,
       GetUserEnrolledEventsRes

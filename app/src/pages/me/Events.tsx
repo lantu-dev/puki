@@ -1,14 +1,14 @@
 import { call, events } from '@/api-client';
-import EventCard from '@/pages/events/components/EventCard';
+import EventCard from './components/EventCard';
 import { DoubleLeftOutlined } from '@ant-design/icons';
-import { Button, Empty, List, Typography } from 'antd';
-import { useAsync } from 'react-use';
+import { Button, Empty, List, Typography, message } from 'antd';
+import { useAsync, useAsyncRetry } from 'react-use';
 import { history } from 'umi';
 
 const { Title, Text } = Typography;
 
 export default function Events() {
-  const { value: userEvents } = useAsync(async () => {
+  const { value: userEvents, retry } = useAsyncRetry(async () => {
     return await call(events.EventService.GetUserEnrolledEvents, {});
   });
 
@@ -16,8 +16,12 @@ export default function Events() {
     <List
       dataSource={userEvents.Events}
       renderItem={(item) => (
-        <div
-          onClick={() => {
+        <EventCard
+          style={{ margin: '1em' }}
+          ImageUrl={item.ImageUrl}
+          Title={item.Title}
+          Description={item.Description}
+          onClickCard={() => {
             history.push({
               pathname: '/events/more-info',
               query: {
@@ -25,14 +29,23 @@ export default function Events() {
               },
             });
           }}
-        >
-          <EventCard
-            style={{ margin: '1em' }}
-            ImageUrl={item.ImageUrl}
-            Title={item.Title}
-            Description={item.Description}
-          />
-        </div>
+          onClickDelete={async () => {
+            console.log(history);
+            const { Status } = await call(events.EventService.QuitEvent, {
+              EventID: item.ID,
+            });
+            switch (Status) {
+              case 0:
+                retry();
+                break;
+              case 1:
+                message.warning('已删除活动');
+              case 2:
+                message.warning('该活动不存在');
+                break;
+            }
+          }}
+        />
       )}
     />
   ) : (
@@ -51,7 +64,7 @@ export default function Events() {
         type="primary"
         size="large"
         onClick={() => {
-          history.push('/events');
+          history.replace('/events');
         }}
       >
         <DoubleLeftOutlined />
