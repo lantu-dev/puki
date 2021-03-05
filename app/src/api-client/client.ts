@@ -105,6 +105,8 @@ async function dev_call<P, R>(
     }) as any;
 }
 
+export async function uploadImage(file: Blob) {}
+
 export async function call<P, R>(
   endpoint: Endpoint<P, R>,
   params: P,

@@ -1,5 +1,6 @@
 import { auth, call, setToken } from '@/api-client';
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd';
+import React from 'react';
 
 const { Title } = Typography;
 
