@@ -1,5 +1,5 @@
-import { StudentCard } from './component/Svg';
 import { Button } from 'antd';
+import { StudentCard } from './component/Svg';
 
 export default function Identify() {
   return (

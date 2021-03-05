@@ -1,6 +1,5 @@
 import { auth, call } from '@/api-client';
 import { Avatar, message, Switch } from 'antd';
-import _ from 'lodash';
 import { useAsyncRetry, useCounter } from 'react-use';
 import Item from './component/Item';
 import { Female, Male, QRCode } from './component/Svg';

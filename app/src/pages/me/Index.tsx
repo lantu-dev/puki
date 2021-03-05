@@ -2,7 +2,7 @@ import { auth, call } from '@/api-client';
 import { Avatar, Badge, Button, Col, Drawer, Row, Space } from 'antd';
 import { useAsync, useSetState } from 'react-use';
 import Item from './component/Item';
-import { Male, Female, Identification } from './component/Svg';
+import { Female, Identification, Male } from './component/Svg';
 
 export default function Me() {
   const [state, setState] = useSetState({ quiting: false });
