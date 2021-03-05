@@ -78,7 +78,7 @@ export default function Setting() {
                   }
                 }
                 const { Completed } = await call(
-                  auth.UserService.CompleteProfile,
+                  auth.UserService.PatchProfile,
                   {
                     [v.key]: value,
                   },
@@ -103,12 +103,9 @@ export default function Setting() {
               return reset();
             }
             if (profile && value !== profile.Gender) {
-              const { Completed } = await call(
-                auth.UserService.CompleteProfile,
-                {
-                  Gender: value,
-                },
-              );
+              const { Completed } = await call(auth.UserService.PatchProfile, {
+                Gender: value,
+              });
               if (Completed) {
                 message.success(`性别修改成功`);
                 inc();
