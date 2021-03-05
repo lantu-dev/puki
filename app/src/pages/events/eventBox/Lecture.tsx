@@ -10,7 +10,14 @@ export default function Lecture(props: LectureInfo) {
       renderItem={(item) => (
         <List.Item>
           <List.Item.Meta
-            avatar={<Avatar src={item.TalkerAvatarURL} />}
+            avatar={
+              <Avatar
+                src={
+                  item.TalkerAvatarURL ||
+                  `https://api.multiavatar.com/${item.TalkerName}.svg`
+                }
+              />
+            }
             title={item.TalkerName}
             description={item.TalkerDescription}
           />

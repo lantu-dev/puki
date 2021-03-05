@@ -17,7 +17,7 @@ export default function Setting() {
       key: 'NickName',
       label: '昵称',
       validator: [
-        { message: '昵称长度在2-10位之间', reg: /^.{2,10}$/ },
+        { message: '昵称长度在2-8位之间', reg: /^.{2,8}$/ },
         {
           message: '昵称仅支持中英文与数字',
           reg: /^[0-9a-zA-Z\u4e00-\u9fa5]*$/,
@@ -44,18 +44,8 @@ export default function Setting() {
         },
       ],
     },
-    {
-      key: 'PhoneNumber',
-      label: '手机号',
-      validator: [
-        {
-          message: '手机号格式错误',
-          reg: /^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/,
-        },
-      ],
-    },
   ] as {
-    key: 'NickName' | 'RealName' | 'University' | 'PhoneNumber';
+    key: 'NickName' | 'RealName' | 'University';
     label: string;
     validator: { message: string; reg: RegExp }[];
   }[];
@@ -63,7 +53,17 @@ export default function Setting() {
   return (
     <>
       <Item label="头像">
-        <Avatar size={64} src={profile?.AvatarURI}></Avatar>
+        <Avatar
+          size={64}
+          src={
+            profile?.AvatarURI ||
+            (profile?.ID &&
+              `https://api.multiavatar.com/${
+                profile?.ID.toString() + profile?.NickName
+              }.svg`) ||
+            `https://api.multiavatar.com/${new Date().toString()}.svg`
+          }
+        />
       </Item>
       {data.map((v) => (
         <Item

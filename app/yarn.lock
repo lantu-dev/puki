@@ -4000,6 +4000,11 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, can
   resolved "https://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30001190.tgz?cache=0&sync_timestamp=1613799328282&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcaniuse-lite%2Fdownload%2Fcaniuse-lite-1.0.30001190.tgz#acc6d4a53c68be16cfc314d55c9cab637e558cba"
   integrity sha1-rMbUpTxovhbPwxTVXJyrY35VjLo=
 
+canvas-renderer@~2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npm.taobao.org/canvas-renderer/download/canvas-renderer-2.1.1.tgz#d91fe9511ab48056ff9fa8a04514bede76535f55"
+  integrity sha1-2R/pURq0gFb/n6igRRS+3nZTX1U=
+
 capture-exit@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/capture-exit/download/capture-exit-2.0.0.tgz#fb953bfaebeb781f62898239dabb426d08a509a4"
@@ -7204,6 +7209,14 @@ javascript-stringify@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/javascript-stringify/download/javascript-stringify-2.0.1.tgz#6ef358035310e35d667c675ed63d3eb7c1aa19e5"
   integrity sha1-bvNYA1MQ411mfGde1j0+t8GqGeU=
+
+jdenticon@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npm.taobao.org/jdenticon/download/jdenticon-2.2.0.tgz#6a9d9cb2134a7848ff21d59b3871148cbc6af87f"
+  integrity sha1-ap2cshNKeEj/IdWbOHEUjLxq+H8=
+  dependencies:
+    "@types/node" "*"
+    canvas-renderer "~2.1.1"
 
 jest-changed-files@^25.5.0:
   version "25.5.0"
@@ -10832,6 +10845,14 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.6.0, react-is@^16.7.0, react-
   resolved "https://registry.npm.taobao.org/react-is/download/react-is-16.13.1.tgz?cache=0&sync_timestamp=1613751284867&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-is%2Fdownload%2Freact-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
 
+react-jdenticon@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.npm.taobao.org/react-jdenticon/download/react-jdenticon-0.0.9.tgz#5d019a1916a73cf8f63251e54143065bb8c718e3"
+  integrity sha1-XQGaGRanPPj2MlHlQUMGW7jHGOM=
+  dependencies:
+    jdenticon "^2.2.0"
+    prop-types "^15.7.2"
+
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
@@ -13141,8 +13162,10 @@ watchpack@^1.7.4:
   resolved "https://registry.npm.taobao.org/watchpack/download/watchpack-1.7.5.tgz?cache=0&sync_timestamp=1612715822561&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fwatchpack%2Fdownload%2Fwatchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha1-EmfmxV4Lm1vkTCAjrtVDeiwmxFM=
   dependencies:
+    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"

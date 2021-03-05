@@ -17,6 +17,8 @@ import {
   Space,
   Typography,
 } from 'antd';
+// @ts-ignore
+import Jdenticon from 'react-jdenticon';
 import { useSetState } from 'react-use';
 import { history } from 'umi';
 import style from './MoreInfoCard.less';
@@ -121,7 +123,11 @@ export default function MoreInfo(props: Event & MoreInfoProps) {
   return (
     <div>
       <div className={style.image}>
-        <Image src={props.ImageUrl}></Image>
+        {props.ImageUrl ? (
+          <Image src={props.ImageUrl}></Image>
+        ) : (
+          <Jdenticon size="200px" value={props.Description} />
+        )}
       </div>
       <Space
         direction="vertical"
