@@ -81,8 +81,18 @@ export default [
   },
   {
     exact: true,
-    path: '/topic',
-    component: '@/pages/bbs/Index',
+    path: '/bbs',
+    component: '@/pages/bbs/Nodes',
+  },
+  {
+    exact: true,
+    path: '/bbs/node',
+    component: '@/pages/bbs/Node',
+  },
+  {
+    exact: true,
+    path: '/bbs/thread',
+    component: '@/pages/bbs/Thread',
   },
   {
     exact: true,

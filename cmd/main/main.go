@@ -9,6 +9,7 @@ import (
 	"github.com/lantu-dev/puki/pkg/auth"
 	authSetup "github.com/lantu-dev/puki/pkg/auth/setup"
 	"github.com/lantu-dev/puki/pkg/base"
+	bbssetup "github.com/lantu-dev/puki/pkg/bbs/setup"
 	eventsSetup "github.com/lantu-dev/puki/pkg/events/setup"
 	"github.com/lantu-dev/puki/pkg/hwcloud"
 	"github.com/lantu-dev/puki/pkg/storage"
@@ -52,10 +53,6 @@ func main() {
 		log.Info("using sqlite")
 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	reg := base.NewServiceRegistry()
 
 	// 每新增一个模块 ( mod ) , 在这里新增一个 Setup 。
@@ -92,6 +89,11 @@ func main() {
 		spew.Dump(phoneNumber, code)
 		return nil
 	}, rds)
+
+	err = bbssetup.Setup(reg, db)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	http.Handle("/api/", reg)
 	log.Infof("server listen @ %s", *address)
