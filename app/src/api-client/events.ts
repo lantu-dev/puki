@@ -60,7 +60,7 @@ export interface EnrollForEventReq {
   EventID: number;
 }
 export interface EnrollForEventRes {
-  Success: boolean;
+  Status: number;
 }
 
 export interface GetUserEnrolledEventsReq {}

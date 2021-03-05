@@ -100,23 +100,35 @@ type EnrollForEventReq struct {
 	EventID int64
 }
 
+const (
+	// 报名成功
+	Success = iota
+	// 重复报名
+	Duplicate
+)
+
 type EnrollForEventRes struct {
-	Success bool
+	Status uint8
 }
 
 func (s EventService) EnrollForEvent(r *http.Request, req *EnrollForEventReq, res *EnrollForEventRes) (err error) {
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil || tu.IsAnon() {
-		// 用户请求头没有Token字段
 		return base.UserErrorf("请登录/注册账户")
 	}
 
 	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
-		var user models2.User
-		tx.First(&user, tu.ID)
+		if tx.Where(&models.UserEvent{UserID: tu.ID, EventID: req.EventID}).First(&models.UserEvent{}).Error == nil {
+			// 用户重复报名
+			res.Status = Duplicate
+			return nil
+		}
+		var user = tu.User(tx)
 		user.Events = append(user.Events, models.Event{ID: req.EventID})
-		tx.Set("gorm:save_associations", false).Save(&user)
-		res.Success = true
+		tx.Set("gorm:save_associations", false).Save(user)
+		// 用户报名成功
+		res.Status = Success
+
 		return nil
 	}); err != nil {
 		return err

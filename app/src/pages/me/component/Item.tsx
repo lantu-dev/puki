@@ -1,6 +1,5 @@
 import { RightOutlined } from '@ant-design/icons';
 import { Col, Row, Typography } from 'antd';
-import { ReactNode } from 'react';
 import { history } from 'umi';
 import style from './Item.less';
 

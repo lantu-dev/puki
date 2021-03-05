@@ -46,7 +46,7 @@ type User struct {
 	IsDisabled null.Bool `gorm:"not null;default:false"`
 
 	// 「用户参与的活动列表」
-	Events []models.Event `gorm:"many2many:user_events;"`
+	Events []models.Event `gorm:"many2many:user_events"`
 }
 
 func (user *User) CheckPassword(password string) bool {

@@ -1,3 +1,4 @@
+import { call, events, hasLogged } from '@/api-client';
 import { Event } from '@/api-client/events';
 import {
   CalendarOutlined,
@@ -6,8 +7,16 @@ import {
   ShareAltOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { call, hasLogged, events } from '@/api-client';
-import { Button, Col, Image, Modal, Row, Space, Typography } from 'antd';
+import {
+  Button,
+  Col,
+  Image,
+  message,
+  Modal,
+  Row,
+  Space,
+  Typography,
+} from 'antd';
 import { useSetState } from 'react-use';
 import { history } from 'umi';
 import style from './MoreInfoCard.less';
@@ -37,10 +46,10 @@ export default function MoreInfo(props: Event & MoreInfoProps) {
         } else if (props.teamed) {
           history.push('/team');
         } else {
-          const { Success } = await call(events.EventService.EnrollForEvent, {
+          const { Status } = await call(events.EventService.EnrollForEvent, {
             EventID: props.ID,
           });
-          if (Success) {
+          if (Status === 0) {
             setState({ enterFor: false });
             history.push({
               pathname: '/events/entered-for',
@@ -48,6 +57,8 @@ export default function MoreInfo(props: Event & MoreInfoProps) {
                 EventID: props.ID.toString(),
               },
             });
+          } else if (Status === 1) {
+            message.warning('您已报名本活动');
           }
         }
       }}
