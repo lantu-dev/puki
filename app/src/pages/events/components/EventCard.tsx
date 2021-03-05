@@ -1,5 +1,7 @@
 import { Card, Image, Typography } from 'antd';
 import style from './EventCard.less';
+// @ts-ignore
+import Jdenticon from 'react-jdenticon';
 
 const { Paragraph } = Typography;
 
@@ -19,7 +21,11 @@ export default function EventCard(props: EventCardProps) {
       style={{ padding: '10px', height: '250px', ...props.style }}
       cover={
         <div className={style.image}>
-          <Image src={props.ImageUrl} />
+          {props.ImageUrl ? (
+            <Image src={props.ImageUrl} />
+          ) : (
+            <Jdenticon size="120px" value={props.Description} />
+          )}
         </div>
       }
     >

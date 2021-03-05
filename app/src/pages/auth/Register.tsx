@@ -116,10 +116,10 @@ export default function Register() {
                     : Promise.reject('昵称仅支持中英文与数字'),
               },
               {
-                message: '昵称长度在2-10位之间',
+                message: '昵称长度在2-8位之间',
                 type: 'string',
                 min: 2,
-                max: 10,
+                max: 8,
               },
             ]}
           >

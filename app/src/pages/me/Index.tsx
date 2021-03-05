@@ -28,7 +28,17 @@ export default function Me() {
             wrap={false}
           >
             <Col>
-              <Avatar size={64}></Avatar>
+              <Avatar
+                size={64}
+                src={
+                  profile?.AvatarURI ||
+                  (profile?.ID &&
+                    `https://api.multiavatar.com/${
+                      profile?.ID.toString() + profile?.NickName
+                    }.svg`) ||
+                  `https://api.multiavatar.com/${new Date().toString()}.svg`
+                }
+              />
             </Col>
             <Col>
               <span style={{ fontSize: '1.5em', padding: '0.1em' }}>
