@@ -21,8 +21,8 @@ export default [
   },
   {
     exact: true,
-    path: '/events/entered-for',
-    component: '@/pages/events/EnteredFor',
+    path: '/events/enrolled',
+    component: '@/pages/events/Enrolled',
   },
   {
     exact: true,

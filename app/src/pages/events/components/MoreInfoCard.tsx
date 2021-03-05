@@ -52,7 +52,7 @@ export default function MoreInfo(props: Event & MoreInfoProps) {
           if (Status === 0) {
             setState({ enterFor: false });
             history.push({
-              pathname: '/events/entered-for',
+              pathname: '/events/enrolled',
               query: {
                 EventID: props.ID.toString(),
               },

@@ -1,5 +1,5 @@
 import { Space } from 'antd';
-import Item from './component/Item';
+import Item from './components/Item';
 
 export default function Setting() {
   return (

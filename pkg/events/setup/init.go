@@ -27,6 +27,10 @@ func Setup(reg *base.ServiceRegistry, db *gorm.DB) (err error) {
 	if err != nil {
 		return
 	}
+	// err = reg.RegisterService(ModName, services.NewCreateEventService(db))
+	// if err != nil {
+	// 	return
+	// }
 
 	return
 }

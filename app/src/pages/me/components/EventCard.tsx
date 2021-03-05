@@ -1,4 +1,5 @@
-import { Card, Image, Typography } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { Button, Card, Image, Typography } from 'antd';
 import style from './EventCard.less';
 
 const { Paragraph } = Typography;
@@ -8,7 +9,8 @@ interface EventCardProps {
   Title: string;
   Description: string;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  onClickCard?: () => void;
+  onClickDelete?: () => void;
 }
 
 export default function EventCard(props: EventCardProps) {
@@ -23,7 +25,7 @@ export default function EventCard(props: EventCardProps) {
         </div>
       }
     >
-      <div onClick={props.onClick}>
+      <div onClick={props.onClickCard}>
         <Card.Meta
           title={props.Title}
           description={
@@ -37,6 +39,18 @@ export default function EventCard(props: EventCardProps) {
           }
         />
       </div>
+      <Button
+        danger
+        icon={<CloseOutlined />}
+        type="primary"
+        size="small"
+        style={{
+          position: 'absolute',
+          right: '0',
+          top: '0',
+        }}
+        onClick={props.onClickDelete}
+      />
     </Card>
   );
 }

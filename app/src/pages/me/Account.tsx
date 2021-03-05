@@ -1,8 +1,8 @@
 import { auth, call } from '@/api-client';
 import { Avatar, message, Switch } from 'antd';
 import { useAsyncRetry, useCounter } from 'react-use';
-import Item from './component/Item';
-import { Female, Male, QRCode } from './component/Svg';
+import Item from './components/Item';
+import { Female, Male, QRCode } from './components/Svg';
 
 export default function Setting() {
   const [GenderCount, { inc, dec, set, reset }] = useCounter(0, 10, 0);

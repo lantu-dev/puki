@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"github.com/lantu-dev/puki/pkg/auth"
 	models2 "github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/base"
@@ -33,6 +34,7 @@ type GetEventsListRes []struct {
 	EventType   uint16
 }
 
+// 根据req的EventID获取对应的活动简单信息列表, 若空数组则返回全部活动
 func (s EventService) GetEventsList(r *http.Request, req *GetEventsListReq, res *GetEventsListRes) (err error) {
 	err = s.db.Model(&models.Event{}).Where(req.EventIDs).Find(res).Error
 
@@ -57,6 +59,7 @@ type GetEventMoreInfoRes struct {
 	}
 }
 
+// 获取单个活动详细信息
 func (s EventService) GetEventMoreInfo(r *http.Request, req *GetEventMoreInfoReq, res *GetEventMoreInfoRes) (err error) {
 	var Event struct {
 		EventType uint16
@@ -96,21 +99,23 @@ func (s EventService) GetEventMoreInfo(r *http.Request, req *GetEventMoreInfoReq
 	return
 }
 
+const (
+	// 活动报名成功 | 活动删除成功
+	Success = iota
+	// 活动重复报名 | 活动报名已取消
+	Duplicate
+	// 活动不存在
+	NotFound
+)
+
 type EnrollForEventReq struct {
 	EventID int64
 }
-
-const (
-	// 报名成功
-	Success = iota
-	// 重复报名
-	Duplicate
-)
-
 type EnrollForEventRes struct {
 	Status uint8
 }
 
+// 用户报名活动
 func (s EventService) EnrollForEvent(r *http.Request, req *EnrollForEventReq, res *EnrollForEventRes) (err error) {
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil || tu.IsAnon() {
@@ -118,14 +123,22 @@ func (s EventService) EnrollForEvent(r *http.Request, req *EnrollForEventReq, re
 	}
 
 	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
+		if err = tx.First(&models.Event{}, req.EventID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			// 活动不存在
+			res.Status = NotFound
+			return nil
+		}
+
 		if tx.Where(&models.UserEvent{UserID: tu.ID, EventID: req.EventID}).First(&models.UserEvent{}).Error == nil {
 			// 用户重复报名
 			res.Status = Duplicate
 			return nil
 		}
-		var user = tu.User(tx)
-		user.Events = append(user.Events, models.Event{ID: req.EventID})
-		tx.Set("gorm:save_associations", false).Save(user)
+		if err = tx.Create(&models.UserEvent{UserID: tu.ID, EventID: req.EventID}).Error; err != nil {
+			// 关联失败
+			return err
+		}
+
 		// 用户报名成功
 		res.Status = Success
 
@@ -133,6 +146,62 @@ func (s EventService) EnrollForEvent(r *http.Request, req *EnrollForEventReq, re
 	}); err != nil {
 		return err
 	}
+
+	return nil
+}
+
+type QuitEventReq struct {
+	EventID int64
+}
+type QuitEventRes struct {
+	Status uint8
+}
+
+// 用户取消报名活动
+func (s EventService) QuitEvent(r *http.Request, req *QuitEventReq, res *QuitEventRes) (err error) {
+	tu, err := auth.ExtractTokenUser(r)
+	if err != nil || tu.IsAnon() {
+		return base.UserErrorf("请登录/注册账户")
+	}
+
+	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
+		if err = tx.First(&models.Event{}, req.EventID).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			// 活动不存在
+			res.Status = NotFound
+			return nil
+		}
+
+		target := tx.Where(&models.UserEvent{UserID: tu.ID, EventID: req.EventID})
+
+		if err = target.First(&models.UserEvent{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
+			// 已取消报名
+			res.Status = Duplicate
+			return nil
+		}
+
+		if err = target.Delete(&models.UserEvent{}).Error; err != nil {
+			// 删除失败
+			return err
+		}
+
+		// 用户报名成功
+		res.Status = Success
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type CheckEventReq struct {
+}
+type CheckEventRes struct {
+}
+
+// 用户是否查看过已报名的活动
+func (s EventService) CheckEvent(r *http.Request, req *CheckEventReq, res *CheckEventRes) (err error) {
 
 	return nil
 }
