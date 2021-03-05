@@ -1,7 +1,6 @@
 package models
 
 import (
-	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"time"
 )
@@ -41,12 +40,12 @@ type Event struct {
 	EventType uint16 `gorm:"not null;default:1"`
 }
 
-func FindEventByID(tx *gorm.DB, id int64) *Event {
-	var event Event
-	if err := tx.Model(&Event{}).First(&event, id).Error; err == nil {
-		return &event
-	} else {
-		log.Debug(err)
-		return nil
-	}
+func FindEventByID(tx *gorm.DB, id int64, dest interface{}) error {
+	err := tx.Model(&Event{}).Where(id).First(dest).Error
+	return err
+}
+
+func FindEventsByIDs(tx *gorm.DB, ids []int64, dests interface{}) error {
+	err := tx.Model(&Event{}).Where(ids).Find(dests).Error
+	return err
 }

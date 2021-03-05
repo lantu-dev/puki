@@ -29,3 +29,8 @@ type Schedule struct {
 	// 介绍
 	TalkerDescription string `gorm:"not null"`
 }
+
+func FindScheduleByEventID(tx *gorm.DB, eventID int64, dest interface{}) error {
+	err := tx.Model(&Schedule{}).Where(&Schedule{EventID: eventID}).Find(dest).Error
+	return err
+}
