@@ -13,3 +13,8 @@ type Hackathon struct {
 	// 步骤
 	Steps string `gorm:"not null"`
 }
+
+func FindHackathonByEventID(tx *gorm.DB, eventID int64, dest interface{}) error {
+	err := tx.Model(&Hackathon{}).Where(&Hackathon{EventID: eventID}).Find(dest).Error
+	return err
+}

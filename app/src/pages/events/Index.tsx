@@ -17,9 +17,11 @@ export default function () {
   });
 
   const { value: eventsList } = useAsync(async () => {
-    return await call(events.EventService.GetEventsList, {
-      EventIDs: [],
-    });
+    return (
+      await call(events.EventService.GetEventsList, {
+        EventIDs: [],
+      })
+    ).Events;
   });
 
   const { value: userEvents } = useAsync(async () => {

@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/base"
-	"github.com/lantu-dev/puki/pkg/events/models"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
@@ -44,9 +43,6 @@ type User struct {
 
 	// 「账号是否被禁用」
 	IsDisabled null.Bool `gorm:"not null;default:false"`
-
-	// 「用户参与的活动列表」
-	Events []models.Event `gorm:"many2many:user_events"`
 }
 
 func (user *User) CheckPassword(password string) bool {

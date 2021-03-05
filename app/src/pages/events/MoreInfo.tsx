@@ -24,7 +24,7 @@ export default function MoreInfo() {
       await call(events.EventService.GetEventsList, {
         EventIDs: [EventID],
       })
-    )[0];
+    ).Events[0];
     let eventMoreInfo = await call(events.EventService.GetEventMoreInfo, {
       EventID,
     });

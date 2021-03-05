@@ -22,7 +22,9 @@ export interface Event {
 export interface GetEventsListReq {
   EventIDs: number[];
 }
-export type GetEventsListRes = Event[];
+export interface GetEventsListRes {
+  Events: Event[];
+}
 
 export interface LectureInfo {
   Schedules: {
