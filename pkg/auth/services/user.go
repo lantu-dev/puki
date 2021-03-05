@@ -124,6 +124,7 @@ type CompleteProfileReq struct {
 	NickName    string
 	Password    string
 	RealName    string
+	University  string
 	School      string
 	UntrustedID string
 	TrustedID   string
@@ -179,8 +180,13 @@ func (s *UserService) CompleteProfile(r *http.Request, req *CompleteProfileReq, 
 			}
 		}
 
-		if req.School != "" {
+		if req.University != "" {
 			// TODO 校验学校
+			stu.University = req.University
+		}
+
+		if req.School != "" {
+			// TODO 校验学院
 			stu.School = req.School
 		}
 
