@@ -1,0 +1,123 @@
+name: Master Stagging
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Checkout
+    runs-on: ubuntu-latest
+
+
+    steps:
+      - name: Install cross toolchain
+        run: sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+      - name: Setup go
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.15.6'
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '15'
+
+
+      - id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-${{  hashFiles('**/yarn.lock') }}-
+            ${{ runner.os }}-modules-
+            ${{ runner.os }}-
+
+      - name: Go Build Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+
+      - name: Go Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - id: info
+        run: |
+          echo "::set-output name=commit-hash::$(git rev-parse --short HEAD)"
+          echo "::set-output name=build-id::master_$(git rev-parse --short HEAD)"
+          echo "::set-output name=build-tag::master"
+          echo "::set-output name=artifact-filename::puki_master_$(git rev-parse --short HEAD)_$(date +%s).tar.xz"
+
+      - run: cd app && yarn
+      - run: cd site && yarn
+
+      - run: mkdir build
+
+      - name: Build frontend
+        run: cd app &&PUBLIC_PATH=/puki/${{ steps.info.outputs.build-tag }}/app ENABLE_GATEWAY=true yarn build && mv dist ../build/
+
+      - name: Build docusaurus
+        run: cd site && yarn build && mv build ../build/dist/site
+
+      - name: Build backend
+        run: CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -ldflags "-X main.buildTag=${{ steps.info.outputs.build-tag }} -X main.buildCommit=${{ steps.info.outputs.commit-hash }}" -o build/puki github.com/lantu-dev/puki/cmd/main
+
+
+      - name: Bundle artifacts
+        run: |
+          mv build ${{ steps.info.outputs.build-id }}
+          tar cJvf ${{ steps.info.outputs.artifact-filename }} ${{ steps.info.outputs.build-id }}
+
+
+      - name: Upload artifacts
+        run: |
+          file=${{ steps.info.outputs.artifact-filename }}
+          bucket=landevartifacts
+          resource="/${bucket}/${file}"
+          contentType="application/x-compressed-tar"
+          dateValue=`date -R`
+          stringToSign="PUT\n\n${contentType}\n${dateValue}\n${resource}"
+          signature=`echo -en ${stringToSign} | openssl sha1 -hmac ${s3Secret} -binary | base64`
+          curl -X PUT -T "${file}" \
+            -H "Host: ${bucket}.obs.ap-southeast-3.myhuaweicloud.com" \
+            -H "Date: ${dateValue}" \
+            -H "Content-Type: ${contentType}" \
+            -H "Authorization: AWS ${s3Key}:${signature}" \
+            https://${bucket}.obs.ap-southeast-3.myhuaweicloud.com/${file}
+        env:
+          s3Key: ${{secrets.ARTIFACTS_S3_AK}}
+          s3Secret: ${{secrets.ARTIFACTS_S3_SK}}
+
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ../stagging.key
+          sudo chmod 600 ../stagging.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.STAGGING_SERVER_PK}}
+          SSH_KNOWN_HOSTS: ${{secrets.STAGGING_SERVER_NH}}
+
+
+      - name: Upload artifacts & Preview
+        run: |
+          ssh -i ../stagging.key root@122.9.76.5 "cd /puki_stagging &&\
+          mc cp hwse/landevartifacts/${{ steps.info.outputs.artifact-filename }} . &&\
+          tar xvf ${{ steps.info.outputs.artifact-filename }} &&\
+          cd /root/pukigw &&\
+          cargo run -- puki-start --replace /puki_stagging/${{ steps.info.outputs.build-id }}"
