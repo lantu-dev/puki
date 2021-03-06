@@ -1,6 +1,6 @@
 import { SalonInfo } from '@/api-client/events';
 import { Typography, Carousel, Card } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { Paragraph } = Typography;
 
@@ -9,7 +9,7 @@ export default function Salon(props: SalonInfo) {
     <Carousel autoplay>
       {props.Schedules.map((v) => (
         <Card
-          extra={moment(v.StartedAt).format('HH:mm A')}
+          extra={dayjs(v.StartedAt).format('HH:mm A')}
           key={v.TalkerName}
           style={{ width: 300 }}
           title={`${v.TalkerName} ${v.TalkerTitle}`}

@@ -16,7 +16,7 @@ import {
   Menu,
   Typography,
 } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import React, { useState } from 'react';
 const { Title, Paragraph, Text } = Typography;
 
@@ -186,7 +186,7 @@ function Thread(props: ThreadProps) {
                 textAlign: 'center',
               }}
             >
-              {moment(props.time).format('HH:mm YYYY-MM-DD')}
+              {dayjs(props.time).format('HH:mm YYYY-MM-DD')}
             </Text>
           </div>
         </div>
