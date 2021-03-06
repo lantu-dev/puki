@@ -78,7 +78,7 @@ jobs:
           -d '{"body":'"$(printf "**❌ Code style checking failed**\nPlease format your code via \`go fmt ./...\`.\n\`\`\`diff\n$(cat /tmp/gofmtdiff)\`\`\`" | jq  -aRs .)"'}' \
           && exit 1
 
-      - run: cd app && yarn
+      - run: cd app  && yarn
       - run: cd site && yarn
       
       - name: Fontend code style check
