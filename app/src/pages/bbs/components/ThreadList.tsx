@@ -3,7 +3,9 @@ import { IThread, ThreadService } from '@/api-client/bbs';
 import { call } from '@/api-client';
 import { Button, List } from 'antd';
 import React, { useEffect } from 'react';
-import { Preview } from '@/pages/bbs/components/preview';
+import { Preview } from '@/pages/bbs/components/Preview';
+
+import { history } from 'umi';
 
 export interface ThreadListProps {
   nodeId: number;
@@ -54,13 +56,23 @@ export function ThreadList(props: ThreadListProps) {
       }
       dataSource={state.threads}
       renderItem={(item) => (
-        <Preview
-          title={item.Title}
-          abstract={item.Abstract}
-          imageUrls={item.ImagesURL.split(';')}
-          displayName={item.UserID.toString()}
-          createdAt={item.CreatedAt}
-        />
+        <div
+          key={item.ID}
+          onClick={() => {
+            history.push({
+              pathname: '/bbs/thread',
+              query: { id: item.ID, nodeId: item.NodeID },
+            } as any);
+          }}
+        >
+          <Preview
+            title={item.Title}
+            abstract={item.Abstract}
+            imageUrls={item.ImagesURL.split(';')}
+            displayName={item.UserID.toString()}
+            createdAt={item.CreatedAt}
+          />
+        </div>
       )}
     />
   );

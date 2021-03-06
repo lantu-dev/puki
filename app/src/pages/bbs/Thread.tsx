@@ -2,7 +2,7 @@ import { useLocation } from 'umi';
 import { Button, Col, Menu, Typography } from 'antd';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { UserInfo } from '@/pages/bbs/components/preview';
+import { UserInfo } from '@/pages/bbs/components/Preview';
 import { ThreadList } from '@/pages/bbs/components/ThreadList';
 import { useAsync } from 'react-use';
 import { call } from '@/api-client';
