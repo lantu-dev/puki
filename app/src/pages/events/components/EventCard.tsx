@@ -1,7 +1,7 @@
 import { Card, Image, Typography } from 'antd';
-import style from './EventCard.less';
 // @ts-ignore
 import Jdenticon from 'react-jdenticon';
+import style from './EventCard.less';
 
 const { Paragraph } = Typography;
 

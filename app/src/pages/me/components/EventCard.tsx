@@ -1,5 +1,7 @@
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Card, Image, Typography } from 'antd';
+// @ts-ignore
+import Jdenticon from 'react-jdenticon';
 import style from './EventCard.less';
 
 const { Paragraph } = Typography;
@@ -21,7 +23,11 @@ export default function EventCard(props: EventCardProps) {
       style={{ padding: '10px', height: '250px', ...props.style }}
       cover={
         <div className={style.image}>
-          <Image src={props.ImageUrl} />
+          {props.ImageUrl ? (
+            <Image src={props.ImageUrl} />
+          ) : (
+            <Jdenticon size="120px" value={props.Description} />
+          )}
         </div>
       }
     >
