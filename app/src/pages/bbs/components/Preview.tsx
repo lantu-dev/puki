@@ -1,7 +1,7 @@
 import { Col, Image, Row, Typography } from 'antd';
 import Avatar from '@/components/Avatar';
 import React from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export interface UserInfoProps {
   id?: string;
@@ -30,7 +30,7 @@ export function UserInfo(props: UserInfoProps) {
         <Row>
           <Col>
             {' '}
-            <Col>{moment(props.createdAt).format('HH:mm YYYY-MM-DD')}</Col>
+            <Col>{dayjs(props.createdAt).format('HH:mm YYYY-MM-DD')}</Col>
           </Col>
         </Row>
       </Col>
@@ -46,19 +46,18 @@ export interface PreviewProps extends UserInfoProps {
 
 export function Preview(props: PreviewProps) {
   return (
-    <Col>
+    <Col className="mt2">
       <Row>
         <UserInfo {...props} />
       </Row>
       <Row>
-        <Typography.Paragraph>
+        <Typography.Paragraph className="px2">
           <Typography.Text strong>{props.title}</Typography.Text>
           {props.abstract}...
         </Typography.Paragraph>
-      </Row>
-      <Row>
+
         {props.imageUrls.map((url) => (
-          <Col>
+          <Col key={url}>
             <Image src={url} preview={{ src: `${url}-thumbnail` }} />
           </Col>
         ))}

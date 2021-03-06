@@ -6,7 +6,7 @@ import {
   SalonInfo,
 } from '@/api-client/events';
 import { Spin } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useAsync } from 'react-use';
 import { history } from 'umi';
 import MoreInfoCard from './components/MoreInfoCard';
@@ -45,13 +45,13 @@ export default function MoreInfo() {
     switch (value.eventInfo.EventType) {
       case EventType.EventTypeLecture:
         children = () => <Lecture {...(value.eventMoreInfo as LectureInfo)} />;
-        info.time = moment(value.eventInfo.StartedAt).format('HH:mm A');
+        info.time = dayjs(value.eventInfo.StartedAt).format('HH:mm A');
         info.label = '具体信息';
         info.more = '主讲人';
         break;
       case EventType.EventTypeSalon:
         children = () => <Salon {...(value.eventMoreInfo as SalonInfo)} />;
-        info.time = moment(value.eventInfo.StartedAt).format('HH:mm A');
+        info.time = dayjs(value.eventInfo.StartedAt).format('HH:mm A');
         info.label = '沙龙核心议题';
         info.more = '具体安排';
         break;
@@ -60,9 +60,9 @@ export default function MoreInfo() {
           <Hackathon {...(value.eventMoreInfo as HackathonInfo)} />
         );
         info.teamed = true;
-        info.time = `${moment(value.eventInfo.StartedAt).format(
+        info.time = `${dayjs(value.eventInfo.StartedAt).format(
           'HH:mm A(DD号)',
-        )}-${moment(value.eventInfo.EndedAt).format('HH:mm A(DD号)')}`;
+        )}-${dayjs(value.eventInfo.EndedAt).format('HH:mm A(DD号)')}`;
         info.label = '活动介绍';
         info.more = '活动流程';
         break;
