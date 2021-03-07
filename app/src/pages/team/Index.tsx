@@ -1,16 +1,67 @@
-//定义首屏为项目列表，供浏览正在招募中的项目
-import React from 'react';
-import Header from './component/Header';
+import { call, team } from '@/api-client';
+import { ProjectSimple } from '@/api-client/team';
+import { Drawer, List } from 'antd';
+import { useAsync, useSetState } from 'react-use';
 import Filter from './component/Filter';
-import ProjectCard from '@/pages/team/component/ProjectCard';
-import ProjectGather from '@/pages/team/component/ProjectGather';
+import ProjectCard from './component/ProjectCard';
+import ProjectDetail from './component/ProjectDetail';
 
-export default function () {
+export default function Index() {
+  const [state, setState] = useSetState({
+    filter: (projectSimple: ProjectSimple): boolean => true,
+    drawerVisible: false,
+    projectSimple: {} as ProjectSimple,
+  });
+
+  const projectsState = useAsync(async () => {
+    let res = await call(team.ProjectService.GetProjectSimples, {
+      ProjectID: [],
+    });
+    console.log(res);
+    return res.ProjectSimples;
+  });
+
   return (
-    <div style={{ width: '95%', margin: 'auto', marginTop: '5px' }}>
-      <Header />
-      <Filter />
-      <ProjectGather />
+    <div>
+      <Filter
+        onChangeFilter={(filter) => {
+          setState({
+            filter,
+          });
+        }}
+      />
+
+      <List
+        dataSource={projectsState.value?.filter(state.filter)}
+        renderItem={(item) => (
+          <ProjectCard
+            key={item.ProjectID}
+            ProjectName={item.ProjectName}
+            ProjectDescription={item.ProjectDescription}
+            PositionNames={item.PositionNames}
+            onClick={() => {
+              setState({
+                projectSimple: item,
+                drawerVisible: true,
+              });
+            }}
+          />
+        )}
+      ></List>
+
+      <Drawer
+        destroyOnClose
+        onClose={() => {
+          setState({
+            drawerVisible: false,
+          });
+        }}
+        visible={state.drawerVisible}
+        width="100%"
+        bodyStyle={{ padding: '0' }}
+      >
+        <ProjectDetail {...state.projectSimple} />
+      </Drawer>
     </div>
   );
 }

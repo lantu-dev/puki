@@ -20,16 +20,11 @@ func main() {
 		panic("failed to connect database")
 	}
 	// 迁移 schema, 需要添加所有model
-	db.AutoMigrate(&models.Comment{})
-	db.AutoMigrate(&models.Competition{})
-	db.AutoMigrate(&models.Type{})
-	db.AutoMigrate(&models.Conversation{})
-	db.AutoMigrate(&models.File{})
-	db.AutoMigrate(&models.Position{})
-	db.AutoMigrate(&models.PositionTemplate{})
-	db.AutoMigrate(&models.Project{})
-	db.AutoMigrate(&models.CompetitionProject{})
-
+	err = db.AutoMigrate(&models.Comment{}, &models.Competition{}, &models.Type{}, &models.Conversation{}, &models.File{},
+		&models.Position{}, &models.PositionTemplate{}, &models.Project{}, &models.CompetitionProject{})
+	if err != nil {
+		panic(err)
+	}
 	//jsonrpc
 	address := flag.String("address", ":8001", "")
 	s := rpc.NewServer()

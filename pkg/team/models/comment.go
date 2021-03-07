@@ -1,6 +1,7 @@
 package models
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -15,4 +16,13 @@ type Comment struct {
 	Content string
 	//评论点赞数
 	LinkNum int64
+}
+
+func FindCommentsByProjectID(tx *gorm.DB, ProjectID int64) []Comment {
+	var comments []Comment
+	result := tx.Where(&Comment{ProjectID: ProjectID}).Find(&comments)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return comments
 }

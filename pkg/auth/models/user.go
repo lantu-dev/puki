@@ -6,7 +6,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
-	"time"
 )
 
 // 用户模型
@@ -16,7 +15,7 @@ type User struct {
 	ID int64 `gorm:"type:bigint;primaryKey;not null"`
 
 	// 「用户名」用于用户名、密码组合登陆中的用户名，全局唯一；可空，若空，则该用户未设置用户名，无法使用 "用户名、密码组合登陆"
-	Name null.String `gorm:"unique;default:null"`
+	UserName null.String `gorm:"unique;default:null"`
 	// 「密码」用于用户名、密码组合登陆中的密码
 	Password string `json:"-"`
 
@@ -27,11 +26,14 @@ type User struct {
 	// 「真实姓名」未设置为空字符串
 	RealName string `gorm:"not null"`
 
-	// 「头像」 URL 未设置为空自服务
+	// 「头像」 URL 未设置为空字符串
 	AvatarURI string `gorm:"not null"`
 
 	// 「昵称」用于对外展示
 	NickName string `gorm:"not null"`
+
+	// 「性别」，true为男性, false为女性
+	Gender null.Bool `gorm:"default:null"`
 
 	// 「是否为内部用户」，内部用户可登陆后台管理页面
 	IsStaff null.Bool `gorm:"not null;default:false"`
@@ -41,46 +43,54 @@ type User struct {
 
 	// 「账号是否被禁用」
 	IsDisabled null.Bool `gorm:"not null;default:false"`
-
-	// 「用户创建日期」
-	UpdatedAt time.Time `gorm:"not null"`
-
-	// 「用户信息最近一次更新日期」
-	CreatedAt time.Time `gorm:"not null"`
 }
 
-func (u *User) SetName(name string) string {
-	// TODO: remove non-ascii & length limit
-	u.Name = null.StringFrom(name)
-	return name
-}
-
-func (u *User) CheckPassword(pass string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(pass))
+func (user *User) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	return err == nil
 }
 
-func (u *User) SetPassword(pass string) {
-	hashed, err := bcrypt.GenerateFromPassword([]byte(pass), 14)
+func (user *User) SetGender(gender null.Bool) error {
+	user.Gender = gender
+
+	return nil
+}
+
+func (user *User) SetNickName(nickName string) error {
+	user.NickName = nickName
+
+	return nil
+}
+
+func (user *User) SetPassword(passWord string) error {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(passWord), 14)
 	if err != nil {
 		log.Fatal(err)
 	}
-	u.Password = string(hashed)
+	user.Password = string(hashed)
+
+	return nil
 }
 
-func (u *User) SetNickName(name string) {
-	u.NickName = name
+func (user *User) SetRealName(realName string) error {
+	user.RealName = realName
+
+	return nil
 }
-func (u *User) SetRealName(name string) {
-	u.RealName = name
-}
-func (u *User) SetUserName(tx *gorm.DB, name string) bool {
-	anotherUser := FindUserByUserName(tx, name)
-	if anotherUser != nil {
-		return false
+
+func (user *User) SetUserName(tx *gorm.DB, userName string) error {
+	if userName == "" {
+		user.UserName = null.NewString("", false)
+		return nil
 	}
-	u.RealName = name
-	return true
+	// TODO: remove non-ascii & length limit
+	anotherUser := FindUserByUserName(tx, userName)
+	if anotherUser != nil {
+		return base.UserErrorf("UserName exists")
+	}
+
+	user.UserName = null.StringFrom(userName)
+	return nil
 }
 
 func FindOrCreateUserByPhoneNumber(tx *gorm.DB, phoneNumber int64) *User {
@@ -111,9 +121,12 @@ func FindUserById(tx *gorm.DB, id int64) *User {
 	}
 }
 
-func FindUserByUserName(tx *gorm.DB, un string) *User {
+func FindUserByUserName(tx *gorm.DB, userName string) *User {
+	if userName == "" {
+		return nil
+	}
 	var user User
-	if err := tx.Model(&User{}).First(&user, "name = ?", un).Error; err == nil {
+	if err := tx.Model(&User{}).Where(&User{UserName: null.StringFrom(userName)}).First(&user).Error; err == nil {
 		return &user
 	} else {
 		log.Debug(err)

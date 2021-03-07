@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/team/models"
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"net/http"
 )
@@ -54,16 +55,18 @@ type GetCompetitionNameRes struct {
 func (c *CompetitionService) GetCompetitionName(r *http.Request,
 	req *GetCompetitionNameReq, res *GetCompetitionNameRes) error {
 	var competitions []models.Competition
-	result := c.db.Find(&competitions)
-	if result.Error != nil {
-		print(result.Error)
-	}
+
+	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
+	competitions = models.FindAllCompetitions(tx)
+	err := tx.Commit().Error // 数据库事务
+
 	var competitionNames []string
 	for _, item := range competitions {
 		competitionNames = append(competitionNames, item.Name)
 	}
 	res.CompetitionNames = competitionNames
-	return result.Error
+
+	return err
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -92,7 +95,11 @@ func (c *CompetitionService) AddCompetition(r *http.Request, req *AddCompetition
 		Time:        "",
 		Files:       nil,
 	}
-	err := c.db.Create(&competition)
+
+	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
+	models.CreateCompetition(tx, competition)
+	err := tx.Commit().Error // 数据库事务
+
 	if err != nil {
 		res.Result = "failed"
 	} else {
@@ -117,16 +124,17 @@ type GetCompetitionTypeRes struct {
 func (c *CompetitionService) GetCompetitionType(r *http.Request,
 	req *GetCompetitionTypeReq, res *GetCompetitionTypeRes) error {
 	var types []models.Type
-	result := c.db.Find(&types)
-	if result.Error != nil {
-		print(result.Error)
-	}
+
+	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
+	types = models.FindAllTypes(tx)
+	err := tx.Commit().Error // 数据库事务
+
 	var competitionTypes []string
 	for _, item := range types {
 		competitionTypes = append(competitionTypes, item.Name)
 	}
 	res.CompetitionTypes = competitionTypes
-	return result.Error
+	return err
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -146,11 +154,18 @@ type AddCompetitionTypeRes struct {
 //添加比赛类型
 func (c *CompetitionService) AddCompetitionType(r *http.Request,
 	req *AddCompetitionTypeReq, res *AddCompetitionTypeRes) error {
-	type_new := models.Type{
+	typeNew := models.Type{
 		Name:     req.Name,
 		Describe: req.Description,
 	}
-	err := c.db.Create(&type_new)
+
+	tx := c.db.Begin() // 数据库事务，要求所有数据库操作都在数据库事务的包裹中操作
+	err := models.CreateType(tx, typeNew)
+	if err != nil {
+		log.Debug(err)
+	}
+	err = tx.Commit().Error // 数据库事务
+
 	if err != nil {
 		res.Result = "failed"
 	} else {

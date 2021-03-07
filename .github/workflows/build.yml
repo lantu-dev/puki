@@ -78,6 +78,7 @@ jobs:
           -d '{"body":'"$(printf "**❌ Code style checking failed**\nPlease format your code via \`go fmt ./...\`.\n\`\`\`diff\n$(cat /tmp/gofmtdiff)\`\`\`" | jq  -aRs .)"'}' \
           && exit 1
 
+
       - run: cd app && yarn
       
       - name: Build site
@@ -101,7 +102,10 @@ jobs:
       - run: mkdir build
 
       - name: Build frontend
-        run: cd app &&PUBLIC_PATH=/puki/${{ steps.info.outputs.build-tag }}/app/ yarn build && mv dist ../build/
+        run: cd app &&PUBLIC_PATH=/puki/${{ steps.info.outputs.build-tag }}/app ENABLE_GATEWAY=true yarn build && mv dist ../build/
+
+      - name: Build docusaurus
+        run: cd site && yarn build && mv build ../build/dist/site
 
       - name: Build docusaurus
         run: cd site && yarn build && mv build ../build/dist/site
