@@ -81,7 +81,7 @@ jobs:
       - run: cd app && yarn
       
       - name: Build site
-        run: sed -i 's/CI_BUILED_BASEURL/\/puki\/${{ steps.info.outputs.build-tag }}\/app\/site\//' .\site\docusaurus.config.js && cd site && yarn
+        run: sed -i 's/CI_BUILED_BASEURL/\/puki\/${{ steps.info.outputs.build-tag }}\/app\/site\//' ./site/docusaurus.config.js && cd site && yarn
       
       - name: Fontend code style check
         run: cd app && yarn prettier:check > /tmp/prettierout 2>&1
