@@ -78,13 +78,18 @@ func (user *User) SetRealName(realName string) error {
 	return nil
 }
 
-func (user *User) SetUserName(tx *gorm.DB, userName null.String) error {
+func (user *User) SetUserName(tx *gorm.DB, userName string) error {
+	if userName == "" {
+		user.UserName = null.NewString("", false)
+		return nil
+	}
 	// TODO: remove non-ascii & length limit
 	anotherUser := FindUserByUserName(tx, userName)
 	if anotherUser != nil {
 		return base.UserErrorf("UserName exists")
 	}
-	user.UserName = userName
+
+	user.UserName = null.StringFrom(userName)
 	return nil
 }
 
@@ -116,9 +121,12 @@ func FindUserById(tx *gorm.DB, id int64) *User {
 	}
 }
 
-func FindUserByUserName(tx *gorm.DB, userName null.String) *User {
+func FindUserByUserName(tx *gorm.DB, userName string) *User {
+	if userName == "" {
+		return nil
+	}
 	var user User
-	if err := tx.Model(&User{}).Where(&User{UserName: userName}).First(&user).Error; err == nil {
+	if err := tx.Model(&User{}).Where(&User{UserName: null.StringFrom(userName)}).First(&user).Error; err == nil {
 		return &user
 	} else {
 		log.Debug(err)

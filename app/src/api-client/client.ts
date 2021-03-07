@@ -7,8 +7,8 @@ export async function setToken(token: string) {
   localStorage.setItem('token', token);
 }
 
-export async function hasLogged() {
-  !!localStorage.getItem('token');
+export function hasLogged() {
+  return !!localStorage.getItem('token');
 }
 
 export interface Endpoint<P, R> extends String {}

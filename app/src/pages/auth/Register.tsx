@@ -56,11 +56,8 @@ export default function Register() {
 
     if (Completed) {
       message.success({ content: '注册成功！' });
-      if (history.location.query?.redirect) {
-        history.push(history.location.query.redirect as string);
-      } else {
-        history.goBack();
-      }
+
+      history.goBack();
     }
   };
 

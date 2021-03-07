@@ -128,7 +128,7 @@ type PatchProfileReq struct {
 	School      string
 	UntrustedID string
 	TrustedID   string
-	UserName    null.String
+	UserName    string
 }
 type PatchProfileRes struct {
 	Completed bool
@@ -195,7 +195,7 @@ func (s *UserService) PatchProfile(r *http.Request, req *PatchProfileReq, res *P
 			stu.UntrustedID = req.UntrustedID
 		}
 
-		if !req.UserName.Equal(null.NewString("", false)) {
+		if req.UserName != "" {
 			if err = user.SetUserName(tx, req.UserName); err != nil {
 				return err
 			}
