@@ -124,4 +124,9 @@ export default [
     path: '/homepage/Homepage',
     component: '@/pages/homepage/Homepage',
   },
+  {
+    exact: true,
+    path: '/studyBuild',
+    component: '@/pages/QianQing/studyBuild',
+  },
 ];
