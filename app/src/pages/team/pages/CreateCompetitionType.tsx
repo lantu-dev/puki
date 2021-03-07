@@ -1,9 +1,9 @@
 //定义首屏为项目列表，供浏览正在招募中的项目
 import React from 'react';
-import { Form, Input, Button } from 'antd';
-import { Typography } from 'antd';
-const { Title } = Typography;
+import { Button, Form, Input, Typography } from 'antd';
 import { call } from '@/api-client';
+
+const { Title } = Typography;
 
 const layout = {
   labelCol: { span: 8 },

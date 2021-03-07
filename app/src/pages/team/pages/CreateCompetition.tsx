@@ -1,7 +1,6 @@
 //定义首屏为项目列表，供浏览正在招募中的项目
 import React, { useEffect } from 'react';
-import { Form, Input, Button } from 'antd';
-import { Typography } from 'antd';
+import { Button, Form, Input, Typography } from 'antd';
 import { call } from '@/api-client';
 
 const { Title } = Typography;

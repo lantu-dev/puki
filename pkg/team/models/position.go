@@ -29,6 +29,9 @@ type Position struct {
 
 	//对该岗位有兴趣的聊天
 	Conversations []*Conversation `gorm:"many2many:conversation_positions;"`
+
+	//该岗位的简历
+	Resumes []Resume
 }
 
 //岗位模板，这里把岗位名称单拎出来是为了让岗位名称仅来自于从已有岗位名称中挑选，以方便首屏中依据岗位的筛选
@@ -49,6 +52,7 @@ func FindAllPositionTemplates(tx *gorm.DB) []PositionTemplate {
 	var positionTemplates []PositionTemplate
 	result := tx.Find(&positionTemplates)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return positionTemplates
@@ -59,6 +63,18 @@ func FindPositionTemplateByID(tx *gorm.DB, positionTemplateID int64) PositionTem
 	var positionTemplate PositionTemplate
 	result := tx.First(&positionTemplate, positionTemplateID)
 	if result.Error != nil {
+		tx.Rollback()
+		log.Debug(result.Error)
+	}
+	return positionTemplate
+}
+
+//通过名称查找所有岗位模板
+func FindPositionTemplateByName(tx *gorm.DB, positionTemplateName string) PositionTemplate {
+	var positionTemplate PositionTemplate
+	result := tx.First(&positionTemplate, PositionTemplate{Name: positionTemplateName})
+	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return positionTemplate
@@ -69,7 +85,69 @@ func FindPositionsByProjectID(tx *gorm.DB, projectID int64) []Position {
 	var positions []Position
 	result := tx.Where(Position{ProjectID: projectID}).Find(&positions)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return positions
+}
+
+func EditPositionByID(tx *gorm.DB, positionID uint, needPeople int64, describe string) (err error) {
+	err = tx.Model(&Position{}).Where(positionID).Update("NeedPeople", needPeople).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+		return err
+	}
+	err = tx.Model(&Position{}).Where(positionID).Update("Describe", describe).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+	}
+	return err
+}
+
+func CreatePositionByProjectID(tx *gorm.DB, projectID uint, name string,
+	needPeople int64, describe string) (err error) {
+	var positionTemplate = FindPositionTemplateByName(tx, name)
+	var position = Position{
+		ProjectID:          int64(projectID),
+		PositionTemplateID: int64(positionTemplate.ID),
+		Describe:           describe,
+		NowPeople:          0,
+		NeedPeople:         needPeople,
+		InterestPeople:     0,
+		Conversations:      nil,
+	}
+	err = tx.Create(&position).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+	}
+	return err
+}
+
+func FindPositionByID(tx *gorm.DB, positionID int64) Position {
+	var position Position
+	err := tx.First(&position, positionID).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+	}
+	return position
+}
+
+func FindPositionByProjectIDAndPositionName(tx *gorm.DB, projectID int64, positionName string) Position {
+	var position Position
+	var positionTemplate PositionTemplate
+	err := tx.First(&positionTemplate, PositionTemplate{Name: positionName}).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+	}
+	err = tx.First(&position, Position{PositionTemplateID: int64(positionTemplate.ID), ProjectID: projectID}).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+	}
+	return position
 }

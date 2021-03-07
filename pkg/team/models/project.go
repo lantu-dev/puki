@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/lantu-dev/puki/pkg/auth/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"time"
@@ -15,6 +16,15 @@ type Project struct {
 
 	//创建者ID
 	CreatorID int64
+
+	//队员：项目与比赛为多对多关系，且比赛名次以项目为单位
+	//获奖逻辑：
+	//A项目获奖 - A项目关联比赛 - A项目在该比赛中名次；【项目创建者操作】
+	//查看成员 - 获取成员关联项目 - 获取项目获奖情况；
+	//查看项目 - 查看该项目的获奖情况
+	//查看比赛 - 查看所有项目获奖情况；
+	//查看competition_projects连接表 - 查看使用组队系统的所有项目的获奖情况
+	Members []*models.User `gorm:"many2many:user_projects"`
 
 	//比赛/活动：【在此系统中，比赛与活动视作一个类，下方将仅用“比赛”词代替“比赛/活动”】
 	//注意此处功能设计上需要有：点击项目卡片上的比赛标签 => 进入带有设置了该比赛筛选的首屏
@@ -55,21 +65,59 @@ func FindProjectByID(tx *gorm.DB, projectID uint) Project {
 	result := tx.Preload("Competitions").First(&project, projectID)
 	if result.Error != nil {
 		log.Debug(result.Error)
+		tx.Rollback()
 	}
 	return project
 }
 
-//创建项目
-func CreateProject(tx *gorm.DB, project Project) error {
-	result := tx.Create(&project)
-	return result.Error
+//通过项目ID数组查找项目
+func FindProjectByIDs(tx *gorm.DB, projectID []int64) []Project {
+	var projects []Project
+	result := tx.Preload("Competitions").Where(projectID).Find(&projects)
+	if result.Error != nil {
+		log.Debug(result.Error)
+		tx.Rollback()
+	}
+	return projects
 }
 
+//创建项目
+func CreateProject(tx *gorm.DB, project Project) (projectID uint, err error) {
+	result := tx.Create(&project)
+	if result.Error != nil {
+		tx.Rollback()
+	}
+	return project.ID, result.Error
+}
+
+//获取项目的个数
 func GetProjectNum(tx *gorm.DB) int64 {
 	var projectNum int64
 	result := tx.Model(&Project{}).Count(&projectNum)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return projectNum
+}
+
+//获取所有项目
+func FindAllProjects(tx *gorm.DB) []Project {
+	var projects []Project
+	result := tx.Find(&projects)
+	if result.Error != nil {
+		log.Debug(result.Error)
+		tx.Rollback()
+	}
+	return projects
+}
+
+//通过ID更新岗位
+func UpdateProjectByID(tx *gorm.DB, projectID uint, key string, value string) (err error) {
+	err = tx.Model(&Project{}).Where(projectID).Update(key, value).Error
+	if err != nil {
+		log.Debug(err)
+		tx.Rollback()
+	}
+	return err
 }

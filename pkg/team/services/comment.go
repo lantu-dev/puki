@@ -1,7 +1,10 @@
 package models
 
 import (
+	"github.com/lantu-dev/puki/pkg/auth"
+	"github.com/lantu-dev/puki/pkg/team/models"
 	"gorm.io/gorm"
+	"net/http"
 )
 
 type CommentService struct {
@@ -16,3 +19,43 @@ func NewCommentService(db *gorm.DB) *CommentService {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+
+//创建评论
+type CreateCommentReq struct {
+	//项目ID
+	ProjectID int64
+	//评论内容
+	Content string
+}
+type CreateCommentRes struct {
+	IsFailed bool
+}
+
+func (c *CommentService) CreateComment(r *http.Request, req *CreateCommentReq, res *CreateCommentRes) (err error) {
+	var tokenUser auth.TokenUser
+	tokenUser, err = auth.ExtractTokenUser(r)
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+	comment := models.Comment{
+		UserID:    tokenUser.ID,
+		ProjectID: req.ProjectID,
+		Content:   req.Content,
+		LinkNum:   0,
+	}
+
+	tx := c.db.Begin()
+	err = models.CreateComment(tx, comment)
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+	err = tx.Commit().Error
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+	res.IsFailed = false
+	return err
+}
