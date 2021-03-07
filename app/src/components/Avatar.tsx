@@ -13,7 +13,7 @@ export interface AvatarProps {
 export default function Avatar(props: AvatarProps) {
   if (props.src && props.src.length > 0) {
     return <AntAvatar src={props.src} size={props.size} />;
-  } else if (props.head) {
+  } else if (props.id) {
     return (
       <AntAvatar
         src={`https://api.multiavatar.com/${props.id}${props.head}.svg`}
@@ -23,7 +23,7 @@ export default function Avatar(props: AvatarProps) {
   } else {
     return (
       <AntAvatar
-        icon={<Jdenticon size="48" value={props.id} />}
+        icon={<Jdenticon size="48" value={props.head} />}
         size={props.size}
       />
     );

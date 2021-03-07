@@ -1,5 +1,6 @@
 import { LectureInfo } from '@/api-client/events';
-import { Avatar, List } from 'antd';
+import { List } from 'antd';
+import Avatar from '@/components/Avatar';
 
 export default function Lecture(props: LectureInfo) {
   return (
@@ -11,12 +12,7 @@ export default function Lecture(props: LectureInfo) {
         <List.Item>
           <List.Item.Meta
             avatar={
-              <Avatar
-                src={
-                  item.TalkerAvatarURL ||
-                  `https://api.multiavatar.com/${item.TalkerName}.svg`
-                }
-              />
+              <Avatar src={item.TalkerAvatarURL} head={item.TalkerName} />
             }
             title={item.TalkerName}
             description={item.TalkerDescription}
