@@ -13,6 +13,7 @@ interface classInformation{
 
 const { Title } = Typography;
 
+//出了点小问题，这个图片好像暂时加载不出来
 const data: classInformation = {
   classSymbol:'https://sm.ms/image/LIFJubHziN23Pko',
   className: 2019211307,
@@ -77,3 +78,4 @@ export default function Page() {
     </div>
   );
 }
+
