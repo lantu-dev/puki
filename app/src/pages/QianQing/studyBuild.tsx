@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import {Avatar, Typography, Divider} from 'antd';
+import { Avatar, Typography, Divider } from 'antd';
 
 //先绘制这个页面特殊的部分
 //班级基本信息的模块
-interface classInformation{
+interface classInformation {
   classSymbol: string;
   className: number;
   school: string;
@@ -13,69 +13,58 @@ interface classInformation{
 
 const { Title } = Typography;
 
-//出了点小问题，这个图片好像暂时加载不出来
 const data: classInformation = {
-  classSymbol:'https://sm.ms/image/LIFJubHziN23Pko',
+  classSymbol: 'https://sm.ms/image/LIFJubHziN23Pko',
   className: 2019211307,
-  school: "计算机学院",
+  school: '计算机学院',
   gradeRank: 7,
-  passPercent: 0.95 ,
+  passPercent: 0.95,
 };
 
 export default function Page() {
-  const { classSymbol, className, school, gradeRank, passPercent} = data;
+  const { classSymbol, className, school, gradeRank, passPercent } = data;
   return (
     <div>
       <div
         style={{
-          display:'flex', 
-          flexDirection:'row'
+          display: 'flex',
+          flexDirection: 'row',
         }}
       >
-        <div 
+        <div
           style={{
-          display:'flex', 
-          alignItems: 'center',
-          padding: '10px',
-          flexDirection: 'column'
-        }}
+            display: 'flex',
+            alignItems: 'center',
+            padding: '10px',
+            flexDirection: 'column',
+          }}
         >
           <Avatar
             size={128}
-            shape='circle'
+            shape="circle"
             src={classSymbol}
-            style ={{
-              marginRight:'30px',
+            style={{
+              marginRight: '30px',
             }}
-          >
-          </Avatar>
+          ></Avatar>
           <Title level={4}></Title>
-          <Title level={4}>
-            {data.className}
-          </Title>
-          <Title level={4}>
-            {data.school}
-          </Title>
-      </div>
-      <div 
+          <Title level={4}>{data.className}</Title>
+          <Title level={4}>{data.school}</Title>
+        </div>
+        <div
           style={{
-          display:'flex', 
-          alignItems: 'center',
-          padding: '10px',
-          flexDirection: 'column'
-        }}
-      >
-        <Title></Title>
-        <Title></Title>
-        <Title level={4}>
-          年级排名：{data.gradeRank}
-        </Title>
-        <Title level={4}>
-          及格率：{data.passPercent}
-        </Title>
+            display: 'flex',
+            alignItems: 'center',
+            padding: '10px',
+            flexDirection: 'column',
+          }}
+        >
+          <Title></Title>
+          <Title></Title>
+          <Title level={4}>年级排名：{data.gradeRank}</Title>
+          <Title level={4}>及格率：{data.passPercent}</Title>
+        </div>
       </div>
-    </div>  
     </div>
   );
 }
-
