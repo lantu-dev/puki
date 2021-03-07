@@ -1,0 +1,16 @@
+.shadowBox {
+  box-shadow: 0 1px 2px #c8c8c8;
+}
+
+.Box {
+  border-radius: '5px';
+  border: 1px solid #d9d9d9;
+}
+
+.ProjectDetailTag div {
+  margin-top: 5px;
+}
+
+.PartialScrollVertical {
+  overflow-y: scroll;
+}

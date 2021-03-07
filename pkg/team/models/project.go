@@ -1,6 +1,7 @@
 package models
 
 import (
+	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"time"
 )
@@ -27,7 +28,7 @@ type Project struct {
 
 	//项目介绍：
 	//项目名称; 要求：不允许出现两个项目名称相同
-	Name string
+	Name string `gorm:"unique"`
 	//简短的文字介绍，用3~5句话讲清是做什么，用于首屏中卡片中简单介绍项目，以及详情页中的”简介“
 	DescribeSimple string
 	//详细的文字介绍，详细介绍项目是做什么，包括项目背景、目标、成果等等信息，用于详情页中的详细介绍项目
@@ -46,4 +47,29 @@ type Project struct {
 	CommentsNum int64 `gorm:"default:0"`
 	//项目Star数
 	StarNum int64 `gorm:"default:0"`
+}
+
+//通过项目ID查找项目
+func FindProjectByID(tx *gorm.DB, projectID uint) Project {
+	var project Project
+	result := tx.Preload("Competitions").First(&project, projectID)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return project
+}
+
+//创建项目
+func CreateProject(tx *gorm.DB, project Project) error {
+	result := tx.Create(&project)
+	return result.Error
+}
+
+func GetProjectNum(tx *gorm.DB) int64 {
+	var projectNum int64
+	result := tx.Model(&Project{}).Count(&projectNum)
+	if result.Error != nil {
+		log.Debug(result.Error)
+	}
+	return projectNum
 }
