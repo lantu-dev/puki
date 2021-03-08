@@ -15,6 +15,7 @@ import (
 const otpChars = "1234567890"
 
 func generateOTP(length int) (string, error) {
+	rand.Seed(time.Now().Unix())
 	buffer := make([]byte, length)
 	otpCharsLength := len(otpChars)
 	for i := 0; i < length; i++ {
