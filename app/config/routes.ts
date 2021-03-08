@@ -129,4 +129,9 @@ export default [
     path: '/studyBuild',
     component: '@/pages/QianQing/studyBuild',
   },
+  {
+    exact: true,
+    path: '/classBuild',
+    component: '@/pages/QianQing/classBuild',
+  },
 ];
