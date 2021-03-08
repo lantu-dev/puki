@@ -11,7 +11,7 @@ interface content {
   contentSrc: string;
 }
 
-interface contentProps {
+export interface contentProps {
   contents: content[];
 }
 
@@ -77,7 +77,7 @@ function SvgImg(props: content) {
   );
 }
 
-function Page(props: contentProps) {
+export function Page(props: contentProps) {
   const [selected, setSelected] = useState(['topic']);
 
   const onMenuClick = function ({ key, keyPath }: { key: any; keyPath: any }) {

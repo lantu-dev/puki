@@ -1,25 +1,31 @@
 import { call, events } from '@/api-client';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Image, Menu, Row, Space, Typography } from 'antd';
+import { Button, Col, Menu, Row, Space, Typography } from 'antd';
 // @ts-ignore
 import Slider from 'react-slick';
 import { useAsync, useSetState } from 'react-use';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import { history } from 'umi';
-import style from './Index.less';
+import EventCard from './components/EventCard';
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 export default function () {
   const [state, setState] = useSetState({
     menu: 'recommend',
   });
 
-  const eventsList = useAsync(async () => {
-    const res = await call(events.Info.GetEventsList, {});
-    console.log(res);
-    return res;
+  const { value: eventsList } = useAsync(async () => {
+    return (
+      await call(events.EventService.GetEventsList, {
+        EventIDs: [],
+      })
+    ).Events;
+  });
+
+  const { value: userEvents } = useAsync(async () => {
+    return await call(events.EventService.GetUserEnrolledEvents, {});
   });
 
   return (
@@ -40,7 +46,10 @@ export default function () {
               }}
             >
               <Col flex={1} style={{ textAlign: 'center' }}>
-                您有 <span style={{ color: '#1890FF' }}>2</span>{' '}
+                您有{' '}
+                <span style={{ color: '#1890FF' }}>
+                  {userEvents?.Events.length || 0}
+                </span>{' '}
                 场正在进行的活动
               </Col>
               <Col>
@@ -48,6 +57,9 @@ export default function () {
                   size="small"
                   type="primary"
                   style={{ borderRadius: '5px' }}
+                  onClick={() => {
+                    history.push('/me/events');
+                  }}
                 >
                   查看
                 </Button>
@@ -59,7 +71,7 @@ export default function () {
               icon={<SearchOutlined />}
               type="primary"
               style={{ borderRadius: '5px' }}
-            ></Button>
+            />
           </Col>
         </Row>
         <div>
@@ -73,43 +85,22 @@ export default function () {
             style={{ margin: '1em' }}
             autoplay
           >
-            {eventsList.value?.map((v) => {
+            {eventsList?.map((v) => {
               return (
-                <div
-                  key={v.eventID}
+                <EventCard
+                  key={v.ID}
+                  ImageUrl={v.ImageUrl}
+                  Title={v.Title}
+                  Description={v.Description}
                   onClick={() => {
                     history.push({
                       pathname: '/events/more-info',
                       query: {
-                        eventID: v.eventID,
+                        EventID: v.ID.toString(),
                       },
                     });
                   }}
-                >
-                  <Card
-                    hoverable
-                    size="small"
-                    style={{ padding: '10px' }}
-                    cover={
-                      <div className={style.image}>
-                        <Image src={v.imageUrl} />
-                      </div>
-                    }
-                  >
-                    <Card.Meta
-                      title={v.title}
-                      description={
-                        <Paragraph
-                          ellipsis={{
-                            rows: 2,
-                          }}
-                        >
-                          {v.description}
-                        </Paragraph>
-                      }
-                    />
-                  </Card>
-                </div>
+                />
               );
             })}
           </Slider>
@@ -134,39 +125,23 @@ export default function () {
             vertical
             verticalSwiping
           >
-            {eventsList.value?.map((v) => (
+            {eventsList?.map((v) => (
               <div
-                key={v.eventID}
+                key={v.ID}
                 onClick={() => {
                   history.push({
                     pathname: '/events/more-info',
                     query: {
-                      eventID: v.eventID,
+                      EventID: v.ID.toString(),
                     },
                   });
                 }}
               >
-                <Card
-                  style={{ margin: '10px' }}
-                  cover={
-                    <div className={style.image}>
-                      <Image src={v.imageUrl} />
-                    </div>
-                  }
-                >
-                  <Card.Meta
-                    title={v.title}
-                    description={
-                      <Paragraph
-                        ellipsis={{
-                          rows: 2,
-                        }}
-                      >
-                        {v.description}
-                      </Paragraph>
-                    }
-                  />
-                </Card>
+                <EventCard
+                  ImageUrl={v.ImageUrl}
+                  Title={v.Title}
+                  Description={v.Description}
+                />
               </div>
             ))}
           </Slider>

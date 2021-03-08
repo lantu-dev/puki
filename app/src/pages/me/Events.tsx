@@ -1,9 +1,54 @@
+import { call, events } from '@/api-client';
+import EventCard from './components/EventCard';
 import { DoubleLeftOutlined } from '@ant-design/icons';
-import { Button, Empty, Typography } from 'antd';
+import { Button, Empty, List, Typography, message } from 'antd';
+import { useAsync, useAsyncRetry } from 'react-use';
+import { history } from 'umi';
+
 const { Title, Text } = Typography;
 
 export default function Events() {
-  return (
+  const { value: userEvents, retry } = useAsyncRetry(async () => {
+    return await call(events.EventService.GetUserEnrolledEvents, {});
+  });
+
+  return userEvents && userEvents?.Events.length ? (
+    <List
+      dataSource={userEvents.Events}
+      renderItem={(item) => (
+        <EventCard
+          style={{ margin: '1em' }}
+          ImageUrl={item.ImageUrl}
+          Title={item.Title}
+          Description={item.Description}
+          onClickCard={() => {
+            history.push({
+              pathname: '/events/more-info',
+              query: {
+                EventID: item.ID.toString(),
+              },
+            });
+          }}
+          onClickDelete={async () => {
+            console.log(history);
+            const { Status } = await call(events.EventService.QuitEvent, {
+              EventID: item.ID,
+            });
+            switch (Status) {
+              case 0:
+                retry();
+                break;
+              case 1:
+                message.warning('已删除活动');
+              case 2:
+                message.warning('该活动不存在');
+                break;
+            }
+          }}
+        />
+      )}
+    />
+  ) : (
     <Empty
       imageStyle={{
         height: 312,
@@ -15,7 +60,13 @@ export default function Events() {
         </span>
       }
     >
-      <Button type="primary" size="large">
+      <Button
+        type="primary"
+        size="large"
+        onClick={() => {
+          history.replace('/events');
+        }}
+      >
         <DoubleLeftOutlined />
         添加活动
       </Button>

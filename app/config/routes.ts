@@ -11,6 +11,9 @@ export default [
   },
   {
     exact: true,
+    wrappers: [
+      '@/wrappers/EnsureLogged',
+    ],
     path: '/auth/register',
     component: '@/pages/auth/Register',
   },
@@ -21,8 +24,8 @@ export default [
   },
   {
     exact: true,
-    path: '/events/entered-for',
-    component: '@/pages/events/EnteredFor',
+    path: '/events/enrolled',
+    component: '@/pages/events/Enrolled',
   },
   {
     exact: true,
@@ -51,12 +54,10 @@ export default [
   },
   {
     exact: true,
-    path: '/me/contact',
-    component: '@/pages/me/Contact',
-  },
-  {
-    exact: true,
     path: '/me/identify',
+    wrappers: [
+      '@/wrappers/EnsureLogged',
+    ],
     component: '@/pages/me/Identify',
   },
   {
@@ -86,7 +87,41 @@ export default [
   },
   {
     exact: true,
-    path: '/topic',
-    component: '@/pages/bbs/Index',
+    path: '/bbs',
+    wrappers: [
+      '@/wrappers/EnsureLogged',
+    ],
+    component: '@/pages/bbs/Nodes',
+  },
+  {
+    exact: true,
+    path: '/bbs/node',
+    component: '@/pages/bbs/Node',
+  },
+  {
+    exact: true,
+    path: '/bbs/thread',
+    component: '@/pages/bbs/Thread',
+  },
+  {
+    exact: true,
+    path: '/QingNianDaXueXi',
+    component: '@/pages/QianQing/QingNianDaXueXi',
+  },
+  {
+    exact: true,
+    path: '/SanHuiLiangZhi',
+    component: '@/pages/QianQing/SanHuiLiangZhi',
+  },
+
+  {
+    exact: true,
+    path: '/community/Community',
+    component: '@/pages/community/Community',
+  },
+  {
+    exact: true,
+    path: '/homepage/Homepage',
+    component: '@/pages/homepage/Homepage',
   },
 ];

@@ -1,21 +1,22 @@
 import fly, { FlyResponse } from 'flyio';
 
+//@ts-ignore
 import { isBrowser } from 'umi';
 
 export async function setToken(token: string) {
   localStorage.setItem('token', token);
 }
 
-export async function hasLogged() {
-  !!localStorage.getItem('token');
+export function hasLogged() {
+  return !!localStorage.getItem('token');
 }
 
 export interface Endpoint<P, R> extends String {}
 
 //@ts-ignore
 if (ENABLE_GATEWAY && isBrowser()) {
-  //@ts-ignore
   fly.config.baseURL = new URL(
+    //@ts-ignore
     `${window.location.origin}${window.routerBase}/../api`,
   ).toString();
 }
@@ -91,6 +92,7 @@ async function dev_call<P, R>(
       return Promise.reject(err);
     })
     .then((resp) => {
+      console.log(resp.data);
       if (!resp.data) {
         return;
       }
@@ -102,6 +104,8 @@ async function dev_call<P, R>(
       return resp;
     }) as any;
 }
+
+export async function uploadImage(file: Blob) {}
 
 export async function call<P, R>(
   endpoint: Endpoint<P, R>,

@@ -26,5 +26,8 @@ export default defineConfig({
   },
   publicPath: (process.env.PUBLIC_PATH || '') + '/',
   routes,
-  ssr: {},
+  ssr: {
+    devServerRender: false,
+  },
+  hash: true,
 });

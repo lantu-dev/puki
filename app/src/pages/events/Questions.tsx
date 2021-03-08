@@ -4,7 +4,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Drawer, Typography } from 'antd';
 import { useAsync, useMethods } from 'react-use';
 import { history } from 'umi';
-import Answers from './Answers';
+import Answers from './components/Answers';
 
 const { Paragraph, Title } = Typography;
 
@@ -25,7 +25,7 @@ export default function Questions() {
   const [state, methods] = useMethods(createMethods, initialState);
 
   const questionsList = useAsync(async () => {
-    const res = await call(events.Info.GetQuestionsList, {
+    const res = await call(events.QuestionService.GetQuestionsList, {
       eventID: history.location.query?.eventID,
     });
     console.log(res);

@@ -22,7 +22,7 @@ type TokenUser struct {
 	// Token 失效时间
 	ExpiresAt int64 `json:"e"`
 
-	//用户角色
+	// 用户角色
 	Roles []int64 `json:"r"`
 
 	// 用户权限
@@ -36,12 +36,13 @@ func (u *TokenUser) IsAnon() bool {
 }
 
 // 使用 TokenUser 获取 models.User
-func (u *TokenUser) User(tx *gorm.DB) (user models.User) {
+func (u *TokenUser) User(tx *gorm.DB) *models.User {
+	var user models.User
 	err := tx.First(&user, u.ID).Error
 	if err != nil {
 		log.Fatal("bad TokenUser: ", err)
 	}
-	return
+	return &user
 }
 
 // 从 models.User 获得 TokenUser

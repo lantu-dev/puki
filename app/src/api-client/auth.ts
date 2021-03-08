@@ -1,5 +1,31 @@
 import { Endpoint } from './client';
 
+interface User {
+  ID: number;
+  UserName: string;
+  PhoneNumber: number;
+  RealName: string;
+  AvatarURI: string;
+  NickName: string;
+  Password: string;
+  Gender: boolean | null;
+  IsStaff: boolean;
+  IsSuper: boolean;
+  IsDisabled: boolean;
+  UpdatedAt: string;
+  CreatedAt: string;
+}
+
+interface Student {
+  UserID: number;
+  University: string;
+  School: string;
+  ClassID: string;
+  UntrustedID: string;
+  TrustedID: string;
+  VerifyImageURL: string;
+}
+
 export interface SMSSendCodeReq {
   PhoneNumber: string;
 }
@@ -16,26 +42,22 @@ export interface SMSCodeLoginReq {
 
 export interface SMSCodeLoginRes {
   Token: string;
-  User: { RealName: string };
+  User: User;
 }
 
 export interface GetProfileRes {
-  User: { PhoneNumber: string; RealName: string };
+  User: User;
+  Student: Student;
 }
 
-export interface RegisterReq {
-  RealName: string;
-  NickName: string;
-
-  UserName: string;
-  Password: string;
-
-  StudentID: string;
-  School: string;
-}
-
-export interface RegisterRes {
-  Registered: boolean;
+type PatchProfileReq = {
+  [key in keyof User]?: User[key];
+} &
+  {
+    [key in keyof Student]?: Student[key];
+  };
+export interface PatchProfileRes {
+  Completed: boolean;
 }
 
 export default {
@@ -49,6 +71,9 @@ export default {
       SMSCodeLoginRes
     >,
     GetProfile: 'auth/UserService.GetProfile' as Endpoint<{}, GetProfileRes>,
-    Register: 'auth/UserService.Register' as Endpoint<RegisterReq, RegisterRes>,
+    PatchProfile: 'auth/UserService.PatchProfile' as Endpoint<
+      PatchProfileReq,
+      PatchProfileRes
+    >,
   },
 };

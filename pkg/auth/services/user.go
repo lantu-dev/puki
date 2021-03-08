@@ -4,6 +4,7 @@ import (
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/base"
+	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
@@ -97,89 +98,122 @@ func (s *UserService) SMSCodeLogin(r *http.Request, req *SMSCodeLoginReq, res *S
 type GetProfileReq struct {
 }
 type GetProfileRes struct {
-	User models.User
+	User    models.User
+	Student models.Student
 }
 
 func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetProfileRes) (err error) {
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil {
-		return err
+		return base.UserErrorf("请通过手机号登录账户")
 	}
 
 	tx := s.db.Begin()
 
 	if !tu.IsAnon() {
-		res.User = tu.User(tx)
+		res.User = *tu.User(tx)
+		tx.First(&res.Student, tu.ID)
 	}
 
 	err = tx.Commit().Error
 	return
 }
 
-type RegisterReq struct {
-	RealName string
-	NickName string
-
-	UserName string
-	Password string
-
-	StudentID string
-	School    string
+type PatchProfileReq struct {
+	Gender      null.Bool
+	NickName    string
+	Password    string
+	RealName    string
+	University  string
+	School      string
+	UntrustedID string
+	TrustedID   string
+	UserName    string
 }
-type RegisterRes struct {
-	Registered bool
+type PatchProfileRes struct {
+	Completed bool
 }
 
-// 这里的 Register 更有完善用户资料的意味，因为此时数据库中 User 已经创建好了
-func (s *UserService) Register(r *http.Request, req *RegisterReq, res *RegisterRes) (err error) {
+func (s *UserService) PatchProfile(r *http.Request, req *PatchProfileReq, res *PatchProfileRes) error {
+	// 检查用户登录
 	tu, err := auth.ExtractTokenUser(r)
 	if err != nil {
-		return err
+		// 用户请求头没有Token字段
+		return base.UserErrorf("请登录/注册账户")
 	}
 
-	tx := s.db.Begin()
-
+	// 以后的游客权限
 	if tu.IsAnon() {
 		return base.UserErrorf("login required")
 	}
 
-	user := tu.User(tx)
-
-	if user.RealName != "" {
-		return base.UserErrorf("registered already")
-	}
-
-	user.SetRealName(req.RealName)
-	user.SetNickName(req.NickName)
-
-	if req.UserName != "" {
-		if user.SetUserName(tx, req.UserName) != true {
-			return base.UserErrorf("username exists")
-		}
-	}
-
-	if req.Password != "" {
-		user.SetPassword(req.Password)
-	}
-
-	if req.StudentID != "" {
-		stu, err := models.FindOrCreateStudentFromUser(tx, &user)
+	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
+		user := tu.User(tx)
+		stu, err := models.FindOrCreateStudentFromUser(tx, user)
 		if err != nil {
 			return err
 		}
-		stu.UntrustedID = req.StudentID
-		stu.School = req.School
-		if err := tx.Save(stu).Error; err != nil {
+
+		// 如果请求修改性别
+		if !req.Gender.Equal(null.NewBool(false, false)) {
+			// 校验并设置性别
+			if err = user.SetGender(req.Gender); err != nil {
+				return err
+			}
+		}
+
+		if req.NickName != "" {
+			if err = user.SetNickName(req.NickName); err != nil {
+				return err
+			}
+		}
+
+		if req.Password != "" {
+			if err = user.SetPassword(req.Password); err != nil {
+				return err
+			}
+		}
+
+		if req.RealName != "" {
+			if err = user.SetRealName(req.RealName); err != nil {
+				return err
+			}
+		}
+
+		if req.University != "" {
+			// TODO 校验学校
+			stu.University = req.University
+		}
+
+		if req.School != "" {
+			// TODO 校验学院
+			stu.School = req.School
+		}
+
+		if req.UntrustedID != "" {
+			// TODO 校验学号
+			stu.UntrustedID = req.UntrustedID
+		}
+
+		if req.UserName != "" {
+			if err = user.SetUserName(tx, req.UserName); err != nil {
+				return err
+			}
+		}
+
+		if err = tx.Save(stu).Error; err != nil {
 			return err
 		}
-	}
+		if err = tx.Save(user).Error; err != nil {
+			return err
+		}
 
-	if err := tx.Save(&user).Error; err != nil {
+		res.Completed = true
+
+		return nil
+	}); err != nil {
 		return err
 	}
 
-	res.Registered = true
-
-	err = tx.Commit().Error
-	return
+	return nil
 }

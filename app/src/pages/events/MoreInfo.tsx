@@ -1,221 +1,78 @@
 import { call, events } from '@/api-client';
 import {
-  CalendarOutlined,
-  EnvironmentOutlined,
-  MinusOutlined,
-  QuestionOutlined,
-  ShareAltOutlined,
-  UserAddOutlined,
-} from '@ant-design/icons';
-import {
-  Avatar,
-  Button,
-  Card,
-  Carousel,
-  Col,
-  Form,
-  Image,
-  Input,
-  List,
-  Modal,
-  Row,
-  Space,
-  Spin,
-  Typography,
-} from 'antd';
-import moment from 'moment';
-import { useAsync, useSetState } from 'react-use';
+  EventType,
+  HackathonInfo,
+  LectureInfo,
+  SalonInfo,
+} from '@/api-client/events';
+import { Spin } from 'antd';
+import dayjs from 'dayjs';
+import { useAsync } from 'react-use';
 import { history } from 'umi';
-import style from './MoreInfo.less';
-
-const { Title, Paragraph, Text } = Typography;
-
-enum EnterForSteps {
-  Confirm,
-  TeamUp,
-}
+import MoreInfoCard from './components/MoreInfoCard';
+import Hackathon from './eventBox/Hackathon';
+import Lecture from './eventBox/Lecture';
+import Salon from './eventBox/Salon';
 
 export default function MoreInfo() {
-  const [state, setState] = useSetState({
-    enterFor: false,
-    enterForSteps: EnterForSteps.Confirm,
-  });
-
-  const [form] = Form.useForm();
-
-  const eventMoreInfo = useAsync(async () => {
-    const res = await call(events.Info.GetEventMoreInfo, {
-      eventID: history.location.query?.eventID,
+  const { value = null } = useAsync(async () => {
+    const EventID = Number(history.location.query?.EventID);
+    if (Number.isNaN(EventID)) {
+      return;
+    }
+    let eventInfo = (
+      await call(events.EventService.GetEventsList, {
+        EventIDs: [EventID],
+      })
+    ).Events[0];
+    let eventMoreInfo = await call(events.EventService.GetEventMoreInfo, {
+      EventID,
     });
-    console.log(res);
-    return res;
+    return {
+      eventInfo,
+      eventMoreInfo,
+    };
   });
 
-  const EnterForModel = () => (
-    <Modal
-      centered
-      visible={state.enterFor}
-      onOk={async () => {
-        if (state.enterForSteps === EnterForSteps.Confirm) {
-          // TODO 检查登录状态/是否已经报名
-          if (eventMoreInfo.value!.type !== 'h') {
-            // TODO 发送报名请求
-            setState({ enterFor: false });
-            history.push('/events/entered-for');
-          } else {
-            setState({ enterForSteps: EnterForSteps.TeamUp });
-          }
-        } else {
-          // hackathon组队报名
-          try {
-            const fieldsValue = await form.validateFields();
-            console.log(fieldsValue);
-            setState({
-              enterFor: false,
-              enterForSteps: EnterForSteps.Confirm,
-            });
-            history.push('/events/entered-for');
-          } catch (err) {
-            console.log(err);
-          }
-        }
-      }}
-      onCancel={() => {
-        setState({
-          enterFor: false,
-          enterForSteps: EnterForSteps.Confirm,
-        });
-      }}
-    >
-      {
-        [<Title level={3}>是否确认报名</Title>, <TeamUpForm form={form} />][
-          state.enterForSteps
-        ]
-      }
-    </Modal>
-  );
+  let info = {
+    more: '',
+    teamed: false,
+    time: '',
+    label: '',
+  };
+  let children = () => <div></div>;
+  if (value) {
+    switch (value.eventInfo.EventType) {
+      case EventType.EventTypeLecture:
+        children = () => <Lecture {...(value.eventMoreInfo as LectureInfo)} />;
+        info.time = dayjs(value.eventInfo.StartedAt).format('HH:mm A');
+        info.label = '具体信息';
+        info.more = '主讲人';
+        break;
+      case EventType.EventTypeSalon:
+        children = () => <Salon {...(value.eventMoreInfo as SalonInfo)} />;
+        info.time = dayjs(value.eventInfo.StartedAt).format('HH:mm A');
+        info.label = '沙龙核心议题';
+        info.more = '具体安排';
+        break;
+      case EventType.EventTypeHackathon:
+        children = () => (
+          <Hackathon {...(value.eventMoreInfo as HackathonInfo)} />
+        );
+        info.teamed = true;
+        info.time = `${dayjs(value.eventInfo.StartedAt).format(
+          'HH:mm A(DD号)',
+        )}-${dayjs(value.eventInfo.EndedAt).format('HH:mm A(DD号)')}`;
+        info.label = '活动介绍';
+        info.more = '活动流程';
+        break;
+    }
+  }
 
-  return eventMoreInfo.value ? (
-    <div>
-      <div className={style.image}>
-        <Image src={eventMoreInfo.value.imageUrl}></Image>
-      </div>
-      <Space
-        direction="vertical"
-        style={{ width: '100%', padding: '0 1em 1em 1em' }}
-      >
-        <Title level={3}>{eventMoreInfo.value.title}</Title>
-        <Row wrap={false} align="middle">
-          <Col span={12}>
-            <Row align="middle" wrap={false} gutter={5}>
-              <Col>
-                <CalendarOutlined style={{ fontSize: '1.5em' }} />
-              </Col>
-              <Col>
-                {eventMoreInfo.value.type === 'h'
-                  ? `${moment(eventMoreInfo.value.startTime).format(
-                      'HH:mm A(DD号)',
-                    )}-${moment(eventMoreInfo.value.endTime).format(
-                      'HH:mm A(DD号)',
-                    )}`
-                  : moment(eventMoreInfo.value.startTime).format('HH:mm A')}
-              </Col>
-            </Row>
-          </Col>
-          <Col span={12}>
-            <Row align="middle" wrap={false} gutter={5}>
-              <Col>
-                <EnvironmentOutlined style={{ fontSize: '1.5em' }} />
-              </Col>
-              <Col>{eventMoreInfo.value.location}</Col>
-            </Row>
-          </Col>
-        </Row>
-        <Text strong style={{ fontSize: '1.2em' }}>
-          {eventMoreInfo.value.type === 'l' && '具体信息'}
-          {eventMoreInfo.value.type === 's' && '沙龙核心议题'}
-          {eventMoreInfo.value.type === 'h' && '活动介绍'}
-        </Text>
-        <Paragraph>{eventMoreInfo.value.description}</Paragraph>
-        <Text strong style={{ fontSize: '1.2em' }}>
-          {eventMoreInfo.value.type === 'l' && '主讲人'}
-          {eventMoreInfo.value.type === 's' && '具体安排'}
-          {eventMoreInfo.value.type === 'h' && '活动流程'}
-        </Text>
-        {eventMoreInfo.value.type === 'l' && (
-          <List
-            bordered
-            dataSource={eventMoreInfo.value.lecturers}
-            itemLayout="horizontal"
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={<Avatar src={item.photoUrl} />}
-                  title={item.personName}
-                  description={item.description}
-                />
-              </List.Item>
-            )}
-          />
-        )}
-        {eventMoreInfo.value.type === 's' && (
-          <Carousel autoplay>
-            {eventMoreInfo.value.schedules.map((v) => (
-              <Card
-                extra={moment(v.startTime).format('HH:mm A')}
-                key={v.personName}
-                style={{ width: 300 }}
-                title={`${v.personName} ${v.title}`}
-              >
-                <Paragraph>{v.description}</Paragraph>
-              </Card>
-            ))}
-          </Carousel>
-        )}
-        {eventMoreInfo.value.type === 'h' && eventMoreInfo.value.steps}
-      </Space>
-      <Space
-        direction="vertical"
-        size="large"
-        style={{
-          position: 'fixed',
-          right: '2em',
-          bottom: '5em',
-          opacity: 0.7,
-        }}
-      >
-        <Button
-          shape="circle"
-          size="large"
-          type="primary"
-          icon={<UserAddOutlined />}
-          onClick={() => {
-            setState({ enterFor: true });
-          }}
-        ></Button>
-        {EnterForModel()}
-        <Button
-          shape="circle"
-          size="large"
-          type="primary"
-          icon={<QuestionOutlined />}
-          onClick={() => {
-            history.push({
-              pathname: '/events/questions',
-              query: {
-                eventID: eventMoreInfo.value?.eventID || '0',
-              },
-            });
-          }}
-        ></Button>
-        <Button
-          shape="circle"
-          size="large"
-          type="primary"
-          icon={<ShareAltOutlined />}
-        ></Button>
-      </Space>
-    </div>
+  return value ? (
+    <MoreInfoCard {...info} {...value.eventInfo}>
+      {children}
+    </MoreInfoCard>
   ) : (
     <Spin
       size="large"
@@ -226,107 +83,5 @@ export default function MoreInfo() {
         top: '50%',
       }}
     />
-  );
-}
-
-function TeamUpForm(props: { form: ReturnType<typeof Form.useForm>[0] }) {
-  return (
-    <Form name="team" form={props.form} scrollToFirstError>
-      <Title level={4}>组队报名</Title>
-      <Form.Item
-        label="队长"
-        name="Leader"
-        validateFirst
-        hasFeedback
-        rules={[
-          {
-            message: '请填写学号',
-            required: true,
-          },
-          {
-            validator(_, value) {
-              if (value.length === 10) {
-                return Promise.resolve();
-              }
-              return Promise.reject('例: 2019123456');
-            },
-          },
-        ]}
-      >
-        <Input placeholder="请输入学号" type="number"></Input>
-      </Form.Item>
-      <Form.List
-        name="members"
-        rules={[
-          {
-            validator: async (_, members) => {
-              if (!members || members.length < 1) {
-                return Promise.reject('至少一个队员');
-              }
-            },
-          },
-        ]}
-      >
-        {(fields, { add, remove }, { errors }) => {
-          return (
-            <>
-              {fields.map((field, index) => (
-                <Row key={field.key} style={{ width: '100%' }} align="middle">
-                  <Col flex={1}>
-                    <Form.Item
-                      {...field}
-                      label={'队员' + (index + 1)}
-                      validateFirst
-                      hasFeedback
-                      rules={[
-                        {
-                          message: '请填写学号',
-                          required: true,
-                        },
-                        {
-                          validator(_, value) {
-                            if (value.length === 10) {
-                              return Promise.resolve();
-                            }
-                            return Promise.reject('例: 2019123456');
-                          },
-                        },
-                      ]}
-                    >
-                      <Input placeholder="请输入学号" type="number"></Input>
-                    </Form.Item>
-                  </Col>
-                  <Col>
-                    {fields.length > 1 && (
-                      <Button
-                        danger
-                        icon={<MinusOutlined />}
-                        shape="circle"
-                        type="primary"
-                        onClick={() => {
-                          remove(field.name);
-                        }}
-                        style={{ transform: 'translate(5px,7px)' }}
-                      ></Button>
-                    )}
-                  </Col>
-                </Row>
-              ))}
-              <Form.Item>
-                <Button
-                  block
-                  type="dashed"
-                  onClick={add}
-                  disabled={fields.length > 3}
-                >
-                  添加成员
-                </Button>
-                <Form.ErrorList errors={errors} />
-              </Form.Item>
-            </>
-          );
-        }}
-      </Form.List>
-    </Form>
   );
 }

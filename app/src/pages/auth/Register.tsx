@@ -11,7 +11,7 @@ import {
   Typography,
 } from 'antd';
 import React from 'react';
-import { useAsync } from 'react-use';
+import { useAsync, useSetState } from 'react-use';
 import { history } from 'umi';
 
 const { Title } = Typography;
@@ -21,7 +21,7 @@ interface IForm {
   realName: string;
   nickName: string;
   fillStudentInfo: boolean;
-  studentID?: string;
+  untrustedID?: string;
   school?: string;
   fillUserName: boolean;
   userName?: string;
@@ -31,34 +31,33 @@ interface IForm {
 }
 
 export default function Register() {
+  const [state, setState] = useSetState({ registered: false });
   const [form] = Form.useForm<IForm>();
 
   const phoneNumberState = useAsync(async () => {
     const { User } = await call(auth.UserService.GetProfile, {});
     if (User.RealName && User.RealName.length > 0) {
       message.error({ content: '用户已完成注册' });
+      setState({ registered: true });
     }
     form.setFieldsValue({ phoneNumber: '+' + User.PhoneNumber });
     return User.PhoneNumber;
   });
 
   const onFinish = async (values: IForm) => {
-    const { Registered } = await call(auth.UserService.Register, {
+    const { Completed } = await call(auth.UserService.PatchProfile, {
       RealName: values.realName,
       NickName: values.nickName || '',
       UserName: values.userName || '',
       Password: values.password || '',
-      StudentID: values.studentID || '',
+      UntrustedID: values.untrustedID || '',
       School: values.school || '',
     });
 
-    if (Registered) {
+    if (Completed) {
       message.success({ content: '注册成功！' });
-      if (history.location.query?.redirect) {
-        history.push(history.location.query.redirect as string);
-      } else {
-        history.goBack();
-      }
+
+      history.goBack();
     }
   };
 
@@ -114,10 +113,10 @@ export default function Register() {
                     : Promise.reject('昵称仅支持中英文与数字'),
               },
               {
-                message: '昵称长度在2-10位之间',
+                message: '昵称长度在2-8位之间',
                 type: 'string',
                 min: 2,
-                max: 10,
+                max: 8,
               },
             ]}
           >
@@ -138,7 +137,7 @@ export default function Register() {
                 <>
                   <Form.Item
                     label="学号"
-                    name="studentID"
+                    name="untrustedID"
                     validateFirst
                     hasFeedback
                     rules={[
@@ -273,7 +272,12 @@ export default function Register() {
           <Row justify="center">
             <Col>
               <Form.Item>
-                <Button type="primary" size="large" htmlType="submit">
+                <Button
+                  disabled={state.registered}
+                  type="primary"
+                  size="large"
+                  htmlType="submit"
+                >
                   注册
                 </Button>
               </Form.Item>

@@ -3,6 +3,7 @@ import { useSetState } from 'react-use';
 import { history } from 'umi';
 import InputPhoneNumber from './components/InputPhoneNumber';
 import InputVerifyCode from './components/InputVerifyCode';
+import { hasLogged } from '@/api-client';
 
 enum Step {
   inputPhoneNumber,
@@ -21,14 +22,27 @@ export default function Index() {
     if (next === 'register') {
       history.push({
         pathname: '/auth/register',
-        query: history.location.query,
       });
-    } else if (history.location.query?.redirect) {
-      history.push(history.location.query.redirect as string);
     } else {
-      history.goBack();
+      const redirect = history.location.query?.redirect?.toString();
+      if (redirect) {
+        if (redirect.startsWith('http')) {
+          if (typeof window !== 'undefined') {
+            //@ts-ignore
+            window.location = redirect;
+          }
+        } else {
+          history.push(redirect);
+        }
+      } else {
+        history.goBack();
+      }
     }
   };
+
+  if (hasLogged()) {
+    onLogged('redirect');
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
