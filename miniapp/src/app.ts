@@ -1,19 +1,20 @@
-import { Component } from 'react';
-import './app.less';
+import { Component } from 'react'
+import './app.scss'
 
 class App extends Component {
-  componentDidMount() {}
 
-  componentDidShow() {}
+  componentDidMount () {}
 
-  componentDidHide() {}
+  componentDidShow () {}
 
-  componentDidCatchError() {}
+  componentDidHide () {}
+
+  componentDidCatchError () {}
 
   // this.props.children 是将要会渲染的页面
-  render() {
-    return this.props.children;
+  render () {
+    return this.props.children
   }
 }
 
-export default App;
+export default App
