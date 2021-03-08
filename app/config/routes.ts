@@ -104,16 +104,17 @@ export default [
     component: '@/pages/bbs/Thread',
   },
   {
-    exact: true,
-    path: '/QingNianDaXueXi',
-    component: '@/pages/QianQing/QingNianDaXueXi',
+    path: '/qian-qing',
+    component: '@/pages/QianQing/_layout',
+    routes: [
+      {
+        path: "/qian-qing/qing-nian", component: '@/pages/QianQing/QingNian', name: "青年", routes: [
+          {path: "/qian-qing/qing-nian/big-study", component: '@/pages/QianQing/QingNianDaXueXi', name: "大学习"}
+        ]
+      },
+      {path: "/qian-qing/3m2s1l", component: '@/pages/QianQing/SanHuiLiangZhi', name: "三会两制",routes:[]}
+    ]
   },
-  {
-    exact: true,
-    path: '/SanHuiLiangZhi',
-    component: '@/pages/QianQing/SanHuiLiangZhi',
-  },
-
   {
     exact: true,
     path: '/community/Community',
