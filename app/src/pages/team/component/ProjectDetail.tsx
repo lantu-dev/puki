@@ -25,9 +25,9 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
-
 const { Title, Paragraph, Text } = Typography;
-
+import { Anchor } from 'antd';
+const { Link } = Anchor;
 //来自ProjectCard的项目简略信息，这部分信息不需要再从数据库重新获取
 interface ProjectDetailProps {
   ProjectID: number;
@@ -458,7 +458,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
               style={{
                 marginLeft: '10px',
                 marginRight: '10px',
-                width: '60px',
+                width: '80%',
                 height: '60px',
               }}
               className={style.Box}
@@ -485,7 +485,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
               style={{
                 marginLeft: '10px',
                 marginRight: '10px',
-                width: '60px',
+                width: '80%',
                 height: '60px',
               }}
               className={style.Box}
@@ -503,7 +503,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
               style={{
                 marginLeft: '10px',
                 marginRight: '10px',
-                width: '60px',
+                width: '80%',
                 height: '60px',
               }}
               className={style.Box}

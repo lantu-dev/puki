@@ -11,9 +11,7 @@ export default [
   },
   {
     exact: true,
-    wrappers: [
-      '@/wrappers/EnsureLogged',
-    ],
+    wrappers: ['@/wrappers/EnsureLogged'],
     path: '/auth/register',
     component: '@/pages/auth/Register',
   },
@@ -55,9 +53,7 @@ export default [
   {
     exact: true,
     path: '/me/identify',
-    wrappers: [
-      '@/wrappers/EnsureLogged',
-    ],
+    wrappers: ['@/wrappers/EnsureLogged'],
     component: '@/pages/me/Identify',
   },
   {
@@ -82,15 +78,18 @@ export default [
   },
   {
     exact: true,
+    path: '/team/CreatePositionTemplate',
+    component: '@/pages/team/pages/CreatePositionTemplate',
+  },
+  {
+    exact: true,
     path: '/team/CreateCompetitionType',
     component: '@/pages/team/pages/CreateCompetitionType',
   },
   {
     exact: true,
     path: '/bbs',
-    wrappers: [
-      '@/wrappers/EnsureLogged',
-    ],
+    wrappers: ['@/wrappers/EnsureLogged'],
     component: '@/pages/bbs/Nodes',
   },
   {

@@ -95,3 +95,30 @@ func (c *PositionService) EditPosition(r *http.Request,
 
 	return err
 }
+
+type CreatePositionTemplateReq struct {
+	Name            string
+	DefaultDescribe string
+}
+type CreatePositionTemplateRes struct {
+	IsFailed bool
+}
+
+func (c *PositionService) CreatePositionTemplate(r *http.Request, req *CreatePositionTemplateReq, res *CreatePositionTemplateRes) error {
+	positionTemplate := models.PositionTemplate{
+		Name:            req.Name,
+		DefaultDescribe: req.DefaultDescribe,
+	}
+	tx := c.db.Begin()
+	err := models.CreatePositionTemplate(tx, &positionTemplate)
+	if err != nil {
+		res.IsFailed = true
+		log.Debug(err)
+	}
+	err = tx.Commit().Error
+	if err != nil {
+		res.IsFailed = true
+		log.Debug(err)
+	}
+	return err
+}

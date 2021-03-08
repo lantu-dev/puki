@@ -254,6 +254,15 @@ export interface GetCompetitionNamesRes {
   CompetitionNames: string[];
 }
 
+//创建岗位模板
+export interface CreatePositionTemplateReq {
+  Name: string;
+  DefaultDescribe: string;
+}
+export interface CreatePositionTemplateRes {
+  IsFailed: boolean;
+}
+
 export default {
   CommentService: {
     CreateComment: 'team/CommentService.CreateComment' as Endpoint<
@@ -307,6 +316,10 @@ export default {
     EditPosition: 'team/PositionService.EditPosition' as Endpoint<
       EditPositionReq,
       EditPositionRes
+    >,
+    CreatePositionTemplate: 'team/PositionService.CreatePositionTemplate' as Endpoint<
+      CreatePositionTemplateReq,
+      CreatePositionTemplateRes
     >,
   },
   ProjectService: {

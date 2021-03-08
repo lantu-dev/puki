@@ -11,11 +11,11 @@ const layout = {
 };
 
 const onFinish = (values: any) => {
-  let name = values.CompetitionName;
+  let name = values.positionName;
   let desc = values.Descriptions;
-  call(team.CompetitionService.AddCompetition, {
-    Description: desc,
+  call(team.PositionService.CreatePositionTemplate, {
     Name: name,
+    DefaultDescribe: desc,
   }).then(() => {});
   history.back();
 };
@@ -35,7 +35,7 @@ export default function () {
           marginBottom: '20px',
         }}
       >
-        <Title level={4}>添加比赛</Title>
+        <Title level={4}>添加岗位模板</Title>
       </div>
 
       <Form
@@ -48,12 +48,12 @@ export default function () {
         layout={'vertical'}
       >
         <Form.Item
-          label="比赛/活动名称"
-          name="CompetitionName"
+          label="岗位名称"
+          name="positionName"
           rules={[
             {
               required: true,
-              message: "Please input the competition/activity's Name!",
+              message: "Please input the position's Name!",
             },
           ]}
         >
@@ -61,12 +61,12 @@ export default function () {
         </Form.Item>
 
         <Form.Item
-          label="比赛/活动介绍"
+          label="岗位默认介绍"
           name="Descriptions"
           rules={[
             {
               required: true,
-              message: "Please input the competition/activity's Description!",
+              message: "Please input the position's Description!",
             },
           ]}
         >

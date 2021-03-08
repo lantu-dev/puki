@@ -151,3 +151,12 @@ func FindPositionByProjectIDAndPositionName(tx *gorm.DB, projectID int64, positi
 	}
 	return position
 }
+
+func CreatePositionTemplate(tx *gorm.DB, positionTemplate *PositionTemplate) (err error) {
+	err = tx.Create(&positionTemplate).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+	}
+	return err
+}
