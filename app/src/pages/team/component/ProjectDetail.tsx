@@ -27,7 +27,6 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
-
 const { Title, Paragraph, Text } = Typography;
 import { Anchor } from 'antd';
 const { Link } = Anchor;
