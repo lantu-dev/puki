@@ -84,7 +84,7 @@ function Home() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={useBaseUrl('about/')}>
+              to={useBaseUrl('docs/about/')}>
               了解更多
             </Link>
           </div>

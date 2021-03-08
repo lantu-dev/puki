@@ -35,11 +35,11 @@ module.exports = {
           items: [
             {
               label: '产品介绍',
-              to: 'docs/',
+              to: 'docs/doc3/',
             },
             {
               label: '产品服务',
-              to: 'docs/doc2/',
+              to: 'docs/doc3/',
             },
           ],
         },
@@ -48,7 +48,7 @@ module.exports = {
           items: [
             {
               label: '关于我们',
-              to: 'about',
+              to: 'docs/about',
             },
             {
               label: '社区',
@@ -61,7 +61,7 @@ module.exports = {
           items: [
             {
               label: '加入我们',
-              to: 'join',
+              to: 'docs/join',
             },
             {
               label: 'GitHub',
@@ -85,31 +85,11 @@ module.exports = {
       },
     ],
     [
-      '@docusaurus/plugin-content-pages',
-      {
-        path: 'about',
-        routeBasePath: 'about',
-        id: 'plugin-content-pages-about',
-        include: ['*.md', '*.mdx'],
-        // ...
-      },
-    ],
-    [
       '@docusaurus/plugin-content-blog',
       {
         path: 'awards',
         routeBasePath: 'awards',
         id: 'plugin-content-blog-awards',
-        include: ['*.md', '*.mdx'],
-        // ...
-      },
-    ],
-    [
-      '@docusaurus/plugin-content-pages',
-      {
-        path: 'join',
-        routeBasePath: 'join',
-        id: 'plugin-content-pages-join',
         include: ['*.md', '*.mdx'],
         // ...
       },
