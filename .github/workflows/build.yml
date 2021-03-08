@@ -80,21 +80,6 @@ jobs:
 
 
       - run: cd app && yarn
-      
-      - name: Build site
-        run: sed -i 's/CI_BUILED_BASEURL/\/puki\/${{ steps.info.outputs.build-tag }}\/app\/site\//' ./site/docusaurus.config.js && cd site && yarn
-
-      - name: Docusaurus build post message
-        if: ${{ failure() }}
-        run: |
-          curl \
-          -X POST \
-          -H "Accept: application/vnd.github.v3+json" \
-          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-          -d '{"body":'"$(printf "**❌ Docusaurus Build failed**\n" | jq  -aRs .)"'}' \
-          && exit 1
-        
       - name: Fontend code style check
         run: cd app && yarn prettier:check > /tmp/prettierout 2>&1
 
@@ -115,11 +100,23 @@ jobs:
       - name: Build frontend
         run: cd app &&PUBLIC_PATH=/puki/${{ steps.info.outputs.build-tag }}/app ENABLE_GATEWAY=true yarn build && mv dist ../build/
 
+      - name: PreBuild docusaurus
+        run: sed -i 's/CI_BUILED_BASEURL/\/puki\/${{ steps.info.outputs.build-tag }}\/app\/site\//' ./site/docusaurus.config.js && cd site && yarn
+      
       - name: Build docusaurus
         run: cd site && yarn build && mv build ../build/dist/site
-
-      - name: Build docusaurus
-        run: cd site && yarn build && mv build ../build/dist/site
+      
+      - name: Docusaurus build post message
+        if: ${{ failure() }}
+        run: |
+          curl \
+          -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          -d '{"body":'"$(printf "**❌ Docusaurus Build failed**\n" | jq  -aRs .)"'}' \
+          && exit 1
+      
 
       - name: Build backend
         run: CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -ldflags "-X main.buildTag=${{ steps.info.outputs.build-tag }} -X main.buildCommit=${{ steps.info.outputs.commit-hash }}" -o build/puki github.com/lantu-dev/puki/cmd/main
