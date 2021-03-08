@@ -1,8 +1,8 @@
 module.exports = {
-  title: '蓝图主页',
-  tagline: 'The tagline of my site',
+  title: '北邮蓝图',
+  tagline: '北京邮电大学蓝图创新工作室(计算机学院蓝图创新协会、计算机学院团委科创实践部)',
   url: 'https://stagging.blueprint.org.cn/',
-  baseUrl: 'CI_BUILED_BASEURL',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
@@ -10,7 +10,7 @@ module.exports = {
   projectName: 'puki', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: '蓝图主页',
+      title: '蓝图',
       logo: {
         alt: '蓝图主页',
         src: 'img/logo.svg',
@@ -19,12 +19,12 @@ module.exports = {
         {
           to: '/',
           label: '首页',
-          position: 'right',
+          position: 'left',
         },
-        {to: 'blog', label: '关于我们', position: 'right'},
-        {
-
-        }
+        {to: 'awards', label: '荣誉', position: 'left'},
+        {to: 'blog', label: '知识分享', position: 'left'},
+        {to: 'news', label: '新闻', position: 'left'},
+        {to: 'summary', lable: '总结', position: 'left'},
       ],
     },
     footer: {
@@ -48,11 +48,11 @@ module.exports = {
           items: [
             {
               label: '关于我们',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              to: 'about',
             },
             {
               label: '社区',
-              href: 'https://discordapp.com/invite/docusaurus',
+              href: 'https://example.com',
             },
           ],
         },
@@ -60,12 +60,12 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: 'blog',
+              label: '加入我们',
+              to: 'join',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/lantu-dev',
             },
           ],
         },
@@ -73,6 +73,58 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} 版权所有`,
     },
   },
+  plugins: [
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        path: 'news',
+        routeBasePath: 'news',
+        id: 'plugin-content-blog-news',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-pages',
+      {
+        path: 'about',
+        routeBasePath: 'about',
+        id: 'plugin-content-pages-about',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        path: 'awards',
+        routeBasePath: 'awards',
+        id: 'plugin-content-blog-awards',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-pages',
+      {
+        path: 'join',
+        routeBasePath: 'join',
+        id: 'plugin-content-pages-join',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        path: 'summary',
+        routeBasePath: 'summary',
+        id: 'plugin-content-blog-summary',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+  ],
   presets: [
     [
       '@docusaurus/preset-classic',
