@@ -2,7 +2,7 @@ module.exports = {
   title: '北邮蓝图',
   tagline: '北京邮电大学蓝图创新工作室(计算机学院蓝图创新协会、计算机学院团委科创实践部)',
   url: 'https://stagging.blueprint.org.cn/',
-  baseUrl: '/',
+  baseUrl: 'CI_BUILED_BASEURL',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
