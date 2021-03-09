@@ -1,65 +1,58 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  title: '北邮蓝图',
+  tagline: '北京邮电大学蓝图创新工作室(计算机学院蓝图创新协会、计算机学院团委科创实践部)',
+  url: 'https://stagging.blueprint.org.cn/',
+  baseUrl: 'CI_BUILED_BASEURL',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'lantu-dev', // Usually your GitHub org/user name.
+  projectName: 'puki', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: '蓝图',
       logo: {
-        alt: 'My Site Logo',
+        alt: '蓝图主页',
         src: 'img/logo.svg',
       },
       items: [
         {
-          to: 'docs/',
-          activeBasePath: 'docs',
-          label: 'Docs',
+          to: '/',
+          label: '首页',
           position: 'left',
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
-        {
-          href: 'https://github.com/facebook/docusaurus',
-          label: 'GitHub',
-          position: 'right',
-        },
+        {to: 'awards', label: '荣誉', position: 'left'},
+        {to: 'blog', label: '知识分享', position: 'left'},
+        {to: 'news', label: '新闻', position: 'left'},
+        {to: 'summary', lable: '总结', position: 'left'},
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       links: [
         {
-          title: 'Docs',
+          title: '产品',
           items: [
             {
-              label: 'Style Guide',
-              to: 'docs/',
+              label: '产品介绍',
+              to: 'docs/doc3/',
             },
             {
-              label: 'Second Doc',
-              to: 'docs/doc2/',
+              label: '产品服务',
+              to: 'docs/doc3/',
             },
           ],
         },
         {
-          title: 'Community',
+          title: '企业介绍',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: '关于我们',
+              to: 'docs/about',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              label: '社区',
+              href: 'https://example.com',
             },
           ],
         },
@@ -67,19 +60,51 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: 'blog',
+              label: '加入我们',
+              to: 'docs/join',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/lantu-dev',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} 版权所有`,
     },
   },
+  plugins: [
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        path: 'news',
+        routeBasePath: 'news',
+        id: 'plugin-content-blog-news',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        path: 'awards',
+        routeBasePath: 'awards',
+        id: 'plugin-content-blog-awards',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-blog',
+      {
+        path: 'summary',
+        routeBasePath: 'summary',
+        id: 'plugin-content-blog-summary',
+        include: ['*.md', '*.mdx'],
+        // ...
+      },
+    ],
+  ],
   presets: [
     [
       '@docusaurus/preset-classic',
