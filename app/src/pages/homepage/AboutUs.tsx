@@ -1,9 +1,9 @@
 import './AboutUs.less';
 /*import logoSrc from '@/pages/zj/bq/lantu_blue.png'*/
 import { Link } from 'umi';
-import { Layout, Menu, Button,Card, Avatar,Input } from 'antd';
+import { Layout, Menu, Button, Card, Avatar, Input } from 'antd';
 const { Header, Content, Footer } = Layout;
-import { WechatOutlined,WeiboCircleOutlined,TwitterOutlined} from '@ant-design/icons';
+import { WechatOutlined, WeiboCircleOutlined, TwitterOutlined } from '@ant-design/icons';
 
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 const { Meta } = Card;
@@ -14,10 +14,10 @@ export default function IndexPage() {
   return (
     <div>
       <Layout className="layout">
-      <Header className="header">
-          
+        <Header className="header">
 
-          
+
+
           <Menu theme='dark' className='menu' mode="horizontal" defaultSelectedKeys={['1']}>
             <Button className='menu-item' type="text">蓝图首页</Button>
             <Button className='menu-item' type="text"><Link to="/tech-fes">社区</Link></Button>
@@ -29,95 +29,95 @@ export default function IndexPage() {
 
         <Content className="content">
           <div className="site-layout-content">
-          <section className="about-us">
+            <section className="about-us">
               <div className="passag">
                 <div className="image-container">
                 </div>
               </div>
               <div className="passage">
-                  <div className="title">
-                    <br></br>
-                    <p># 关于我们 #</p>
-                  </div>
-                  <div className="description">
-                    <p>简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介</p>
-                  </div>
+                <div className="title">
+                  <br></br>
+                  <p># 关于我们 #</p>
                 </div>
+                <div className="description">
+                  <p>简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介</p>
+                </div>
+              </div>
             </section>
 
           </div>
           <section className="about-us2">
-              <br></br>
-              <div className="tu"></div>
-              <div className="passage">
-                  <div className="title">
-                    <br></br>
-                    <p>蓝图xxxxxxxxxxx有限公司</p>
-                  </div>
-                  <div className="description">
-                    <p>简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介</p>
-                    <p>简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介</p>
-                  </div>
+            <br></br>
+            <div className="tu"></div>
+            <div className="passage">
+              <div className="title">
+                <br></br>
+                <p>蓝图xxxxxxxxxxx有限公司</p>
               </div>
-            </section>
+              <div className="description">
+                <p>简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介</p>
+                <p>简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介</p>
+              </div>
+            </div>
+          </section>
 
           <section className="ourteam">
             <div className="title">
               <p>我们的团队</p>
-              </div>
-              <div className="person">
+            </div>
+            <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
             <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
             <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
             <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
             <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
             <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
             <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
             <div className="person">
               <Card className="Card" hoverable bordered={false} style={{ width: 220 }}
                 cover={<img className="img" alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}>
-                <Meta className="name" title="XXXXX"/>
+                <Meta className="name" title="XXXXX" />
                 <p className="description">职务职务职务</p>
               </Card>
             </div>
@@ -143,56 +143,56 @@ export default function IndexPage() {
               </div>
             </div>
             <div className="tianru">
-                <TextArea placeholder="您怎么称呼" autoSize />
-                <div style={{ margin: '28px 0' }} />
-                <TextArea placeholder="请输入您的邮箱" autoSize />
-                <div style={{ margin: '28px 0' }} />
-                <TextArea
-                  placeholder="请选择您的项目类型"
-                  autoSize={{ minRows: 2, maxRows: 6 }}
-                />
-                <div style={{ margin: '28px 0' }} />
-                <TextArea
-                  placeholder="请描述您的问题"
-                  autoSize={{ minRows: 5, maxRows: 5 }}
-                />
+              <TextArea placeholder="您怎么称呼" autoSize />
+              <div style={{ margin: '28px 0' }} />
+              <TextArea placeholder="请输入您的邮箱" autoSize />
+              <div style={{ margin: '28px 0' }} />
+              <TextArea
+                placeholder="请选择您的项目类型"
+                autoSize={{ minRows: 2, maxRows: 6 }}
+              />
+              <div style={{ margin: '28px 0' }} />
+              <TextArea
+                placeholder="请描述您的问题"
+                autoSize={{ minRows: 5, maxRows: 5 }}
+              />
             </div>
             <div className="tu">
             </div>
           </section>
-            <section className="jww">
-              <div className="gyl">
+          <section className="jww">
+            <div className="gyl">
               <ul>
                 <p className="tt">产品</p>
                 <Button className="lk"><Link to="">产品介绍</Link></Button>
                 <Button className="lk"><Link to="">产品服务</Link></Button>
               </ul>
-              </div>
-              <div className="gyl">
+            </div>
+            <div className="gyl">
               <ul>
                 <p className="tt">企业介绍</p>
                 <Button className="lk"><Link to="">关于我们</Link></Button>
                 <Button className="lk"><Link to="">社区</Link></Button>
               </ul>
-              </div>
+            </div>
 
-              <div className="guanyu">
-                <h2 className="title">蓝图开放平台</h2>
-                <p className="passage">来自：北京邮电大学计算机学院</p>
-                <p className="passage">电话：***********</p>
-                <p className="passage">邮箱：***@.******.com</p>
-                <div className="biao">
-                  <WechatOutlined/>
-                </div>
-                <div className="biao">
-                  <WeiboCircleOutlined />
-                </div>
-                <div className="biao">
-                  <TwitterOutlined />
-                </div>
+            <div className="guanyu">
+              <h2 className="title">蓝图开放平台</h2>
+              <p className="passage">来自：北京邮电大学计算机学院</p>
+              <p className="passage">电话：***********</p>
+              <p className="passage">邮箱：***@.******.com</p>
+              <div className="biao">
+                <WechatOutlined />
               </div>
+              <div className="biao">
+                <WeiboCircleOutlined />
+              </div>
+              <div className="biao">
+                <TwitterOutlined />
+              </div>
+            </div>
 
-            </section>
+          </section>
         </Content>
         <Footer style={{ textAlign: 'center' }}>蓝图创新工作室 ©2021</Footer>
 
