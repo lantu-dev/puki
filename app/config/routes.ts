@@ -133,4 +133,9 @@ export default [
     path: '/classBuild',
     component: '@/pages/QianQing/classBuild',
   },
+  {
+    exact: true,
+    path: '/homepage/AboutUs',
+    component: '@/pages/homepage/AboutUs',
+  },
 ];
