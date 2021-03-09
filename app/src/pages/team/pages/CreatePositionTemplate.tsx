@@ -1,22 +1,22 @@
 //定义首屏为项目列表，供浏览正在招募中的项目
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Form, Input, Typography } from 'antd';
 import { call } from '@/api-client';
+import team from '@/api-client/team';
 
 const { Title } = Typography;
-
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
 };
+
 const onFinish = (values: any) => {
-  let name = values.CompetitionTypeName;
+  let name = values.positionName;
   let desc = values.Descriptions;
-  call('CompetitionService.AddCompetitionType', {
-    Description: desc,
+  call(team.PositionService.CreatePositionTemplate, {
     Name: name,
-  }).then();
-  console.log('success');
+    DefaultDescribe: desc,
+  }).then(() => {});
   history.back();
 };
 
@@ -35,7 +35,7 @@ export default function () {
           marginBottom: '20px',
         }}
       >
-        <Title level={4}>添加比赛类型</Title>
+        <Title level={4}>添加岗位模板</Title>
       </div>
 
       <Form
@@ -48,12 +48,12 @@ export default function () {
         layout={'vertical'}
       >
         <Form.Item
-          label="比赛/活动类型名称"
-          name="CompetitionTypeName"
+          label="岗位名称"
+          name="positionName"
           rules={[
             {
               required: true,
-              message: "Please input the competition/activity type's Name!",
+              message: "Please input the position's Name!",
             },
           ]}
         >
@@ -61,13 +61,12 @@ export default function () {
         </Form.Item>
 
         <Form.Item
-          label="比赛/活动类型介绍"
+          label="岗位默认介绍"
           name="Descriptions"
           rules={[
             {
               required: true,
-              message:
-                "Please input the competition/activity type's Description!",
+              message: "Please input the position's Description!",
             },
           ]}
         >
