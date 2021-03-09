@@ -10733,6 +10733,11 @@ public-encrypt@^4.0.0:
     randombytes "^2.0.1"
     safe-buffer "^5.1.2"
 
+pubsub-ts@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npm.taobao.org/pubsub-ts/download/pubsub-ts-0.2.0.tgz#9f940e71e2e7fe4e295485f0b58a7130fc444113"
+  integrity sha1-n5QOceLn/k4pVIXwtYpxMPxEQRM=
+
 pump@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/pump/download/pump-2.0.1.tgz#12399add6e4cf7526d973cbc8b5ce2e2908b3909"
@@ -13946,10 +13951,8 @@ watchpack@^1.7.4:
   resolved "https://registry.npm.taobao.org/watchpack/download/watchpack-1.7.5.tgz?cache=0&sync_timestamp=1612715822561&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fwatchpack%2Fdownload%2Fwatchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha1-EmfmxV4Lm1vkTCAjrtVDeiwmxFM=
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"

@@ -18,9 +18,18 @@ func FindAttendanceByUserIDAndEventID(tx *gorm.DB, userID int64, eventID int64, 
 	return err
 }
 
-func FindUserEnrolledEventsByUserID(tx *gorm.DB, userID int64, dests interface{}) error {
-	err := tx.Model(&Attendance{}).Where(&Attendance{UserID: userID}).Joins("Event").Find(dests).Error
-	return err
+func FindUserEnrolledEventsByUserID(tx *gorm.DB, userID int64, dests *[]Event) error {
+	var attendances []Attendance
+	if err := tx.Debug().Model(&Attendance{}).Where(&Attendance{UserID: userID}).Joins("Event").Find(&attendances).Error; err != nil {
+		return err
+	}
+
+	*dests = make([]Event, 0)
+	for _, v := range attendances {
+		*dests = append(*dests, *v.Event)
+	}
+
+	return nil
 }
 
 func CreateAttendance(tx *gorm.DB, userID int64, eventID int64) error {

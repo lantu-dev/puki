@@ -1,6 +1,8 @@
 package models
 
 import (
+	"github.com/lantu-dev/puki/pkg/auth"
+	models2 "github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -73,6 +75,7 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 	for _, j := range positions {
 		var positionTemplate models.PositionTemplate
 
+		tx = c.db.Begin()
 		positionTemplate = models.FindPositionTemplateByID(tx, j.PositionTemplateID)
 		err = tx.Commit().Error
 		if err != nil {
@@ -103,21 +106,30 @@ func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimple
 //添加项目
 //请求包括：创建者ID，类别ID，
 type AddProjectReq struct {
-	CreatorID        int64
-	TypeID           int64
+	TypeName         string
 	Name             string
 	DescribeSimple   string
 	DescribeDetail   string
 	LinkURL          string
 	EndTime          time.Time
-	CompetitionNames []string //传入ID数组，在创建Project后依据ID创建一系列中间表
-	Positions        []models.Position
+	CompetitionNames []string //传入比赛名称数组
+	PositionNames    []string
 }
 
 type AddProjectRes struct {
+	IsFailed  bool
+	ProjectID uint
 }
 
-func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *AddCompetitionRes) error {
+func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *AddProjectRes) error {
+	//获取创建者信息
+	var tokenUser auth.TokenUser
+	tokenUser, err := auth.ExtractTokenUser(r)
+	if err != nil {
+		return err
+	}
+
+	//根据比赛名称数组获取比赛数组
 	var competitions []*models.Competition
 	for _, item := range req.CompetitionNames {
 		var competition models.Competition
@@ -131,31 +143,67 @@ func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *Ad
 
 		competitions = append(competitions, &competition)
 	}
+
+	tx := c.db.Begin()
+	typeID := models.FindTypeIDByName(tx, req.TypeName)
+	user := models2.FindUserById(tx, tokenUser.ID)
+	err = tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
+
+	var members []*models2.User
+	members = append(members, user)
+
 	//创建Project实例
 	project := models.Project{
 		Model:          gorm.Model{},
-		IsAvailable:    false,
-		CreatorID:      req.CreatorID,
+		CreatorID:      tokenUser.ID,
+		IsAvailable:    true,
 		Competitions:   competitions,
-		TypeID:         1,
+		TypeID:         typeID,
 		Name:           req.Name,
 		DescribeSimple: req.DescribeSimple,
 		DescribeDetail: req.DescribeDetail,
 		LinkURL:        req.LinkURL,
 		EndTime:        req.EndTime,
-		Positions:      req.Positions,
-		Comments:       nil,
-		CommentsNum:    0,
-		StarNum:        0,
+		Members:        members,
 	}
 
-	tx := c.db.Begin()
-	err := models.CreateProject(tx, project)
+	//根据岗位名称数组【生成】岗位数组，即根据positionTemplate生成position
+	for _, item := range req.PositionNames {
+		var positionTemplate models.PositionTemplate
+
+		tx := c.db.Begin()
+		//获取岗位模板
+		positionTemplate = models.FindPositionTemplateByName(tx, item)
+		//生成岗位
+		position := models.Position{
+			ProjectID:          int64(project.ID),
+			PositionTemplateID: int64(positionTemplate.ID),
+			Describe:           "",
+			NowPeople:          0,
+			NeedPeople:         0,
+			InterestPeople:     0,
+			Conversations:      nil,
+		}
+		err := tx.Commit().Error
+		if err != nil {
+			log.Debug(err)
+		}
+
+		//project中添加该岗位
+		project.Positions = append(project.Positions, position)
+	}
+
+	tx = c.db.Begin()
+	projectID, err := models.CreateProject(tx, project)
 	if err != nil {
 		log.Debug()
 	}
 	err = tx.Commit().Error
 
+	res.ProjectID = projectID
 	return err
 }
 
@@ -166,9 +214,16 @@ type GetProjectDetailReq struct {
 	ProjectID int64
 }
 type Award struct {
-	Name string
+	CompetitionID int64
+	//比赛名称
+	CompetitionName string
+	//奖项名次， 如一等奖/二等奖/特等奖等，内容前端固定，仅可选择
+	AwardRanking string
+	//奖项证明链接
+	ProveImgURL string
 }
 type PositionSimple struct {
+	ID             uint
 	Name           string
 	NowPeople      int64
 	NeedPeople     int64
@@ -185,10 +240,11 @@ type GetProjectDetailRes struct {
 	LinkURL        string
 	EndTime        string
 	//2. 创建者相关信息
-	CreatorName   string
-	CreatorSchool string  //学院
-	CreatorGrade  string  //年级
-	CreatorAward  []Award //获奖情况
+	CreatorName      string
+	CreatorAvatarURI string
+	CreatorSchool    string  //学院
+	CreatorGrade     string  //年级
+	CreatorAward     []Award //获奖情况
 	//3. 招募相关信息
 	Positions []PositionSimple //岗位
 	//4. 评论相关信息
@@ -199,6 +255,9 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	var project models.Project
 	var positions []models.Position
 	var comments []models.Comment
+	var competitionProjects []models.CompetitionProject
+	var creator models2.User
+	var pCreatorStudent *models2.Student
 
 	tx := c.db.Begin()
 	project = models.FindProjectByID(tx, uint(req.ProjectID))
@@ -206,29 +265,45 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	positions = models.FindPositionsByProjectID(tx, int64(project.ID))
 	//评论，查找Comment中ProjectID匹配的所有评论对象
 	comments = models.FindCommentsByProjectID(tx, int64(project.ID))
-	err := tx.Commit().Error
+	//根据项目中CreatorID查找用户，并获取用户相关信息
+	creator = *models2.FindUserById(tx, project.CreatorID)
+	pCreatorStudent, err := models2.FindOrCreateStudentFromUser(tx, &creator)
+	//根据项目ID查找所有奖项【CompetitionProject】
+	competitionProjects = models.FindCompetitionProjectByProjectID(tx, int64(project.ID))
+	err = tx.Commit().Error
 	if err != nil {
 		log.Debug(err)
 	}
 
-	//根据项目中CreatorID查找用户，并获取用户相关信息【目前未连接auth服务】
-	award1 := Award{Name: "互联网+一等奖"}
-	award2 := Award{Name: "挑战杯二等奖"}
 	var awards []Award
-	awards = append(awards, award1)
-	awards = append(awards, award2)
+	for _, item := range competitionProjects {
+		tx := c.db.Begin()
+		var competitionName = models.FindCompetitionByID(tx, item.CompetitionID).Name
+		err = tx.Commit().Error
+		if err != nil {
+			log.Debug(err)
+		}
+		awards = append(awards, Award{
+			CompetitionID:   item.CompetitionID,
+			CompetitionName: competitionName,
+			AwardRanking:    item.AwardRanking,
+			ProveImgURL:     item.ProveImgURL,
+		})
+	}
 
 	var positionSimples []PositionSimple
 	for _, item := range positions {
 		var positionTemplate models.PositionTemplate
 
+		tx = c.db.Begin()
 		positionTemplate = models.FindPositionTemplateByID(tx, item.PositionTemplateID)
-		err := tx.Commit().Error
+		err = tx.Commit().Error
 		if err != nil {
 			log.Debug(err)
 		}
 
 		positionSimple := PositionSimple{
+			ID:             item.ID,
 			Name:           positionTemplate.Name,
 			NowPeople:      item.NowPeople,
 			NeedPeople:     item.NeedPeople,
@@ -239,19 +314,24 @@ func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetail
 	}
 
 	var commentSimples []CommentSimple
+
 	for _, item := range comments {
 		commentSimple := CommentSimple{
-			CreatorName: "测试姓名",
+			CreatorName: creator.RealName,
 			Content:     item.Content,
 		}
 		commentSimples = append(commentSimples, commentSimple)
 	}
+
+	creatorStudent := *pCreatorStudent
+
 	res.DescribeDetail = project.DescribeDetail
 	res.LinkURL = project.LinkURL
 	res.EndTime = project.EndTime.Format("2006-01-02")
-	res.CreatorName = "测试姓名"
-	res.CreatorSchool = "测试学院"
-	res.CreatorGrade = "测试年级"
+	res.CreatorName = creator.RealName
+	res.CreatorAvatarURI = creator.AvatarURI
+	res.CreatorSchool = creatorStudent.University
+	res.CreatorGrade = creatorStudent.School
 	res.CreatorAward = awards
 	res.Positions = positionSimples
 	res.Comments = commentSimples
@@ -287,7 +367,12 @@ type GetProjectIDRes struct {
 
 func (c *ProjectService) GetProjectID(r *http.Request, req *GetProjectIDReq, res *GetProjectIDRes) error {
 	var projects []models.Project
-	c.db.Find(&projects) //查找所有项目
+	tx := c.db.Begin()
+	projects = models.FindAllProjects(tx)
+	err := tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
 	for _, item := range projects {
 		res.ProjectID = append(res.ProjectID, int64(item.ID))
 	}
@@ -298,7 +383,7 @@ func (c *ProjectService) GetProjectID(r *http.Request, req *GetProjectIDReq, res
 
 //通过请求中项目ID数组获取项目简介数组
 type GetProjectSimplesReq struct {
-	ProjectID []uint
+	ProjectID []int64
 }
 
 //响应，包括一个项目对象的数组
@@ -307,14 +392,17 @@ type GetProjectSimplesRes struct {
 	ProjectSimples []ProjectSimple
 }
 
-func (c *ProjectService) GetProjectSimples(r *http.Request, req *GetProjectSimplesReq, res *GetProjectSimplesRes) error {
+func (c *ProjectService) GetProjectSimples(r *http.Request,
+	req *GetProjectSimplesReq, res *GetProjectSimplesRes) error {
 	var projects []models.Project
 
 	//通过ID数组查找所有项目
-	result := c.db.Preload("Competitions").Where(req.ProjectID).Find(&projects)
-	if result.Error != nil {
+	tx := c.db.Begin()
+	projects = models.FindProjectByIDs(tx, req.ProjectID)
+	err := tx.Commit().Error
+	if len(projects) == 0 || err != nil {
 		res.IsFound = false
-		return nil
+		return err
 	}
 
 	var competitionNames []string
@@ -324,13 +412,29 @@ func (c *ProjectService) GetProjectSimples(r *http.Request, req *GetProjectSimpl
 			competitionNames = append(competitionNames, j.Name)
 		}
 		var typeNew models.Type
-		c.db.First(&typeNew, project.TypeID)
 		var positions []models.Position
-		c.db.Where(&models.Position{ProjectID: int64(project.ID)}).Find(&positions)
+
+		tx = c.db.Begin()
+		typeNew = models.FindTypeByID(tx, project.TypeID)
+		positions = models.FindPositionsByProjectID(tx, int64(project.ID))
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFound = false
+			return err
+		}
+
 		var positionNames []string
 		for _, j := range positions {
 			var positionTemplate models.PositionTemplate
-			c.db.First(&positionTemplate, j.PositionTemplateID)
+
+			tx = c.db.Begin()
+			positionTemplate = models.FindPositionTemplateByID(tx, j.PositionTemplateID)
+			err = tx.Commit().Error
+			if err != nil {
+				res.IsFound = false
+				return err
+			}
+
 			positionNames = append(positionNames, positionTemplate.Name)
 		}
 		projectSimple := ProjectSimple{
@@ -349,4 +453,82 @@ func (c *ProjectService) GetProjectSimples(r *http.Request, req *GetProjectSimpl
 	}
 	res.IsFound = true
 	return nil
+}
+
+//编辑项目详情
+type EditProjectDetailReq struct {
+	ProjectID uint
+	Content   string
+}
+type EditProjectDetailRes struct {
+	IsFailed bool
+}
+
+func (c *ProjectService) EditProjectDetail(r *http.Request,
+	req *EditProjectDetailReq, res *EditProjectDetailRes) (err error) {
+
+	tx := c.db.Begin()
+	err = models.UpdateProjectByID(tx, req.ProjectID, "DescribeDetail", req.Content)
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+	if err = tx.Commit().Error; err != nil {
+		res.IsFailed = true
+		return err
+	}
+
+	return err
+}
+
+//编辑获奖情况
+type NewAward struct {
+	CompetitionNames []string
+	AwardRanks       []string
+	AwardProves      []string
+}
+type EditAwardReq struct {
+	ProjectID      uint
+	CompetitionIDs []uint
+	AwardRanks     []string
+	AwardProves    []string
+	NewAward       NewAward
+}
+type EditAwardRes struct {
+	IsFailed bool
+}
+
+func (c *ProjectService) EditAward(r *http.Request,
+	req *EditAwardReq, res *EditAwardRes) (err error) {
+
+	for index, item := range req.CompetitionIDs {
+		tx := c.db.Begin()
+		err = models.UpdateAwardByProjectIDandCompetitionID(tx, int64(req.ProjectID), int64(item),
+			req.AwardRanks[index], req.AwardProves[index])
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+	}
+
+	for index, item := range req.NewAward.CompetitionNames {
+		tx := c.db.Begin()
+		err = models.CreateAwardByProjectIDandCompetitionID(tx, int64(req.ProjectID), item,
+			req.NewAward.AwardRanks[index], req.NewAward.AwardProves[index])
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+	}
+	return err
 }

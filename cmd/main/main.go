@@ -13,6 +13,7 @@ import (
 	eventsSetup "github.com/lantu-dev/puki/pkg/events/setup"
 	"github.com/lantu-dev/puki/pkg/hwcloud"
 	"github.com/lantu-dev/puki/pkg/storage"
+	teamSetup "github.com/lantu-dev/puki/pkg/team/setup"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -25,6 +26,7 @@ var buildTag string = "dev"
 var buildCommit string = "UNSET"
 
 func main() {
+
 	var err error
 	address := flag.String("address", ":8001", "")
 	flag.Parse()
@@ -61,6 +63,9 @@ func main() {
 		log.Fatal(err)
 	}
 	if err := eventsSetup.Setup(reg, db); err != nil {
+		log.Fatal(err)
+	}
+	if err := teamSetup.Setup(reg, db); err != nil {
 		log.Fatal(err)
 	}
 

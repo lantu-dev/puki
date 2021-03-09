@@ -26,7 +26,7 @@ type Competition struct {
 	Projects []*Project `gorm:"many2many:competition_projects"`
 }
 
-//比赛类型，此类别区别于”比赛“属性，其内容为：如：“校企合作”，“导师科研”，“学生自研”等
+//比赛类型，此类别区别于”比赛“属性，其内容为：如：“校企合作”，“导师科研”，“学生自研”等 + 讲座、沙龙
 type Type struct {
 	gorm.Model
 	//类别名称
@@ -38,6 +38,11 @@ type Type struct {
 type CompetitionProject struct {
 	ProjectID     int64
 	CompetitionID int64
+
+	//奖项名次， 如一等奖就等于1，二等奖就等于2
+	AwardRanking string
+	//奖项证明链接
+	ProveImgURL string
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -47,6 +52,7 @@ func FindAllCompetitions(tx *gorm.DB) []Competition {
 	var competitions []Competition
 	result := tx.Find(&competitions)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return competitions
@@ -63,6 +69,7 @@ func FindAllTypes(tx *gorm.DB) []Type {
 	var types []Type
 	result := tx.Find(&types)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return types
@@ -79,16 +86,88 @@ func FindTypeByID(tx *gorm.DB, typeID int64) Type {
 	var typeNew Type
 	result := tx.First(&typeNew, typeID)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Debug(result.Error)
 	}
 	return typeNew
+}
+
+func FindCompetitionByID(tx *gorm.DB, competitionID int64) Competition {
+	var competition Competition
+	err := tx.Where(competitionID).First(&competition).Error
+	if err != nil {
+		tx.Rollback()
+		log.Debug(err)
+	}
+	return competition
 }
 
 func FindCompetitionByName(tx *gorm.DB, competitionName string) Competition {
 	var competition Competition
 	result := tx.Where(&Competition{Name: competitionName}).First(&competition)
 	if result.Error != nil {
+		tx.Rollback()
 		log.Error(result.Error)
 	}
 	return competition
+}
+
+func FindTypeIDByName(tx *gorm.DB, typeName string) int64 {
+	var typeNew Type
+	result := tx.First(&typeNew, Type{Name: typeName})
+	if result.Error != nil {
+		tx.Rollback()
+		log.Error(result.Error)
+	}
+	return int64(typeNew.ID)
+}
+
+func FindCompetitionProjectByProjectID(tx *gorm.DB, projectID int64) []CompetitionProject {
+	var competitionProjects []CompetitionProject
+	err := tx.Find(&competitionProjects, CompetitionProject{ProjectID: projectID}).Error
+	if err != nil {
+		tx.Rollback()
+		log.Error(err)
+	}
+	return competitionProjects
+}
+
+func FindCompetitionProjectsByProjectID(tx *gorm.DB, projectID int64) []CompetitionProject {
+	var competitionProjects []CompetitionProject
+	err := tx.Model(&CompetitionProject{}).
+		Where(&CompetitionProject{ProjectID: projectID}).Find(&competitionProjects).Error
+	if err != nil {
+		tx.Rollback()
+		log.Error(err)
+	}
+	return competitionProjects
+}
+
+func UpdateAwardByProjectIDandCompetitionID(tx *gorm.DB, projectID int64, competitionID int64,
+	awardRanking string, proveImgURL string) (err error) {
+	err = tx.Model(&CompetitionProject{}).
+		Where(&CompetitionProject{ProjectID: projectID, CompetitionID: competitionID}).
+		Select("AwardRanking", "ProveImgURL").
+		Updates(CompetitionProject{AwardRanking: awardRanking, ProveImgURL: proveImgURL}).Error
+	if err != nil {
+		tx.Rollback()
+		log.Error(err)
+	}
+	return err
+}
+
+func CreateAwardByProjectIDandCompetitionID(tx *gorm.DB, projectID int64, competitionName string,
+	awardRanking string, proveImgURL string) (err error) {
+	competition := FindCompetitionByName(tx, competitionName)
+	err = tx.Create(CompetitionProject{
+		ProjectID:     projectID,
+		CompetitionID: int64(competition.ID),
+		AwardRanking:  awardRanking,
+		ProveImgURL:   proveImgURL,
+	}).Error
+	if err != nil {
+		tx.Rollback()
+		log.Error(err)
+	}
+	return err
 }

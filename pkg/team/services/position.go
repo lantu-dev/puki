@@ -43,3 +43,82 @@ func (c *PositionService) GetPositionNames(r *http.Request, req *GetPositionName
 	res.PositionNames = positionNames
 	return err
 }
+
+//编辑项目岗位
+type NewPosition struct {
+	Names        []string
+	NeedNums     []int64
+	Requirements []string
+}
+type EditPositionReq struct {
+	ProjectID            uint
+	PositionIDs          []uint
+	PositionNames        []string
+	PositionNeedNums     []int64
+	PositionRequirements []string
+	NewPosition          NewPosition
+}
+type EditPositionRes struct {
+	IsFailed bool
+}
+
+func (c *PositionService) EditPosition(r *http.Request,
+	req *EditPositionReq, res *EditPositionRes) (err error) {
+
+	for index, item := range req.PositionIDs {
+		tx := c.db.Begin()
+		err = models.EditPositionByID(tx, item, req.PositionNeedNums[index], req.PositionRequirements[index])
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+	}
+
+	for index, item := range req.NewPosition.Names {
+		tx := c.db.Begin()
+		err = models.CreatePositionByProjectID(tx, req.ProjectID, item, req.NewPosition.NeedNums[index], req.NewPosition.Requirements[index])
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+	}
+
+	return err
+}
+
+type CreatePositionTemplateReq struct {
+	Name            string
+	DefaultDescribe string
+}
+type CreatePositionTemplateRes struct {
+	IsFailed bool
+}
+
+func (c *PositionService) CreatePositionTemplate(r *http.Request, req *CreatePositionTemplateReq, res *CreatePositionTemplateRes) error {
+	positionTemplate := models.PositionTemplate{
+		Name:            req.Name,
+		DefaultDescribe: req.DefaultDescribe,
+	}
+	tx := c.db.Begin()
+	err := models.CreatePositionTemplate(tx, &positionTemplate)
+	if err != nil {
+		res.IsFailed = true
+		log.Debug(err)
+	}
+	err = tx.Commit().Error
+	if err != nil {
+		res.IsFailed = true
+		log.Debug(err)
+	}
+	return err
+}

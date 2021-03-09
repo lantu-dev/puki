@@ -60,11 +60,32 @@ export interface PatchProfileRes {
   Completed: boolean;
 }
 
+//组队系统中查找用户，需要信息包括：头像、真实姓名、昵称、学院、获奖情况等
+export interface AwardSimple {
+  AwardRanking: string;
+  ProveImgURL: string;
+}
+export interface FindUserInTeamReq {
+  UserID: number;
+  ProjectID: number;
+}
+export interface FindUserInTeamRes {
+  AvatarURI: string;
+  RealName: string;
+  NickName: string;
+  School: string; //通过Student
+  AwardSimples: AwardSimple[];
+}
+
 export default {
   UserService: {
     SMSSendCode: 'auth/UserService.SMSSendCode' as Endpoint<
       SMSSendCodeReq,
       SMSSendCodeRes
+    >,
+    FindUserInTeam: 'auth/UserService.FindUserInTeam' as Endpoint<
+      FindUserInTeamReq,
+      FindUserInTeamRes
     >,
     SMSCodeLogin: 'auth/UserService.SMSCodeLogin' as Endpoint<
       SMSCodeLoginReq,

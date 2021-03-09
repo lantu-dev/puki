@@ -1,14 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  Form,
-  Input,
-  InputNumber,
-  Modal,
-  Button,
-  Avatar,
-  Typography,
-} from 'antd';
-import { SmileOutlined, UserOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Form } from 'antd';
 
 export default function CreatePosition() {
   const [visible, setVisible] = useState(false);

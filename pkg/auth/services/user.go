@@ -4,6 +4,7 @@ import (
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/base"
+	models2 "github.com/lantu-dev/puki/pkg/team/models"
 	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"log"
@@ -216,4 +217,57 @@ func (s *UserService) PatchProfile(r *http.Request, req *PatchProfileReq, res *P
 	}
 
 	return nil
+}
+
+//组队系统中查找用户，需要信息包括：头像、真实姓名、昵称、学院、获奖情况等
+type AwardSimple struct {
+	AwardRanking string
+	ProveImgURL  string
+}
+type FindUserInTeamReq struct {
+	UserID    uint
+	ProjectID uint
+}
+type FindUserInTeamRes struct {
+	AvatarURI    string
+	RealName     string
+	NickName     string
+	School       string //通过Student
+	AwardSimples []AwardSimple
+}
+
+func (s *UserService) FindUserInTeam(r *http.Request, req *FindUserInTeamReq, res *FindUserInTeamRes) (err error) {
+	//1. 获取User信息
+	var user *models.User
+	var student *models.Student
+	var competitionProjects []models2.CompetitionProject
+
+	tx := s.db.Begin()
+	user = models.FindUserById(tx, int64(req.UserID))
+	//2. 获取Student信息
+	student, err = models.FindOrCreateStudentFromUser(tx, user)
+	if err != nil {
+		return err
+	}
+	//3. 获取比赛获奖情况【目前逻辑是在项目详情页中，仅展示该项目的获奖情况】
+	competitionProjects = models2.FindCompetitionProjectByProjectID(tx, int64(req.ProjectID))
+	err = tx.Commit().Error
+	if err != nil {
+		return err
+	}
+
+	var awardSimples []AwardSimple
+	for _, item := range competitionProjects {
+		awardSimples = append(awardSimples, AwardSimple{
+			AwardRanking: item.AwardRanking,
+			ProveImgURL:  item.ProveImgURL,
+		})
+	}
+
+	res.AvatarURI = user.AvatarURI
+	res.AwardSimples = awardSimples
+	res.NickName = user.NickName
+	res.RealName = user.RealName
+	res.School = student.School
+	return
 }
