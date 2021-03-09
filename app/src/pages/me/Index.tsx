@@ -1,5 +1,6 @@
 import { auth, call } from '@/api-client';
-import { Avatar, Badge, Button, Col, Drawer, Row, Space } from 'antd';
+import Avatar from '@/components/Avatar';
+import { Badge, Button, Col, Drawer, Row, Space } from 'antd';
 import { useAsync, useSetState } from 'react-use';
 import Item from './components/Item';
 import { Female, Identification, Male } from './components/Svg';
@@ -29,15 +30,10 @@ export default function Me() {
           >
             <Col>
               <Avatar
+                src={profile?.AvatarURI}
+                id={profile?.ID.toString()}
+                head={profile?.NickName}
                 size={64}
-                src={
-                  profile?.AvatarURI ||
-                  (profile?.ID &&
-                    `https://api.multiavatar.com/${
-                      profile?.ID.toString() + profile?.NickName
-                    }.svg`) ||
-                  `https://api.multiavatar.com/${new Date().toString()}.svg`
-                }
               />
             </Col>
             <Col>

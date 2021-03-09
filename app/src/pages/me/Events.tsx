@@ -1,9 +1,9 @@
 import { call, events } from '@/api-client';
-import EventCard from './components/EventCard';
 import { DoubleLeftOutlined } from '@ant-design/icons';
-import { Button, Empty, List, Typography, message } from 'antd';
-import { useAsync, useAsyncRetry } from 'react-use';
+import { Button, Empty, List, message, Typography } from 'antd';
+import { useAsyncRetry } from 'react-use';
 import { history } from 'umi';
+import EventCard from './components/EventCard';
 
 const { Title, Text } = Typography;
 

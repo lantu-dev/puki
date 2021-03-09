@@ -1,5 +1,6 @@
 import { auth, call } from '@/api-client';
-import { Avatar, message, Switch } from 'antd';
+import Avatar from '@/components/Avatar';
+import { message, Switch } from 'antd';
 import { useAsyncRetry, useCounter } from 'react-use';
 import Item from './components/Item';
 import { Female, Male, QRCode } from './components/Svg';
@@ -54,15 +55,10 @@ export default function Setting() {
     <>
       <Item label="头像">
         <Avatar
+          src={profile?.AvatarURI}
+          id={profile?.ID.toString()}
+          head={profile?.NickName}
           size={64}
-          src={
-            profile?.AvatarURI ||
-            (profile?.ID &&
-              `https://api.multiavatar.com/${
-                profile?.ID.toString() + profile?.NickName
-              }.svg`) ||
-            `https://api.multiavatar.com/${new Date().toString()}.svg`
-          }
         />
       </Item>
       {data.map((v) => (
