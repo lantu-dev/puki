@@ -4,8 +4,8 @@ import (
 	"github.com/juju/errors"
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/null"
 	"github.com/lantu-dev/puki/pkg/bbs/models"
-	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"net/http"
 	"time"
@@ -20,10 +20,10 @@ func NewThreadService(db *gorm.DB) *ThreadService {
 }
 
 type Thread struct {
-	ID         int64
-	UserID     int64
-	NodeID     int64
-	ReplyForID int64
+	ID         base.ID
+	UserID     base.ID
+	NodeID     base.ID
+	ReplyForID base.ID
 	//HotReplyUserID   int64
 	//HotReplyAbstract string
 	RepliesCount int64
@@ -36,10 +36,10 @@ type Thread struct {
 }
 
 type ListThreadsReq struct {
-	NodeID int64
+	NodeID base.ID
 
 	// 0 for list all non-reply threads
-	ID int64
+	ID base.ID
 
 	// `UpdatedBefore` & `Limit` are used for pagination
 	UpdatedBefore null.Time
@@ -94,9 +94,9 @@ func threadFromModelThread(thread *models.Thread, keepContent bool) Thread {
 }
 
 type GetThreadReq struct {
-	NodeID int64
+	NodeID base.ID
 
-	ID int64
+	ID base.ID
 }
 
 type GetThreadRes struct {
@@ -122,8 +122,8 @@ func (s *ThreadService) GetThread(r *http.Request, req *GetThreadReq, res *GetTh
 }
 
 type CreateThreadReq struct {
-	NodeID     int64
-	ReplyForID int64
+	NodeID     base.ID
+	ReplyForID base.ID
 	Title      string
 	Abstract   string
 	Content    string
@@ -148,9 +148,9 @@ func (s *ThreadService) CreateThread(r *http.Request, req *CreateThreadReq, res 
 	}
 	thread := models.Thread{
 		ID:         base.GenerateID(),
-		UserID:     u.ID,
+		UserID:     base.ID(u.ID),
 		NodeID:     req.NodeID,
-		ReplyForID: null.NewInt(req.ReplyForID, req.ReplyForID != 0),
+		ReplyForID: null.NewID(req.ReplyForID, req.ReplyForID != 0),
 		Title:      req.Title,
 		Abstract:   req.Abstract,
 		Content:    req.Content,

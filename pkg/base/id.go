@@ -1,21 +1,30 @@
 package base
 
 import (
+	"encoding/json"
 	"errors"
+	"github.com/sony/sonyflake"
 	"strconv"
 	"sync"
 	"time"
 )
 
+var sonyFlake = sonyflake.NewSonyflake(sonyflake.Settings{})
+
+type ID int64
+
 // GenerateID an unique int64 ID
-func GenerateID() int64 {
-	worker, err := createWorker(0, 0)
+func GenerateID() ID {
+	id, err := sonyFlake.NextID()
 	if err != nil {
 		panic(err)
 	} else {
-		id := worker.nextId()
-		return id
+		return ID(id)
 	}
+}
+
+func (i ID) MarshalJSON() ([]byte, error) {
+	return json.Marshal(strconv.FormatInt(int64(i), 10))
 }
 
 const (
