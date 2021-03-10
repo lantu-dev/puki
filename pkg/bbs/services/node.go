@@ -17,7 +17,7 @@ func NewNodeService(db *gorm.DB) *NodeService {
 
 type GetNodeReq struct {
 	// 0 for list all top level-nodes
-	ID int64
+	ID base.ID
 }
 
 type GetNodeRes struct {

@@ -2,14 +2,15 @@ package models
 
 import (
 	"github.com/juju/errors"
-	"gopkg.in/guregu/null.v4"
+	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/null"
 	"gorm.io/gorm"
 )
 
 // 学生用户模型
 type Student struct {
 	// 「用户 ID」
-	UserID int64 `gorm:"type:bigint;primaryKey;not null"`
+	UserID base.ID `gorm:"type:bigint;primaryKey;not null"`
 
 	User *User
 

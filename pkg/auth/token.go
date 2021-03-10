@@ -48,7 +48,7 @@ func (u *TokenUser) User(tx *gorm.DB) *models.User {
 // 从 models.User 获得 TokenUser
 func NewTokenUser(u *models.User) (*TokenUser, error) {
 	user := &TokenUser{
-		ID:    u.ID,
+		ID:    int64(u.ID),
 		Roles: make([]int64, 0),
 		Perms: make([]int64, 0),
 	}
