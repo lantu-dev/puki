@@ -1,4 +1,5 @@
-import { call, events } from '@/api-client';
+import events from '@/backend/events';
+import { call } from '@/utils/client';
 import { DoubleLeftOutlined } from '@ant-design/icons';
 import { Button, Empty, List, message, Typography } from 'antd';
 import { useAsyncRetry } from 'react-use';

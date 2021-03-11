@@ -5,9 +5,9 @@ import (
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/base"
 	"github.com/lantu-dev/puki/pkg/base/null"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/bbs/models"
 	"gorm.io/gorm"
-	"net/http"
 	"time"
 )
 
@@ -50,9 +50,9 @@ type ListThreadsRes struct {
 	Threads []Thread
 }
 
-func (s *ThreadService) ListThreads(r *http.Request, req *ListThreadsReq, res *ListThreadsRes) (err error) {
+func (s *ThreadService) ListThreads(ctx *rpc.Context, req *ListThreadsReq, res *ListThreadsRes) (err error) {
 	if req.NodeID == 0 {
-		return base.UserErrorf("NodeID should be provided")
+		return base.UserErrorf(nil, "NodeID should be provided")
 	}
 	if req.Limit == 0 || req.Limit > 50 {
 		req.Limit = 50
@@ -103,17 +103,17 @@ type GetThreadRes struct {
 	Thread Thread
 }
 
-func (s *ThreadService) GetThread(r *http.Request, req *GetThreadReq, res *GetThreadRes) (err error) {
+func (s *ThreadService) GetThread(ctx *rpc.Context, req *GetThreadReq, res *GetThreadRes) (err error) {
 	if req.NodeID == 0 {
-		return base.UserErrorf("NodeID should be provided")
+		return base.UserErrorf(nil, "NodeID should be provided")
 	}
 	if req.ID == 0 {
-		return base.UserErrorf("ID should be provided")
+		return base.UserErrorf(nil, "ID should be provided")
 	}
 
 	thread := models.GetThreadByID(s.db, req.NodeID, req.ID)
 	if thread == nil {
-		return base.UserErrorf("thread not found")
+		return base.UserErrorf(nil, "thread not found")
 	} else {
 		res.Thread = threadFromModelThread(thread, true)
 	}
@@ -133,18 +133,18 @@ type CreateThreadRes struct {
 	Thread Thread
 }
 
-func (s *ThreadService) CreateThread(r *http.Request, req *CreateThreadReq, res *CreateThreadRes) (err error) {
-	u, err := auth.ExtractTokenUser(r)
+func (s *ThreadService) CreateThread(ctx *rpc.Context, req *CreateThreadReq, res *CreateThreadRes) (err error) {
+	u, err := auth.ExtractTokenUser(ctx)
 	if err != nil {
 		return err
 	}
 
 	if !models.NodeExists(s.db, req.NodeID) {
-		return base.UserErrorf("node not exist")
+		return base.UserErrorf(nil, "node not exist")
 	}
 
 	if req.ReplyForID != 0 && !models.ThreadExists(s.db, req.NodeID, req.ReplyForID) {
-		return base.UserErrorf("thread not exist")
+		return base.UserErrorf(nil, "thread not exist")
 	}
 	thread := models.Thread{
 		ID:         base.GenerateID(),

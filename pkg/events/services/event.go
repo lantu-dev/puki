@@ -4,9 +4,9 @@ import (
 	"errors"
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	eventsModels "github.com/lantu-dev/puki/pkg/events/models"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type EventService struct {
@@ -25,7 +25,7 @@ type GetEventsListRes struct {
 }
 
 // 根据req的EventID获取对应的活动简单信息列表, 若空数组则返回全部活动
-func (s EventService) GetEventsList(r *http.Request, req *GetEventsListReq, res *GetEventsListRes) error {
+func (s EventService) GetEventsList(ctx *rpc.Context, req *GetEventsListReq, res *GetEventsListRes) error {
 	if err := eventsModels.FindEventsByIDs(s.db, req.EventIDs, &res.Events); err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ type GetEventMoreInfoRes struct {
 }
 
 // 获取单个活动详细信息
-func (s EventService) GetEventMoreInfo(r *http.Request, req *GetEventMoreInfoReq, res *GetEventMoreInfoRes) (err error) {
+func (s EventService) GetEventMoreInfo(ctx *rpc.Context, req *GetEventMoreInfoReq, res *GetEventMoreInfoRes) (err error) {
 	err = s.db.Transaction(func(tx *gorm.DB) error {
 		var event struct {
 			EventType uint16
@@ -95,10 +95,10 @@ type EnrollForEventRes struct {
 }
 
 // 用户报名活动
-func (s EventService) EnrollForEvent(r *http.Request, req *EnrollForEventReq, res *EnrollForEventRes) (err error) {
-	tu, err := auth.ExtractTokenUser(r)
+func (s EventService) EnrollForEvent(ctx *rpc.Context, req *EnrollForEventReq, res *EnrollForEventRes) (err error) {
+	tu, err := auth.ExtractTokenUser(ctx)
 	if err != nil || tu.IsAnon() {
-		return base.UserErrorf("请登录/注册账户")
+		return base.UserErrorf(nil, "请登录/注册账户")
 	}
 
 	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
@@ -138,10 +138,10 @@ type QuitEventRes struct {
 }
 
 // 用户取消报名活动
-func (s EventService) QuitEvent(r *http.Request, req *QuitEventReq, res *QuitEventRes) (err error) {
-	tu, err := auth.ExtractTokenUser(r)
+func (s EventService) QuitEvent(ctx *rpc.Context, req *QuitEventReq, res *QuitEventRes) (err error) {
+	tu, err := auth.ExtractTokenUser(ctx)
 	if err != nil || tu.IsAnon() {
-		return base.UserErrorf("请登录/注册账户")
+		return base.UserErrorf(nil, "请登录/注册账户")
 	}
 
 	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
@@ -179,7 +179,7 @@ type CheckEventRes struct {
 }
 
 // 用户是否查看过已报名的活动
-func (s EventService) CheckEvent(r *http.Request, req *CheckEventReq, res *CheckEventRes) (err error) {
+func (s EventService) CheckEvent(ctx *rpc.Context, req *CheckEventReq, res *CheckEventRes) (err error) {
 
 	return nil
 }
@@ -191,10 +191,10 @@ type GetUserEnrolledEventsRes struct {
 	Events []eventsModels.Event
 }
 
-func (s EventService) GetUserEnrolledEvents(r *http.Request, req *GetUserEnrolledEventsReq, res *GetUserEnrolledEventsRes) (err error) {
-	tu, err := auth.ExtractTokenUser(r)
+func (s EventService) GetUserEnrolledEvents(ctx *rpc.Context, req *GetUserEnrolledEventsReq, res *GetUserEnrolledEventsRes) (err error) {
+	tu, err := auth.ExtractTokenUser(ctx)
 	if err != nil || tu.IsAnon() {
-		return base.UserErrorf("请登录/注册账户")
+		return base.UserErrorf(nil, "请登录/注册账户")
 	}
 
 	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {

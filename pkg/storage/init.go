@@ -13,7 +13,7 @@ import (
 
 func Setup() {
 
-	if base.IsDev() {
+	if base.IsDev {
 		// All storage stuff is done by a gateway. Here's some simulation code.
 		location := "./storage"
 		if _, err := os.Stat(location); os.IsNotExist(err) {

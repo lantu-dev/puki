@@ -8,7 +8,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/lantu-dev/puki/pkg/auth"
 	authSetup "github.com/lantu-dev/puki/pkg/auth/setup"
-	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	bbssetup "github.com/lantu-dev/puki/pkg/bbs/setup"
 	eventsSetup "github.com/lantu-dev/puki/pkg/events/setup"
 	"github.com/lantu-dev/puki/pkg/hwcloud"
@@ -37,6 +37,9 @@ func main() {
 		return
 
 	}
+
+	log.SetLevel(log.TraceLevel)
+
 	mrds, err := miniredis.Run()
 	if err != nil {
 		panic(err)
@@ -55,7 +58,7 @@ func main() {
 		log.Info("using sqlite")
 	}
 
-	reg := base.NewServiceRegistry()
+	reg := rpc.NewServiceRegistry("api")
 
 	// 每新增一个模块 ( mod ) , 在这里新增一个 Setup 。
 	storage.Setup()

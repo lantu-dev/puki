@@ -1,4 +1,5 @@
-import { auth, call, setToken } from '@/api-client';
+import auth from '@/backend/auth';
+import { call, setToken } from '@/utils/client';
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd';
 import React from 'react';
 

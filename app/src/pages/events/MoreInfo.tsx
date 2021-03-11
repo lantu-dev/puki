@@ -1,10 +1,11 @@
-import { call, events } from '@/api-client';
+import events from '@/backend/events';
+import { call } from '@/utils/client';
 import {
   EventType,
   HackathonInfo,
   LectureInfo,
   SalonInfo,
-} from '@/api-client/events';
+} from '@/backend/events';
 import { Spin } from 'antd';
 import dayjs from 'dayjs';
 import { useAsync } from 'react-use';

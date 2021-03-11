@@ -3,10 +3,10 @@ package models
 import (
 	"github.com/lantu-dev/puki/pkg/auth"
 	models2 "github.com/lantu-dev/puki/pkg/auth/models"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"net/http"
 	"time"
 )
 
@@ -51,7 +51,7 @@ type GetProjectSimpleRes struct {
 type Position struct {
 }
 
-func (c *ProjectService) GetProjectSimple(r *http.Request, req *GetProjectSimpleReq, res *GetProjectSimpleRes) error {
+func (c *ProjectService) GetProjectSimple(ctx *rpc.Context, req *GetProjectSimpleReq, res *GetProjectSimpleRes) error {
 	var project models.Project
 	var typeNew models.Type
 	var positions []models.Position
@@ -121,10 +121,10 @@ type AddProjectRes struct {
 	ProjectID uint
 }
 
-func (c *ProjectService) AddProject(r *http.Request, req *AddProjectReq, res *AddProjectRes) error {
+func (c *ProjectService) AddProject(ctx *rpc.Context, req *AddProjectReq, res *AddProjectRes) error {
 	//获取创建者信息
 	var tokenUser auth.TokenUser
-	tokenUser, err := auth.ExtractTokenUser(r)
+	tokenUser, err := auth.ExtractTokenUser(ctx)
 	if err != nil {
 		return err
 	}
@@ -251,7 +251,7 @@ type GetProjectDetailRes struct {
 	Comments []CommentSimple //评论
 }
 
-func (c *ProjectService) GetProjectDetail(r *http.Request, req *GetProjectDetailReq, res *GetProjectDetailRes) error {
+func (c *ProjectService) GetProjectDetail(ctx *rpc.Context, req *GetProjectDetailReq, res *GetProjectDetailRes) error {
 	var project models.Project
 	var positions []models.Position
 	var comments []models.Comment
@@ -347,7 +347,7 @@ type GetProjectNumRes struct {
 	ProjectNum int64
 }
 
-func (c *ProjectService) GetProjectNum(r *http.Request, req *GetProjectNumReq, res *GetProjectNumRes) error {
+func (c *ProjectService) GetProjectNum(ctx *rpc.Context, req *GetProjectNumReq, res *GetProjectNumRes) error {
 	tx := c.db.Begin()
 	res.ProjectNum = models.GetProjectNum(tx)
 	err := tx.Commit().Error
@@ -365,7 +365,7 @@ type GetProjectIDRes struct {
 	ProjectID []int64
 }
 
-func (c *ProjectService) GetProjectID(r *http.Request, req *GetProjectIDReq, res *GetProjectIDRes) error {
+func (c *ProjectService) GetProjectID(ctx *rpc.Context, req *GetProjectIDReq, res *GetProjectIDRes) error {
 	var projects []models.Project
 	tx := c.db.Begin()
 	projects = models.FindAllProjects(tx)
@@ -392,7 +392,7 @@ type GetProjectSimplesRes struct {
 	ProjectSimples []ProjectSimple
 }
 
-func (c *ProjectService) GetProjectSimples(r *http.Request,
+func (c *ProjectService) GetProjectSimples(ctx *rpc.Context,
 	req *GetProjectSimplesReq, res *GetProjectSimplesRes) error {
 	var projects []models.Project
 
@@ -464,7 +464,7 @@ type EditProjectDetailRes struct {
 	IsFailed bool
 }
 
-func (c *ProjectService) EditProjectDetail(r *http.Request,
+func (c *ProjectService) EditProjectDetail(ctx *rpc.Context,
 	req *EditProjectDetailReq, res *EditProjectDetailRes) (err error) {
 
 	tx := c.db.Begin()
@@ -498,7 +498,7 @@ type EditAwardRes struct {
 	IsFailed bool
 }
 
-func (c *ProjectService) EditAward(r *http.Request,
+func (c *ProjectService) EditAward(ctx *rpc.Context,
 	req *EditAwardReq, res *EditAwardRes) (err error) {
 
 	for index, item := range req.CompetitionIDs {

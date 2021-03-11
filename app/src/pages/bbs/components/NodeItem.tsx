@@ -1,4 +1,4 @@
-import { INode } from '@/api-client/bbs';
+import { INode } from '@/backend/bbs';
 import { Typography } from 'antd';
 import React from 'react';
 

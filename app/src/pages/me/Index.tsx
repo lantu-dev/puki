@@ -1,4 +1,5 @@
-import { auth, call } from '@/api-client';
+import auth from '@/backend/auth';
+import { call } from '@/utils/client';
 import Avatar from '@/components/Avatar';
 import { Badge, Button, Col, Drawer, Row, Space } from 'antd';
 import { useAsync, useSetState } from 'react-use';

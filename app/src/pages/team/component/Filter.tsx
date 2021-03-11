@@ -1,5 +1,6 @@
-import { call, team } from '@/api-client';
-import { ProjectSimple } from '@/api-client/team';
+import team from '@/backend/team';
+import { call } from '@/utils/client';
+import { ProjectSimple } from '@/backend/team';
 import logo from '@/assets/team/img/logo.png';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Col, Input, Row, Select, Space } from 'antd';
