@@ -80,7 +80,7 @@ func (c *smsLogin) SendCode(ctx context.Context, phoneNumber int64) (session str
 
 	sessionAndCode := fmt.Sprintf("%s:%s", session, code)
 
-	if base.IsDev() {
+	if base.IsDev {
 		log.Infof("SMSLogin send code %s to %d", code, phoneNumber)
 	}
 
@@ -103,7 +103,7 @@ func (c *smsLogin) Verify(ctx context.Context, session string, phoneNumber int64
 	var sessionAndCode string
 
 	if val, err := c.cache.Get(ctx, codeKey).Result(); err != nil {
-		return base.UserErrorf("验证码不再有效期内")
+		return base.UserErrorf(nil, "验证码不再有效期内")
 	} else {
 		sessionAndCode = val
 	}
@@ -113,7 +113,7 @@ func (c *smsLogin) Verify(ctx context.Context, session string, phoneNumber int64
 	var times int
 	if times, err = c.cache.Get(ctx, timesKey).Int(); err != nil {
 		if times >= 5 {
-			return base.UserErrorf("操作过于频繁")
+			return base.UserErrorf(nil, "操作过于频繁")
 		}
 	}
 	times += 1
@@ -122,7 +122,7 @@ func (c *smsLogin) Verify(ctx context.Context, session string, phoneNumber int64
 	}
 
 	if fmt.Sprintf("%s:%s", session, code) != sessionAndCode {
-		return base.UserErrorf("验证码错误")
+		return base.UserErrorf(nil, "验证码错误")
 	}
 	err = errors.Trace(c.cache.Del(ctx, timesKey).Err())
 

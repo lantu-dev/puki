@@ -3,8 +3,8 @@ import { FunctionComponent, useRef, useState } from 'react';
 import React from 'react';
 import MdEditor from '@/components/MdEditorAsync';
 
-import { IThread, ThreadService } from '@/api-client/bbs';
-import { call } from '@/api-client';
+import { IThread, ThreadService } from '@/backend/bbs';
+import { call } from '@/utils/client';
 import { MdEditorRef } from '@/components/MdEditor';
 
 export interface CreateThreadProps {

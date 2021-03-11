@@ -3,7 +3,7 @@ import { useSetState } from 'react-use';
 import { history } from 'umi';
 import InputPhoneNumber from './components/InputPhoneNumber';
 import InputVerifyCode from './components/InputVerifyCode';
-import { hasLogged } from '@/api-client';
+import { hasLogged } from '@/utils/client';
 
 enum Step {
   inputPhoneNumber,

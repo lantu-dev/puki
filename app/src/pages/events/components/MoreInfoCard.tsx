@@ -1,5 +1,6 @@
-import { call, events, hasLogged } from '@/api-client';
-import { Event } from '@/api-client/events';
+import events from '@/backend/events';
+import { call, hasLogged } from '@/utils/client';
+import { Event } from '@/backend/events';
 import {
   CalendarOutlined,
   EnvironmentOutlined,

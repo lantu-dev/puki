@@ -9,9 +9,10 @@ package auth
 import (
 	"encoding/json"
 	"github.com/lantu-dev/puki/pkg/auth/models"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"net/http"
+	//"net/http"
 )
 
 // TokenUser: 编码在 token 字符串中的用户信息
@@ -57,8 +58,8 @@ func NewTokenUser(u *models.User) (*TokenUser, error) {
 }
 
 // http.Request 中解析 TokenUser
-func ExtractTokenUser(r *http.Request) (user TokenUser, err error) {
-	auth := r.Header.Get("Authorization")
+func ExtractTokenUser(ctx *rpc.Context) (user TokenUser, err error) {
+	auth := ctx.Request.Header.Get("Authorization")
 	err = json.Unmarshal([]byte(auth), &user)
 	return
 }

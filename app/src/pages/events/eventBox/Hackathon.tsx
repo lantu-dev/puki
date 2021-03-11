@@ -1,4 +1,4 @@
-import { HackathonInfo } from '@/api-client/events';
+import { HackathonInfo } from '@/backend/events';
 import { Typography } from 'antd';
 
 const { Paragraph } = Typography;

@@ -86,7 +86,7 @@ func (user *User) SetUserName(tx *gorm.DB, userName string) error {
 	// TODO: remove non-ascii & length limit
 	anotherUser := FindUserByUserName(tx, userName)
 	if anotherUser != nil {
-		return base.UserErrorf("UserName exists")
+		return base.UserErrorf(nil, "UserName exists")
 	}
 
 	user.UserName = null.StringFrom(userName)

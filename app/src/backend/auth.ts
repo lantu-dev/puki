@@ -1,4 +1,4 @@
-import { Endpoint } from './client';
+import { Endpoint } from '.';
 
 interface User {
   ID: number;
