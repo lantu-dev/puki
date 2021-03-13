@@ -36,7 +36,7 @@ export function getSessionId(): number {
 }
 
 //@ts-ignore
-const prefix = typeof API_PREFIX === 'string' ? API_PREFIX : '';
+const prefix = typeof PUBLIC_PATH === 'string' ? PUBLIC_PATH + '..' : '/';
 
 let _req_counter = 0;
 
@@ -58,14 +58,15 @@ export async function call<P, R>(
 
   if (options.get) {
     fetchOptions.method = 'GET';
-    // @ts-ignore
+
     Object.keys(params).forEach((key) =>
-      fetchOptions.url.searchParams.append(key, params[key]),
+      // @ts-ignore
+      url.searchParams.append(key, params[key]),
     );
   } else {
     fetchOptions.method = 'POST';
     fetchOptions.headers['content-type'] = 'application/json';
-    fetchOptions.body = JSON.stringify({ Data: params });
+    fetchOptions.body = JSON.stringify(params);
   }
 
   if (typeof options.credential === 'string') {
@@ -80,6 +81,13 @@ export async function call<P, R>(
   let resp = await fetch(url.href, fetchOptions as any);
 
   if (resp.ok) {
+    const XHDR_SET_AUTH = 'x-set-authorization';
+    if (fetchOptions.method === 'POST') {
+      if (resp.headers.has(XHDR_SET_AUTH)) {
+        setToken(resp.headers.get(XHDR_SET_AUTH)!);
+      }
+    }
+
     let body: {
       Ok?: boolean;
       ID: string;

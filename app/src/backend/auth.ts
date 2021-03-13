@@ -41,7 +41,6 @@ export interface SMSCodeLoginReq {
 }
 
 export interface SMSCodeLoginRes {
-  Token: string;
   User: User;
 }
 

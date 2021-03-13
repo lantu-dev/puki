@@ -65,7 +65,6 @@ type SMSCodeLoginReq struct {
 type SMSCodeLoginRes struct {
 	TokenUser *auth.TokenUser
 	User      *models.User
-	Token     string
 }
 
 // 手机号验证码登陆
@@ -90,7 +89,7 @@ func (s *UserService) SMSCodeLogin(ctx *rpc.Context, req *SMSCodeLoginReq, res *
 		return err
 	}
 
-	res.Token = res.TokenUser.Encode()
+	ctx.Writer.Header().Set("x-set-authorization", res.TokenUser.Encode())
 	res.User = user
 
 	err = tx.Commit().Error // 数据库事务

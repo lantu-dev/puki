@@ -15,7 +15,7 @@ func Setup(reg *rpc.ServiceRegistry, db *gorm.DB) (err error) {
 	err = errors.Trace(db.AutoMigrate(&models.Comment{}, &models.Competition{}, &models.Type{}, &models.Conversation{}, &models.File{},
 		&models.Position{}, &models.PositionTemplate{}, &models.Project{}, &models.CompetitionProject{}, &models.Resume{}))
 	if err != nil {
-		return
+		//return
 	}
 
 	err = reg.RegisterService(MOD_NAME, services.NewCommentService(db))
