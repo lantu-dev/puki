@@ -133,4 +133,14 @@ export default [
     path: '/classBuild',
     component: '@/pages/QianQing/classBuild',
   },
+  {
+    exact: true,
+    path: '/BasicInfo',
+    component: '@/pages/QianQing/BasicInfo',
+  },
+  {
+    exact: true,
+    path: '/LeagueConstruction',
+    component: '@/pages/QianQing/LeagueConstruction',
+  }
 ];
