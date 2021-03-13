@@ -17,14 +17,12 @@ interface InputVerifyCodeProps {
 export default function InputVerifyCode(props: InputVerifyCodeProps) {
   const onFinish = async ({ verifyCode }: any) => {
     console.log(props);
-    const { Token, User } = await call(auth.UserService.SMSCodeLogin, {
+    const { User } = await call(auth.UserService.SMSCodeLogin, {
       PhoneNumber: props.phoneNumber,
       Session: props.session,
       Code: verifyCode,
     });
 
-    console.log(`logged ${Token}`);
-    setToken(Token);
     if (User.RealName.length > 0) {
       props.onLogged('redirect');
     } else {

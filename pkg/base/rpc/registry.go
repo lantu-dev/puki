@@ -170,9 +170,6 @@ func (rg *ServiceRegistry) get(endpoint string) (ser *service, method *serviceMe
 	return
 }
 
-type reqBody struct {
-	Data json.RawMessage
-}
 type errorResponse struct {
 	Kind    string
 	Message string
@@ -284,18 +281,11 @@ func (rg *ServiceRegistry) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "POST" {
-		var body reqBody
 		defer r.Body.Close()
 
-		err = json.NewDecoder(http.MaxBytesReader(w, r.Body, 4096)).Decode(&body)
+		err = json.NewDecoder(http.MaxBytesReader(w, r.Body, 4096)).Decode(reqVal.Interface())
 		if err != nil {
 			NewErrorResBody(err).WriteResponse(http.StatusBadRequest, w)
-			return
-		}
-
-		err = json.Unmarshal(body.Data, reqVal.Interface())
-		if err != nil {
-			NewErrorResBody(err).WriteResponse(http.StatusOK, w)
 			return
 		}
 
