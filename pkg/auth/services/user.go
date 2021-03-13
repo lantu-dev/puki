@@ -225,7 +225,6 @@ type AwardSimple struct {
 	ProveImgURL  string
 }
 type FindUserInTeamReq struct {
-	UserID    uint
 	ProjectID uint
 }
 type FindUserInTeamRes struct {
@@ -242,8 +241,15 @@ func (s *UserService) FindUserInTeam(ctx *rpc.Context, req *FindUserInTeamReq, r
 	var student *models.Student
 	var competitionProjects []models2.CompetitionProject
 
+	//获取创建者信息
+	var tokenUser auth.TokenUser
+	tokenUser, err = auth.ExtractTokenUser(ctx)
+	if err != nil {
+		return err
+	}
+
 	tx := s.db.Begin()
-	user = models.FindUserById(tx, int64(req.UserID))
+	user = models.FindUserById(tx, tokenUser.ID)
 	//2. 获取Student信息
 	student, err = models.FindOrCreateStudentFromUser(tx, user)
 	if err != nil {

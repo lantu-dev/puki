@@ -99,7 +99,6 @@ export default function ProjectDetail(props: ProjectDetailProps) {
   //加载项目信息 -------------------------------------------------------------------------------------------------------
   useAsync(async () => {
     call(auth.UserService.FindUserInTeam, {
-      UserID: JSON.parse(localStorage.getItem('token') as string).i,
       ProjectID: props.ProjectID,
     })
       .then((r) => {
