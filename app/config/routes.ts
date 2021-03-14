@@ -142,5 +142,10 @@ export default [
     exact: true,
     path: '/LeagueConstruction',
     component: '@/pages/QianQing/LeagueConstruction',
+  },
+  {
+    exact: true,
+    path: '/classMember',
+    component: '@/pages/QianQing/classMember',
   }
 ];
