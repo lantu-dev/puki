@@ -1,11 +1,11 @@
-import {defineConfig} from 'umi';
+import { defineConfig } from 'umi';
 import routes from './routes';
 
 const publicPath = (process.env.PUBLIC_PATH || '') + '/';
 export default defineConfig({
   base: publicPath,
   define: {
-    PUBLIC_PATH: publicPath
+    PUBLIC_PATH: publicPath,
   },
   dynamicImport: {},
   exportStatic: {},
@@ -18,7 +18,7 @@ export default defineConfig({
     '/api': {
       target: 'http://127.0.0.1:8001/api',
       changeOrigin: true,
-      'pathRewrite': {'^/api': ''},
+      pathRewrite: { '^/api': '' },
     },
     '/puki/dev/api': {
       target: 'http://127.0.0.1:3000/',
