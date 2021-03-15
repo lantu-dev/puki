@@ -144,6 +144,11 @@ export default [
     component: '@/pages/QianQing/LeagueConstruction',
   },
   {
+    exact: true,
+    path: '/classMember',
+    component: '@/pages/QianQing/classMember',
+  }
+  {
     path: '/qian-qing',
     component: '@/pages/QianQing/_layout',
     routes: [
@@ -152,7 +157,12 @@ export default [
         component: '@/pages/QianQing/QingNian',
         name: '通知',
       },
-      {
+     {
+        path: '/qian-qing/search',
+        component: '@/pages/QianQing/QingNian',
+        name: '搜索',
+      },
+     {
         path: '/qian-qing/class',
         name: '班级建设',
         routes: [
@@ -200,11 +210,6 @@ export default [
           },
         ],
       },
-      {
-        path: '/qian-qing/search',
-        component: '@/pages/QianQing/QingNian',
-        name: '搜索',
-      },
-    ],
-  },
-];
+   ],
+},
+
