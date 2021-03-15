@@ -14,7 +14,7 @@ type LoginRes struct {
 	Token string
 }
 
-func (s *UserService) Login(r *http.Request, req *LoginReq, res *LoginRes) error {
+func (s *UserService) Login(ctx *rpc.Context, req *LoginReq, res *LoginRes) error {
 	if req.UserName == "admin" && req.Password == "admin" {
 		res.Token = "success"
 	} else {

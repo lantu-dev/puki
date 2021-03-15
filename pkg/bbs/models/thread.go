@@ -3,23 +3,23 @@ package models
 import (
 	"errors"
 	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/null"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/exp/utf8string"
-	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"time"
 )
 
 // A thread(post) belongs to a special node, contains user-generated content, and can be nested ( reply ).
 type Thread struct {
-	ID     int64 `gorm:"type:bigint;primaryKey;not null"`
-	NodeID int64 `gorm:"type:bigint;not null;default:0"`
+	ID     base.ID `gorm:"type:bigint;primaryKey;not null"`
+	NodeID base.ID `gorm:"type:bigint;not null;default:0"`
 
 	// 0 means that it's a "root" thread.
-	ReplyForID   null.Int `gorm:"type:bigint;not null;default:0"`
-	RepliesCount int64    `gorm:"type:bigint;not null;default:0"`
+	ReplyForID   null.ID `gorm:"type:bigint;not null;default:0"`
+	RepliesCount int64   `gorm:"type:bigint;not null;default:0"`
 
-	UserID int64 `gorm:"type:bigint;not null;default:0"`
+	UserID base.ID `gorm:"type:bigint;not null;default:0"`
 
 	// An unique name for this thread, or empty.
 	Name null.String `gorm:"unique;default:null"`
@@ -55,8 +55,8 @@ func (m *Thread) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-func ListThreads(tx *gorm.DB, nodeID, replyForID int64, updatedBefore null.Time, limit int) (threads []Thread) {
-	tx = tx.Where(&Thread{NodeID: nodeID, ReplyForID: null.IntFrom(replyForID)})
+func ListThreads(tx *gorm.DB, nodeID, replyForID base.ID, updatedBefore null.Time, limit int) (threads []Thread) {
+	tx = tx.Where(&Thread{NodeID: nodeID, ReplyForID: null.IDFrom(replyForID)})
 	if updatedBefore.Valid {
 		tx.Where("updated_at <", updatedBefore.Time)
 	}
@@ -71,7 +71,7 @@ func ListThreads(tx *gorm.DB, nodeID, replyForID int64, updatedBefore null.Time,
 	return
 }
 
-func GetThreadByID(tx *gorm.DB, nodeID, id int64) *Thread {
+func GetThreadByID(tx *gorm.DB, nodeID, id base.ID) *Thread {
 	var thread Thread
 	if err := tx.First(&thread, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -86,7 +86,7 @@ func GetThreadByID(tx *gorm.DB, nodeID, id int64) *Thread {
 	return &thread
 }
 
-func ThreadExists(tx *gorm.DB, nodeID, id int64) bool {
+func ThreadExists(tx *gorm.DB, nodeID, id base.ID) bool {
 	var cnt int64
 	err := tx.Model(&Thread{}).Where(&Thread{ID: id, NodeID: nodeID}).Limit(1).Count(&cnt).Error
 	if err != nil {
@@ -100,7 +100,7 @@ func CreateThread(tx *gorm.DB, thread *Thread) error {
 		return err
 	}
 	if thread.ReplyForID.ValueOrZero() != 0 {
-		if err := tx.Model(&Thread{}).Where(&Thread{ID: thread.ReplyForID.Int64}).UpdateColumn("replies_count", gorm.Expr("replies_count + 1")).Error; err != nil {
+		if err := tx.Model(&Thread{}).Where(&Thread{ID: thread.ReplyForID.ValueOrZero()}).UpdateColumn("replies_count", gorm.Expr("replies_count + 1")).Error; err != nil {
 			return err
 		}
 	} else {

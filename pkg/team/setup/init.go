@@ -2,7 +2,7 @@ package setup
 
 import (
 	"github.com/juju/errors"
-	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	models "github.com/lantu-dev/puki/pkg/team/models"
 
 	services "github.com/lantu-dev/puki/pkg/team/services"
@@ -11,11 +11,11 @@ import (
 
 const MOD_NAME = "team"
 
-func Setup(reg *base.ServiceRegistry, db *gorm.DB) (err error) {
-	err = errors.Trace(db.AutoMigrate(&models.Comment{}, &models.Competition{}, &models.Type{}, &models.Conversation{}, &models.File{},
-		&models.Position{}, &models.PositionTemplate{}, &models.Project{}, &models.CompetitionProject{}, &models.Resume{}))
+func Setup(reg *rpc.ServiceRegistry, db *gorm.DB) (err error) {
+	err = errors.Trace(db.AutoMigrate(&models.Project{}, &models.Comment{}, &models.Competition{}, &models.Type{}, &models.Conversation{}, &models.File{},
+		&models.PositionTemplate{}, &models.Position{}, &models.CompetitionProject{}, &models.Resume{}))
 	if err != nil {
-		return
+		//return
 	}
 
 	err = reg.RegisterService(MOD_NAME, services.NewCommentService(db))

@@ -1,4 +1,5 @@
-import { call, events } from '@/api-client';
+import events from '@/backend/events';
+import { call } from '@/utils/client';
 import { Card, List, Typography } from 'antd';
 import { useAsync } from 'react-use';
 

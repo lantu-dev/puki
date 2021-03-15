@@ -1,6 +1,6 @@
 import { useSetState } from 'react-use';
-import { IThread, ThreadService } from '@/api-client/bbs';
-import { call } from '@/api-client';
+import { IThread, ThreadService } from '@/backend/bbs';
+import { call } from '@/utils/client';
 import { Button, List } from 'antd';
 import React, { useEffect } from 'react';
 import { Preview } from '@/pages/bbs/components/Preview';

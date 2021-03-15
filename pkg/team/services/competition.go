@@ -1,10 +1,10 @@
 package models
 
 import (
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type CompetitionService struct {
@@ -34,7 +34,7 @@ type GetCompetitionRes struct {
 }
 
 //获取所有比赛的信息
-func (c *CompetitionService) GetCompetition(r *http.Request, req *GetCompetitionReq, res *GetCompetitionRes) error {
+func (c *CompetitionService) GetCompetition(ctx *rpc.Context, req *GetCompetitionReq, res *GetCompetitionRes) error {
 	res.Token = "success"
 	return nil
 }
@@ -52,7 +52,7 @@ type GetCompetitionNamesRes struct {
 }
 
 //获取所有比赛的名称
-func (c *CompetitionService) GetCompetitionNames(r *http.Request,
+func (c *CompetitionService) GetCompetitionNames(ctx *rpc.Context,
 	req *GetCompetitionNamesReq, res *GetCompetitionNamesRes) error {
 	var competitions []models.Competition
 
@@ -84,7 +84,7 @@ type AddCompetitionRes struct {
 }
 
 //添加比赛
-func (c *CompetitionService) AddCompetition(r *http.Request, req *AddCompetitionReq, res *AddCompetitionRes) error {
+func (c *CompetitionService) AddCompetition(ctx *rpc.Context, req *AddCompetitionReq, res *AddCompetitionRes) error {
 	competition := models.Competition{
 		Model:       gorm.Model{},
 		Name:        req.Name,
@@ -119,7 +119,7 @@ type GetCompetitionTypesRes struct {
 }
 
 //获取所有比赛的类型
-func (c *CompetitionService) GetCompetitionTypes(r *http.Request,
+func (c *CompetitionService) GetCompetitionTypes(ctx *rpc.Context,
 	req *GetCompetitionTypesReq, res *GetCompetitionTypesRes) error {
 	var types []models.Type
 
@@ -151,7 +151,7 @@ type AddCompetitionTypeRes struct {
 }
 
 //添加比赛类型
-func (c *CompetitionService) AddCompetitionType(r *http.Request,
+func (c *CompetitionService) AddCompetitionType(ctx *rpc.Context,
 	req *AddCompetitionTypeReq, res *AddCompetitionTypeRes) error {
 	typeNew := models.Type{
 		Name:     req.Name,

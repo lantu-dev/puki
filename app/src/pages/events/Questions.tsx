@@ -1,5 +1,6 @@
-import { call, events } from '@/api-client';
-import { QuestionInfo } from '@/api-client/events';
+import events from '@/backend/events';
+import { call } from '@/utils/client';
+import { QuestionInfo } from '@/backend/events';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Drawer, Typography } from 'antd';
 import { useAsync, useMethods } from 'react-use';

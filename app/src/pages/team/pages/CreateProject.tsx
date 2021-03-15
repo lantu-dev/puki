@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, DatePicker, Form, Input, Select, Typography } from 'antd';
-import { call } from '@/api-client';
-import team, { Position } from '@/api-client/team';
+import { call } from '@/utils/client';
+import team, { Position } from '@/backend/team';
 import { PubSub } from 'pubsub-ts';
 import { useAsync } from 'react-use';
 

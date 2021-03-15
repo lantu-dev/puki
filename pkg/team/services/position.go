@@ -1,10 +1,10 @@
 package models
 
 import (
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type PositionService struct {
@@ -26,7 +26,7 @@ type GetPositionNamesRes struct {
 	PositionNames []string
 }
 
-func (c *PositionService) GetPositionNames(r *http.Request, req *GetPositionNamesReq, res *GetPositionNamesRes) error {
+func (c *PositionService) GetPositionNames(ctx *rpc.Context, req *GetPositionNamesReq, res *GetPositionNamesRes) error {
 	var positionNames []string
 	var positionTemplates []models.PositionTemplate
 
@@ -62,7 +62,7 @@ type EditPositionRes struct {
 	IsFailed bool
 }
 
-func (c *PositionService) EditPosition(r *http.Request,
+func (c *PositionService) EditPosition(ctx *rpc.Context,
 	req *EditPositionReq, res *EditPositionRes) (err error) {
 
 	for index, item := range req.PositionIDs {
@@ -104,7 +104,7 @@ type CreatePositionTemplateRes struct {
 	IsFailed bool
 }
 
-func (c *PositionService) CreatePositionTemplate(r *http.Request, req *CreatePositionTemplateReq, res *CreatePositionTemplateRes) error {
+func (c *PositionService) CreatePositionTemplate(ctx *rpc.Context, req *CreatePositionTemplateReq, res *CreatePositionTemplateRes) error {
 	positionTemplate := models.PositionTemplate{
 		Name:            req.Name,
 		DefaultDescribe: req.DefaultDescribe,

@@ -1,4 +1,4 @@
-import { Endpoint } from '@/api-client/client';
+import { Endpoint } from '.';
 
 export interface INode {
   ID: number;

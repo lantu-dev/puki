@@ -1,4 +1,4 @@
-import { SalonInfo } from '@/api-client/events';
+import { SalonInfo } from '@/backend/events';
 import { Typography, Carousel, Card } from 'antd';
 import dayjs from 'dayjs';
 

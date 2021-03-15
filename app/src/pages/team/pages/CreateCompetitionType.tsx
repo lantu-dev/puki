@@ -1,7 +1,8 @@
 //定义首屏为项目列表，供浏览正在招募中的项目
 import React from 'react';
 import { Button, Form, Input, Typography } from 'antd';
-import { call } from '@/api-client';
+import team from '@/backend/team';
+import { call } from '@/utils/client';
 
 const { Title } = Typography;
 
@@ -12,7 +13,7 @@ const layout = {
 const onFinish = (values: any) => {
   let name = values.CompetitionTypeName;
   let desc = values.Descriptions;
-  call('CompetitionService.AddCompetitionType', {
+  call(team.CompetitionService.AddCompetitionType, {
     Description: desc,
     Name: name,
   }).then();

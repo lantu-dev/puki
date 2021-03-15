@@ -8,8 +8,8 @@ import {
 import React from 'react';
 import { ThreadList } from '@/pages/bbs/components/ThreadList';
 import { useAsync } from 'react-use';
-import { call } from '@/api-client';
-import { NodeService } from '@/api-client/bbs';
+import { call } from '@/utils/client';
+import { NodeService } from '@/backend/bbs';
 import { CreateThread } from '@/pages/bbs/components/CreateThread';
 import ReactMarkdown from 'react-markdown';
 

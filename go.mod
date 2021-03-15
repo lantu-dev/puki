@@ -9,9 +9,13 @@ require (
 	github.com/go-redis/redis/v8 v8.5.0
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/rpc v1.2.0
+	github.com/gorilla/schema v1.2.0
+	github.com/json-iterator/go v1.1.10
 	github.com/juju/errors v0.0.0-20200330140219-3fe23663418f
 	github.com/juju/testing v0.0.0-20201216035041-2be42bba85f3 // indirect
+	github.com/pkg/errors v0.9.1
 	github.com/pochard/commons v1.1.2
+	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/sony/sonyflake v1.0.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a

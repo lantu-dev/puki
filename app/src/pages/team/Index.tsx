@@ -1,5 +1,6 @@
-import { call, team } from '@/api-client';
-import { ProjectSimple } from '@/api-client/team';
+import team from '@/backend/team';
+import { call } from '@/utils/client';
+import { ProjectSimple } from '@/backend/team';
 import { Drawer, List } from 'antd';
 import { useAsync, useSetState } from 'react-use';
 import Filter from './component/Filter';
@@ -21,17 +22,6 @@ export default function Index(key?: string) {
       positionNames: [''],
     },
   });
-
-  const userID = useAsync(async () => {
-    const token = localStorage.getItem('token');
-    if (token != null) {
-      return JSON.parse(token).i;
-    } else {
-      return 0;
-    }
-  });
-
-  console.log(userID);
 
   const projectsState = useAsync(async () => {
     let res = await call(team.ProjectService.GetProjectSimples, {
@@ -57,7 +47,6 @@ export default function Index(key?: string) {
     <div>
       <Filter
         subscriber={subscriber}
-        userID={userID.value}
         onChangeFilter={(filter) => {
           setState({
             filter,

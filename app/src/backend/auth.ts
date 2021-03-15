@@ -1,4 +1,4 @@
-import { Endpoint } from './client';
+import { Endpoint } from '.';
 
 interface User {
   ID: number;
@@ -41,7 +41,6 @@ export interface SMSCodeLoginReq {
 }
 
 export interface SMSCodeLoginRes {
-  Token: string;
   User: User;
 }
 
@@ -66,7 +65,6 @@ export interface AwardSimple {
   ProveImgURL: string;
 }
 export interface FindUserInTeamReq {
-  UserID: number;
   ProjectID: number;
 }
 export interface FindUserInTeamRes {

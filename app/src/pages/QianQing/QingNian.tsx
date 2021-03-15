@@ -29,18 +29,6 @@ const data: contentProps = {
       textMain: '活动描述',
       contentSrc: 'https://www.baidu.com',
     },
-    {
-      imgSrc:
-        'http://n.sinaimg.cn/sinacn10116/600/w1920h1080/20190326/adec-hutwezf6832324.jpg',
-      textMain: '活动描述',
-      contentSrc: 'https://www.baidu.com',
-    },
-    {
-      imgSrc:
-        'http://n.sinaimg.cn/sinacn10116/600/w1920h1080/20190326/adec-hutwezf6832324.jpg',
-      textMain: '活动描述',
-      contentSrc: 'https://www.baidu.com',
-    },
   ],
 };
 
