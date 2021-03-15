@@ -142,5 +142,69 @@ export default [
     exact: true,
     path: '/LeagueConstruction',
     component: '@/pages/QianQing/LeagueConstruction',
-  }
+  },
+  {
+    path: '/qian-qing',
+    component: '@/pages/QianQing/_layout',
+    routes: [
+      {
+        path: '/qian-qing/notification',
+        component: '@/pages/QianQing/QingNian',
+        name: '通知',
+      },
+      {
+        path: '/qian-qing/class',
+        name: '班级建设',
+        routes: [
+          {
+            path: '/qian-qing/class/basic',
+            name: '团支部基本信息',
+            routes: [
+              {
+                path: '/qian-qing/class/basic/info',
+                component: '@/pages/QianQing/BasicInfo',
+                name: '基本信息',
+              },
+              {
+                path: '/qian-qing/class/basic/LeagueConstruction',
+                component: '@/pages/QianQing/LeagueConstruction',
+                name: '党团建设',
+              },
+              {
+                path: '/qian-qing/class/basic/classConstruction',
+                component: '@/pages/QianQing/classBuild',
+                name: '班级建设',
+              },
+              {
+                path: '/qian-qing/class/basic/studyConstruction',
+                component: '@/pages/QianQing/studyBuild',
+                name: '学风建设',
+              },
+            ],
+          },
+          {
+            path: '/qian-qing/class/workLog',
+            name: '团支部工作记录',
+            routes: [
+              {
+                path: '/qian-qing/class/workLog/big-study',
+                component: '@/pages/QianQing/QingNianDaXueXi',
+                name: '青年大学习',
+              },
+              {
+                path: '/qian-qing/class/workLog/3m2s1l',
+                component: '@/pages/QianQing/SanHuiLiangZhi',
+                name: '三会两制一课',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: '/qian-qing/search',
+        component: '@/pages/QianQing/QingNian',
+        name: '搜索',
+      },
+    ],
+  },
 ];
