@@ -1,4 +1,6 @@
-import { auth, call, team } from '@/api-client';
+import team from '@/backend/team';
+import auth from '@/backend/auth';
+import { call } from '@/utils/client';
 import style from '@/assets/team/css/expand.css';
 import {
   EditOutlined,

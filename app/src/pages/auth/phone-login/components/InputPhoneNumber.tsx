@@ -1,4 +1,5 @@
-import { auth, call } from '@/api-client';
+import auth from '@/backend/auth';
+import { call } from '@/utils/client';
 import { Button, Col, Form, Input, Row, Select, Space, Typography } from 'antd';
 
 const { Title } = Typography;

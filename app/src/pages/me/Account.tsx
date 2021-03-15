@@ -1,4 +1,5 @@
-import { auth, call } from '@/api-client';
+import auth from '@/backend/auth';
+import { call } from '@/utils/client';
 import Avatar from '@/components/Avatar';
 import { message, Switch } from 'antd';
 import { useAsyncRetry, useCounter } from 'react-use';

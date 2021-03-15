@@ -2,9 +2,9 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/auth"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type CommentService struct {
@@ -31,9 +31,9 @@ type CreateCommentRes struct {
 	IsFailed bool
 }
 
-func (c *CommentService) CreateComment(r *http.Request, req *CreateCommentReq, res *CreateCommentRes) (err error) {
+func (c *CommentService) CreateComment(ctx *rpc.Context, req *CreateCommentReq, res *CreateCommentRes) (err error) {
 	var tokenUser auth.TokenUser
-	tokenUser, err = auth.ExtractTokenUser(r)
+	tokenUser, err = auth.ExtractTokenUser(ctx)
 	if err != nil {
 		res.IsFailed = true
 		return err

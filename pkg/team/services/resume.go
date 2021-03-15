@@ -2,9 +2,9 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/auth"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/team/models"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type ResumeService struct {
@@ -29,10 +29,10 @@ type GetResumesRes struct {
 	ResumeSimples []ResumeSimple
 }
 
-func (c *ResumeService) GetResumes(r *http.Request, req *GetResumesReq, res *GetResumesRes) (err error) {
+func (c *ResumeService) GetResumes(ctx *rpc.Context, req *GetResumesReq, res *GetResumesRes) (err error) {
 	//获取创建者信息
 	var tokenUser auth.TokenUser
-	tokenUser, err = auth.ExtractTokenUser(r)
+	tokenUser, err = auth.ExtractTokenUser(ctx)
 	if err != nil {
 		res.IsFailed = true
 		return err
@@ -73,11 +73,11 @@ type EditResumeRes struct {
 	IsFailed bool
 }
 
-func (c *ResumeService) EditResume(r *http.Request,
+func (c *ResumeService) EditResume(ctx *rpc.Context,
 	req *EditResumeReq, res *EditResumeRes) (err error) {
 	//获取创建者信息
 	var tokenUser auth.TokenUser
-	tokenUser, err = auth.ExtractTokenUser(r)
+	tokenUser, err = auth.ExtractTokenUser(ctx)
 	if err != nil {
 		res.IsFailed = true
 		return err

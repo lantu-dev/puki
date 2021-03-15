@@ -1,4 +1,4 @@
-import { Endpoint } from './client';
+import { Endpoint } from '.';
 
 interface User {
   ID: number;
@@ -41,7 +41,6 @@ export interface SMSCodeLoginReq {
 }
 
 export interface SMSCodeLoginRes {
-  Token: string;
   User: User;
 }
 

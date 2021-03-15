@@ -1,4 +1,5 @@
-import { call, events } from '@/api-client';
+import events from '@/backend/events';
+import { call } from '@/utils/client';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Col, Menu, Row, Space, Typography } from 'antd';
 // @ts-ignore

@@ -1,4 +1,4 @@
-import { LectureInfo } from '@/api-client/events';
+import { LectureInfo } from '@/backend/events';
 import { List } from 'antd';
 import Avatar from '@/components/Avatar';
 

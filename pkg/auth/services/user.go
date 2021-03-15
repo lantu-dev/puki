@@ -1,14 +1,15 @@
 package services
 
 import (
+	"context"
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/auth/models"
 	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/null"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	models2 "github.com/lantu-dev/puki/pkg/team/models"
-	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"log"
-	"net/http"
 	"strconv"
 	"strings"
 )
@@ -31,7 +32,7 @@ type UserLoginRes struct {
 }
 
 // 用户名、密码组合登陆
-func (s *UserService) Login(r *http.Request, req *UserLoginReq, res *UserLoginRes) (err error) {
+func (s *UserService) Login(ctx context.Context, req *UserLoginReq, res *UserLoginRes) (err error) {
 
 	return
 }
@@ -44,15 +45,15 @@ type SMSSendCodeRes struct {
 }
 
 // 手机号验证码登陆/发送验证码
-func (s *UserService) SMSSendCode(r *http.Request, req *SMSSendCodeReq, res *SMSSendCodeRes) (err error) {
+func (s *UserService) SMSSendCode(ctx *rpc.Context, req *SMSSendCodeReq, res *SMSSendCodeRes) (err error) {
 	if !strings.HasPrefix(req.PhoneNumber, "+86") {
-		return base.UserErrorf("目前仅支持中国大陆地区(+86)手机号登陆")
+		return base.UserErrorf(nil, "目前仅支持中国大陆地区(+86)手机号登陆")
 	}
 	phoneNumber, err := strconv.ParseInt(req.PhoneNumber[1:], 10, 64)
 	if err != nil {
 		log.Fatal(err)
 	}
-	res.Session, err = auth.SMSLogin.SendCode(r.Context(), phoneNumber)
+	res.Session, err = auth.SMSLogin.SendCode(context.TODO(), phoneNumber)
 	return
 }
 
@@ -64,19 +65,18 @@ type SMSCodeLoginReq struct {
 type SMSCodeLoginRes struct {
 	TokenUser *auth.TokenUser
 	User      *models.User
-	Token     string
 }
 
 // 手机号验证码登陆
-func (s *UserService) SMSCodeLogin(r *http.Request, req *SMSCodeLoginReq, res *SMSCodeLoginRes) (err error) {
+func (s *UserService) SMSCodeLogin(ctx *rpc.Context, req *SMSCodeLoginReq, res *SMSCodeLoginRes) (err error) {
 	if !strings.HasPrefix(req.PhoneNumber, "+86") {
-		return base.UserErrorf("目前仅支持中国大陆地区(+86)手机号登陆") // 用户造成的错误，前端会弹窗报错
+		return base.UserErrorf(nil, "目前仅支持中国大陆地区(+86)手机号登陆") // 用户造成的错误，前端会弹窗报错
 	}
 	phoneNumber, err := strconv.ParseInt(req.PhoneNumber[1:], 10, 64)
 	if err != nil {
 		log.Fatal(err) // 认为是不可能出现的错误
 	}
-	err = auth.SMSLogin.Verify(r.Context(), req.Session, phoneNumber, req.Code)
+	err = auth.SMSLogin.Verify(context.TODO(), req.Session, phoneNumber, req.Code)
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func (s *UserService) SMSCodeLogin(r *http.Request, req *SMSCodeLoginReq, res *S
 		return err
 	}
 
-	res.Token = res.TokenUser.Encode()
+	ctx.Writer.Header().Set("x-set-authorization", res.TokenUser.Encode())
 	res.User = user
 
 	err = tx.Commit().Error // 数据库事务
@@ -103,10 +103,10 @@ type GetProfileRes struct {
 	Student models.Student
 }
 
-func (s *UserService) GetProfile(r *http.Request, req *GetProfileReq, res *GetProfileRes) (err error) {
-	tu, err := auth.ExtractTokenUser(r)
+func (s *UserService) GetProfile(ctx *rpc.Context, req *GetProfileReq, res *GetProfileRes) (err error) {
+	tu, err := auth.ExtractTokenUser(ctx)
 	if err != nil {
-		return base.UserErrorf("请通过手机号登录账户")
+		return base.UserErrorf(nil, "请通过手机号登录账户")
 	}
 
 	tx := s.db.Begin()
@@ -135,17 +135,17 @@ type PatchProfileRes struct {
 	Completed bool
 }
 
-func (s *UserService) PatchProfile(r *http.Request, req *PatchProfileReq, res *PatchProfileRes) error {
+func (s *UserService) PatchProfile(ctx *rpc.Context, req *PatchProfileReq, res *PatchProfileRes) error {
 	// 检查用户登录
-	tu, err := auth.ExtractTokenUser(r)
+	tu, err := auth.ExtractTokenUser(ctx)
 	if err != nil {
 		// 用户请求头没有Token字段
-		return base.UserErrorf("请登录/注册账户")
+		return base.UserErrorf(nil, "请登录/注册账户")
 	}
 
 	// 以后的游客权限
 	if tu.IsAnon() {
-		return base.UserErrorf("login required")
+		return base.UserErrorf(nil, "login required")
 	}
 
 	if err = s.db.Transaction(func(tx *gorm.DB) (err error) {
@@ -236,7 +236,7 @@ type FindUserInTeamRes struct {
 	AwardSimples []AwardSimple
 }
 
-func (s *UserService) FindUserInTeam(r *http.Request, req *FindUserInTeamReq, res *FindUserInTeamRes) (err error) {
+func (s *UserService) FindUserInTeam(ctx *rpc.Context, req *FindUserInTeamReq, res *FindUserInTeamRes) (err error) {
 	//1. 获取User信息
 	var user *models.User
 	var student *models.Student

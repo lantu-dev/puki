@@ -2,9 +2,9 @@ package models
 
 import (
 	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/null"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ import (
 type User struct {
 
 	// 「用户 ID」请不要使用自增主键 ( auto increment primary key )
-	ID int64 `gorm:"type:bigint;primaryKey;not null"`
+	ID base.ID `gorm:"type:bigint;primaryKey;not null"`
 
 	// 「用户名」用于用户名、密码组合登陆中的用户名，全局唯一；可空，若空，则该用户未设置用户名，无法使用 "用户名、密码组合登陆"
 	UserName null.String `gorm:"unique;default:null"`
@@ -86,7 +86,7 @@ func (user *User) SetUserName(tx *gorm.DB, userName string) error {
 	// TODO: remove non-ascii & length limit
 	anotherUser := FindUserByUserName(tx, userName)
 	if anotherUser != nil {
-		return base.UserErrorf("UserName exists")
+		return base.UserErrorf(nil, "UserName exists")
 	}
 
 	user.UserName = null.StringFrom(userName)

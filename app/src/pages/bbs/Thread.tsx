@@ -5,8 +5,8 @@ import ReactMarkdown from 'react-markdown';
 import { UserInfo } from '@/pages/bbs/components/Preview';
 import { ThreadList } from '@/pages/bbs/components/ThreadList';
 import { useAsync } from 'react-use';
-import { call } from '@/api-client';
-import { ThreadService } from '@/api-client/bbs';
+import { call } from '@/utils/client';
+import { ThreadService } from '@/backend/bbs';
 import { CommentOutlined, PlusOutlined } from '@ant-design/icons';
 import { CreateThread } from '@/pages/bbs/components/CreateThread';
 

@@ -1,5 +1,6 @@
-import { call, team } from '@/api-client';
-import { ProjectSimple } from '@/api-client/team';
+import team from '@/backend/team';
+import { call } from '@/utils/client';
+import { ProjectSimple } from '@/backend/team';
 import { Drawer, List } from 'antd';
 import { useAsync, useSetState } from 'react-use';
 import Filter from './component/Filter';

@@ -2,16 +2,17 @@ package models
 
 import (
 	"errors"
+	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/null"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"time"
 )
 
 // A node (forum) contains many threads (posts), and could be nested.
 type Node struct {
-	ID       int64    `gorm:"type:bigint;primaryKey;not null"`
-	ParentID null.Int `gorm:"type:bigint;not null;default:0"`
+	ID       base.ID `gorm:"type:bigint;primaryKey;not null"`
+	ParentID null.ID `gorm:"type:bigint;not null;default:0"`
 
 	// An unique name for this node, or empty.
 	Name null.String `gorm:"unique;default:null"`
@@ -20,7 +21,7 @@ type Node struct {
 	Title string `gorm:"not null"`
 
 	// If the node is created by a user, this field will be filled.
-	UserID null.Int `gorm:"type:bigint;not null;default:0"`
+	UserID null.ID `gorm:"type:bigint;not null;default:0"`
 
 	ThreadsCount int64 `gorm:"not null;default:0"`
 
@@ -31,7 +32,7 @@ type Node struct {
 	DeletedAt time.Time
 }
 
-func GetNodeByID(tx *gorm.DB, id int64) *Node {
+func GetNodeByID(tx *gorm.DB, id base.ID) *Node {
 	var node Node
 	if err := tx.First(&node, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -45,15 +46,15 @@ func GetNodeByID(tx *gorm.DB, id int64) *Node {
 	return &node
 }
 
-func ListNodeChildren(tx *gorm.DB, parentID int64) (nodes []Node) {
-	if err := tx.Where(&Node{ParentID: null.IntFrom(parentID)}).Find(&nodes).Error; err != nil {
+func ListNodeChildren(tx *gorm.DB, parentID base.ID) (nodes []Node) {
+	if err := tx.Where(&Node{ParentID: null.IDFrom(parentID)}).Find(&nodes).Error; err != nil {
 		// it should not reach here.
 		log.Fatalf("ListNodeChildren error %+v", err)
 		return nil
 	}
 	return
 }
-func NodeExists(tx *gorm.DB, nodeID int64) bool {
+func NodeExists(tx *gorm.DB, nodeID base.ID) bool {
 	var cnt int64
 	err := tx.Model(&Node{}).Where(&Node{ID: nodeID}).Limit(1).Count(&cnt).Error
 	if err != nil {

@@ -4,10 +4,10 @@ import (
 	"github.com/juju/errors"
 	"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/base"
+	"github.com/lantu-dev/puki/pkg/base/null"
+	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/bbs/models"
-	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
-	"net/http"
 	"time"
 )
 
@@ -20,10 +20,10 @@ func NewThreadService(db *gorm.DB) *ThreadService {
 }
 
 type Thread struct {
-	ID         int64
-	UserID     int64
-	NodeID     int64
-	ReplyForID int64
+	ID         base.ID
+	UserID     base.ID
+	NodeID     base.ID
+	ReplyForID base.ID
 	//HotReplyUserID   int64
 	//HotReplyAbstract string
 	RepliesCount int64
@@ -36,10 +36,10 @@ type Thread struct {
 }
 
 type ListThreadsReq struct {
-	NodeID int64
+	NodeID base.ID
 
 	// 0 for list all non-reply threads
-	ID int64
+	ID base.ID
 
 	// `UpdatedBefore` & `Limit` are used for pagination
 	UpdatedBefore null.Time
@@ -50,9 +50,9 @@ type ListThreadsRes struct {
 	Threads []Thread
 }
 
-func (s *ThreadService) ListThreads(r *http.Request, req *ListThreadsReq, res *ListThreadsRes) (err error) {
+func (s *ThreadService) ListThreads(ctx *rpc.Context, req *ListThreadsReq, res *ListThreadsRes) (err error) {
 	if req.NodeID == 0 {
-		return base.UserErrorf("NodeID should be provided")
+		return base.UserErrorf(nil, "NodeID should be provided")
 	}
 	if req.Limit == 0 || req.Limit > 50 {
 		req.Limit = 50
@@ -94,26 +94,26 @@ func threadFromModelThread(thread *models.Thread, keepContent bool) Thread {
 }
 
 type GetThreadReq struct {
-	NodeID int64
+	NodeID base.ID
 
-	ID int64
+	ID base.ID
 }
 
 type GetThreadRes struct {
 	Thread Thread
 }
 
-func (s *ThreadService) GetThread(r *http.Request, req *GetThreadReq, res *GetThreadRes) (err error) {
+func (s *ThreadService) GetThread(ctx *rpc.Context, req *GetThreadReq, res *GetThreadRes) (err error) {
 	if req.NodeID == 0 {
-		return base.UserErrorf("NodeID should be provided")
+		return base.UserErrorf(nil, "NodeID should be provided")
 	}
 	if req.ID == 0 {
-		return base.UserErrorf("ID should be provided")
+		return base.UserErrorf(nil, "ID should be provided")
 	}
 
 	thread := models.GetThreadByID(s.db, req.NodeID, req.ID)
 	if thread == nil {
-		return base.UserErrorf("thread not found")
+		return base.UserErrorf(nil, "thread not found")
 	} else {
 		res.Thread = threadFromModelThread(thread, true)
 	}
@@ -122,8 +122,8 @@ func (s *ThreadService) GetThread(r *http.Request, req *GetThreadReq, res *GetTh
 }
 
 type CreateThreadReq struct {
-	NodeID     int64
-	ReplyForID int64
+	NodeID     base.ID
+	ReplyForID base.ID
 	Title      string
 	Abstract   string
 	Content    string
@@ -133,24 +133,24 @@ type CreateThreadRes struct {
 	Thread Thread
 }
 
-func (s *ThreadService) CreateThread(r *http.Request, req *CreateThreadReq, res *CreateThreadRes) (err error) {
-	u, err := auth.ExtractTokenUser(r)
+func (s *ThreadService) CreateThread(ctx *rpc.Context, req *CreateThreadReq, res *CreateThreadRes) (err error) {
+	u, err := auth.ExtractTokenUser(ctx)
 	if err != nil {
 		return err
 	}
 
 	if !models.NodeExists(s.db, req.NodeID) {
-		return base.UserErrorf("node not exist")
+		return base.UserErrorf(nil, "node not exist")
 	}
 
 	if req.ReplyForID != 0 && !models.ThreadExists(s.db, req.NodeID, req.ReplyForID) {
-		return base.UserErrorf("thread not exist")
+		return base.UserErrorf(nil, "thread not exist")
 	}
 	thread := models.Thread{
 		ID:         base.GenerateID(),
-		UserID:     u.ID,
+		UserID:     base.ID(u.ID),
 		NodeID:     req.NodeID,
-		ReplyForID: null.NewInt(req.ReplyForID, req.ReplyForID != 0),
+		ReplyForID: null.NewID(req.ReplyForID, req.ReplyForID != 0),
 		Title:      req.Title,
 		Abstract:   req.Abstract,
 		Content:    req.Content,
