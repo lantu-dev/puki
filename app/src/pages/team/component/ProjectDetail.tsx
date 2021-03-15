@@ -40,6 +40,7 @@ interface ProjectDetailProps {
 }
 
 export default function ProjectDetail(props: ProjectDetailProps) {
+  const [likeNum, setLikeNum] = useState(0);
   const [isLike, setIsLike] = useState(false);
   //判断是否是创建者，用来决定”编辑按钮“的有无
   const [isCreator, setIsCreator] = useState(false);
@@ -98,7 +99,6 @@ export default function ProjectDetail(props: ProjectDetailProps) {
   //加载项目信息 -------------------------------------------------------------------------------------------------------
   useAsync(async () => {
     call(auth.UserService.FindUserInTeam, {
-      UserID: JSON.parse(localStorage.getItem('token') as string).i,
       ProjectID: props.ProjectID,
     })
       .then((r) => {

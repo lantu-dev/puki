@@ -23,17 +23,6 @@ export default function Index(key?: string) {
     },
   });
 
-  const userID = useAsync(async () => {
-    const token = localStorage.getItem('token');
-    if (token != null) {
-      return JSON.parse(token).i;
-    } else {
-      return 0;
-    }
-  });
-
-  console.log(userID);
-
   const projectsState = useAsync(async () => {
     let res = await call(team.ProjectService.GetProjectSimples, {
       ProjectID: [],
@@ -58,7 +47,6 @@ export default function Index(key?: string) {
     <div>
       <Filter
         subscriber={subscriber}
-        userID={userID.value}
         onChangeFilter={(filter) => {
           setState({
             filter,
