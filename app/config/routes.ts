@@ -135,10 +135,11 @@ export default [
   },
   {
     exact: true,
-<<<<<<< HEAD
     path: '/homepage/AboutUs',
     component: '@/pages/homepage/AboutUs',
-=======
+  },
+  {
+    exact: true,
     path: '/BasicInfo',
     component: '@/pages/QianQing/BasicInfo',
   },
@@ -215,6 +216,5 @@ export default [
         name: '搜索',
       },
     ],
->>>>>>> master
   },
 ];

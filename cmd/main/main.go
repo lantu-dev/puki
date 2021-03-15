@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/alicebob/miniredis/v2"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/go-redis/redis/v8"
@@ -12,14 +15,13 @@ import (
 	bbssetup "github.com/lantu-dev/puki/pkg/bbs/setup"
 	eventsSetup "github.com/lantu-dev/puki/pkg/events/setup"
 	"github.com/lantu-dev/puki/pkg/hwcloud"
+	qian_qingSetup "github.com/lantu-dev/puki/pkg/qian_qing/setup"
 	"github.com/lantu-dev/puki/pkg/storage"
 	teamSetup "github.com/lantu-dev/puki/pkg/team/setup"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"net/http"
-	"os"
 )
 
 var buildTag string = "dev"
@@ -69,6 +71,9 @@ func main() {
 		log.Fatal(err)
 	}
 	if err := teamSetup.Setup(reg, db); err != nil {
+		log.Fatal(err)
+	}
+	if err := qian_qingSetup.Setup(reg, db); err != nil {
 		log.Fatal(err)
 	}
 
