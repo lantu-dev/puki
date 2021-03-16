@@ -65,7 +65,6 @@ export interface AwardSimple {
   ProveImgURL: string;
 }
 export interface FindUserInTeamReq {
-  UserID: number;
   ProjectID: number;
 }
 export interface FindUserInTeamRes {

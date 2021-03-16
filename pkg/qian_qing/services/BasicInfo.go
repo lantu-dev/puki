@@ -82,6 +82,7 @@ func (b *BasicInfoService) UpdateStudentNum(ctx *rpc.Context, req *UpstateStuNum
 	return err
 }
 
+//修改团支部人数
 type UpstateStuHerereq struct {
 	ClassNumber   int16
 	NewStudentNum int
