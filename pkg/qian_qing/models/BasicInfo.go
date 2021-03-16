@@ -19,7 +19,7 @@ func UpdateRecorder(tx *gorm.DB, ClassNumber int16, NewRecorder string) (err err
 	result := tx.Model(&BasicInfo{}).
 		Where("ClassNumber=?", ClassNumber).
 		Update("Recorder", NewRecorder).Error
-	if result.Error != nil {
+	if result != nil {
 		tx.Rollback()
 		log.Debug(err)
 	}
@@ -29,7 +29,7 @@ func UpdateStuNum(tx *gorm.DB, ClassNumber int16, NewStuNum int) (err error) {
 	result := tx.Model(&BasicInfo{}).
 		Where("ClassNumber=?", ClassNumber).
 		Update("StudentNumber", NewStuNum).Error
-	if result.Error != nil {
+	if result != nil {
 		tx.Rollback()
 		log.Debug(err)
 	}
@@ -39,7 +39,7 @@ func UpdateStudentHere(tx *gorm.DB, ClassNumber int16, NewStuHere int) (err erro
 	result := tx.Model(&BasicInfo{}).
 		Where("ClassNumber=?", ClassNumber).
 		Update("StudentHere", NewStuHere).Error
-	if result.Error != nil {
+	if result != nil {
 		tx.Rollback()
 		log.Debug(err)
 	}
