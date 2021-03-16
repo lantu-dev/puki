@@ -135,17 +135,14 @@ export default [
   },
   {
     exact: true,
-<<<<<<< HEAD
     path: '/homepage/AboutUs',
     component: '@/pages/homepage/AboutUs',
   },
   {
-=======
-
+    exact: true,
     path: '/homepage/AboutUs',
     component: '@/pages/homepage/AboutUs',},
 {
->>>>>>> 2d19e9ce0b33d8df0ad4919e02192ba81713a0b8
     exact: true,
     path: '/BasicInfo',
     component: '@/pages/QianQing/BasicInfo',
@@ -223,9 +220,5 @@ export default [
         name: '搜索',
       },
     ],
-<<<<<<< HEAD
-=======
-
->>>>>>> 2d19e9ce0b33d8df0ad4919e02192ba81713a0b8
   },
 ];
