@@ -136,6 +136,11 @@ export default [
   },
   {
     exact: true,
+
+    path: '/homepage/AboutUs',
+    component: '@/pages/homepage/AboutUs',},
+{
+    exact: true,
     path: '/BasicInfo',
     component: '@/pages/QianQing/BasicInfo',
   },
@@ -180,6 +185,11 @@ export default [
                 path: '/qian-qing/class/basic/studyConstruction',
                 component: '@/pages/QianQing/studyBuild',
                 name: '学风建设',
+              },
+              {
+                path: '/qian-qing/class/basic/studyConstruction',
+                component: '@/pages/QianQing/tuanyuanInfo',
+                name: '团员基本信息',
               },
             ],
           },

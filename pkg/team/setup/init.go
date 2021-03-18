@@ -12,8 +12,8 @@ import (
 const MOD_NAME = "team"
 
 func Setup(reg *rpc.ServiceRegistry, db *gorm.DB) (err error) {
-	err = errors.Trace(db.AutoMigrate(&models.Comment{}, &models.Competition{}, &models.Type{}, &models.Conversation{}, &models.File{},
-		&models.Position{}, &models.PositionTemplate{}, &models.Project{}, &models.CompetitionProject{}, &models.Resume{}))
+	err = errors.Trace(db.AutoMigrate(&models.Project{}, &models.Comment{}, &models.Competition{}, &models.Type{}, &models.Conversation{}, &models.File{},
+		&models.PositionTemplate{}, &models.Position{}, &models.CompetitionProject{}, &models.Resume{}))
 	if err != nil {
 		//return
 	}

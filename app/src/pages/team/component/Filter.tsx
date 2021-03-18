@@ -1,5 +1,5 @@
 import team from '@/backend/team';
-import { call } from '@/utils/client';
+import { call, hasLogged } from '@/utils/client';
 import { ProjectSimple } from '@/backend/team';
 import logo from '@/assets/team/img/logo.png';
 import { PlusCircleOutlined } from '@ant-design/icons';
@@ -14,7 +14,6 @@ const { Search } = Input;
 interface FilterProps {
   onChangeFilter: (filter: (v: ProjectSimple) => boolean) => void;
   subscriber: PubSub.Subscriber;
-  userID: number;
 }
 
 export default function Filter(props: FilterProps) {
@@ -42,6 +41,8 @@ export default function Filter(props: FilterProps) {
     publisher.notify('typeList', typeList);
     return typeList;
   });
+
+  console.log(typeListState);
 
   const {
     value: { competitionNames, competitionTypes, positionNames } = {
@@ -103,7 +104,7 @@ export default function Filter(props: FilterProps) {
   };
 
   const onCreateProjectClick = () => {
-    if (props.userID === 0) {
+    if (!hasLogged()) {
       //若为游客登录，则逻辑上不能创建项目，跳转至登录页
       history.push('/auth/phone-login');
     } else {
