@@ -149,6 +149,11 @@ export default [
     component: '@/pages/QianQing/LeagueConstruction',
   },
   {
+    exact: true,
+    path: '/PublishNewActivity',
+    component: '@/pages/QianQing/PublishNewActivity',
+  },
+  {
     path: '/qian-qing',
     component: '@/pages/QianQing/_layout',
     routes: [
