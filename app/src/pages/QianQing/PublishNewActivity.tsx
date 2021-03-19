@@ -57,9 +57,8 @@ const App4 = () => {
   const onChange = (e) => {
     console.log('radio checked', e.target.value);
     setValue(e.target.value);
-    if(e.target.value==4.1)
-    {
-      console.log("活动地点我填")
+    if (e.target.value == 4.1) {
+      console.log('活动地点我填');
     }
   };
 
