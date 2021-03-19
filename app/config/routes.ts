@@ -1,3 +1,4 @@
+import { Component } from 'react';
 export default [
   {
     exact: true,
@@ -217,10 +218,9 @@ export default [
       },
       {
         path: '/qian-qing/search',
-        component: '@/pages/QianQing/QingNian',
+        component: '@/pages/QianQing/search',
         name: '搜索',
       },
     ],
-
   },
 ];
