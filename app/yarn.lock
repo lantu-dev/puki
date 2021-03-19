@@ -34,6 +34,16 @@
     insert-css "^2.0.0"
     rc-util "^5.0.1"
 
+"@ant-design/pro-card@^1.11.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@ant-design/pro-card/-/pro-card-1.11.1.tgz#f7e79e2c7235a27264e5a0dbd548d4c36e71fa2b"
+  integrity sha512-bj4Qc/U2zUNd/9ocITIB1L/ByWQ0oHwq9aD61zCzA9u5JgVK8T70ohdL7j4LO8dZWfPyJStJ1I0dbB8XPE7ZPQ==
+  dependencies:
+    "@ant-design/icons" "^4.2.1"
+    "@ant-design/pro-utils" "1.14.2"
+    classnames "^2.2.6"
+    omit.js "^2.0.2"
+
 "@ant-design/pro-field@1.11.2":
   version "1.11.2"
   resolved "https://registry.yarnpkg.com/@ant-design/pro-field/-/pro-field-1.11.2.tgz#f6a940456651d9b912a57de30f7aee74947ed78d"
