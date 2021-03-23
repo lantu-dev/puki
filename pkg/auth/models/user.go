@@ -13,34 +13,25 @@ type User struct {
 
 	// 「用户 ID」请不要使用自增主键 ( auto increment primary key )
 	ID base.ID `gorm:"type:bigint;primaryKey;not null"`
-
 	// 「用户名」用于用户名、密码组合登陆中的用户名，全局唯一；可空，若空，则该用户未设置用户名，无法使用 "用户名、密码组合登陆"
 	UserName null.String `gorm:"unique;default:null"`
 	// 「密码」用于用户名、密码组合登陆中的密码
 	Password string `json:"-"`
-
 	// 「手机号」用于手机号、验证码登陆组合，全局唯一。可空，若空，则该用户未设置手机号，无法使用 "手机号、验证码组合登陆"
 	// 格式为 <国家编号><手机号>，如 8615511123234
 	PhoneNumber int64 `gorm:"unique;default:null"`
-
 	// 「真实姓名」未设置为空字符串
 	RealName string `gorm:"not null"`
-
 	// 「头像」 URL 未设置为空字符串
 	AvatarURI string `gorm:"not null"`
-
 	// 「昵称」用于对外展示
 	NickName string `gorm:"not null"`
-
 	// 「性别」，true为男性, false为女性
 	Gender null.Bool `gorm:"default:null"`
-
 	// 「是否为内部用户」，内部用户可登陆后台管理页面
 	IsStaff null.Bool `gorm:"not null;default:false"`
-
 	// 「是否为超级管理员」
 	IsSuper null.Bool `gorm:"not null;default:false"`
-
 	// 「账号是否被禁用」
 	IsDisabled null.Bool `gorm:"not null;default:false"`
 }

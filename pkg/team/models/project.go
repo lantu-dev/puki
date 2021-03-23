@@ -12,7 +12,7 @@ type Project struct {
 	gorm.Model
 	//是否可用，初始值为false，若项目已招募够需要的人数、或由招募者手动操作后，进入true状态；招募者可重新开启招募
 	//解释：变量用途：1.用于展示优先度的计算；2.封存阶段仅可浏览、不可与招募者联系，可选择当招募再次开启时提醒
-	IsAvailable bool `gorm:"default:false"`
+	IsAvailable bool `gorm:"default:true"`
 
 	//创建者ID
 	CreatorID int64
