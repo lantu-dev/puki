@@ -8,9 +8,10 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/go-redis/redis/v8 v8.5.0
 	github.com/google/uuid v1.2.0
-	github.com/gorilla/rpc v1.2.0
+	github.com/gorilla/rpc v1.2.0 // indirect
 	github.com/gorilla/schema v1.2.0
-	github.com/json-iterator/go v1.1.10
+	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.21.1+incompatible // indirect
+	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/juju/errors v0.0.0-20200330140219-3fe23663418f
 	github.com/juju/testing v0.0.0-20201216035041-2be42bba85f3 // indirect
 	github.com/pkg/errors v0.9.1
@@ -24,6 +25,6 @@ require (
 	gopkg.in/guregu/null.v4 v4.0.0
 	gorm.io/driver/postgres v1.0.8
 	gorm.io/driver/sqlite v1.1.4
-	gorm.io/driver/sqlserver v1.0.6
+	gorm.io/driver/sqlserver v1.0.6 // indirect
 	gorm.io/gorm v1.20.12
 )

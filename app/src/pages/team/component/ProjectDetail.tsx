@@ -10,6 +10,8 @@ import {
   MinusCircleOutlined,
   PlusOutlined,
   MessageOutlined,
+  ArrowLeftOutlined,
+  CloseOutlined,
 } from '@ant-design/icons';
 import {
   Avatar,
@@ -27,8 +29,10 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
+
 const { Title, Paragraph, Text } = Typography;
 import { Anchor } from 'antd';
+import { history } from 'umi';
 const { Link } = Anchor;
 //来自ProjectCard的项目简略信息，这部分信息不需要再从数据库重新获取
 interface ProjectDetailProps {
@@ -53,6 +57,37 @@ export default function ProjectDetail(props: ProjectDetailProps) {
   const [resume, setResume] = useState({
     Resumes: [{ PositionName: '', PositionID: 0, Content: '' }],
   });
+
+  let isSinglePage = false;
+
+  //如果该component作为单独页面，则需从location中获取属性
+  // @ts-ignore
+  if (props.location) {
+    // @ts-ignore
+    props = {
+      // @ts-ignore
+      ProjectID: Number(props.location.query.ProjectID),
+      // @ts-ignore
+      ProjectName: props.location.query.ProjectName,
+      // @ts-ignore
+      ProjectDescription: props.location.query.ProjectDescription,
+      // @ts-ignore
+      PositionNames: props.location.query.PositionNames,
+      // @ts-ignore
+      CompetitionNames: props.location.query.CompetitionNames,
+    };
+    isSinglePage = true;
+  }
+
+  const ShareProject = () => {
+    let URL = window.location.href + '/ProjectDetail?';
+    URL += 'ProjectID=' + props.ProjectID.toString() + '&';
+    URL += 'ProjectName=' + props.ProjectName + '&';
+    URL += 'ProjectDescription=' + props.ProjectDescription + '&';
+    URL += 'PositionNames=' + props.PositionNames + '&';
+    URL += 'CompetitionNames=' + props.CompetitionNames;
+    console.log(URL);
+  };
 
   //项目详情信息
   const [projectDetailState, setProjectDetailState] = useState({
@@ -423,6 +458,15 @@ export default function ProjectDetail(props: ProjectDetailProps) {
   return (
     <div style={{ margin: '2%', minWidth: '300px' }}>
       <Title level={3}>{props.ProjectName}</Title>
+      <div
+        style={{ position: 'absolute', right: '15px', top: '12px' }}
+        hidden={!isSinglePage}
+        onClick={() => {
+          history.goBack();
+        }}
+      >
+        <CloseOutlined style={{ fontSize: '15px' }} />
+      </div>
       <Row style={{ width: '100%' }} wrap={false}>
         <Col flex={'10px'}> </Col>
         <Col flex={'30%'}>
@@ -706,7 +750,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
       <div className={style.Box} style={{ marginTop: '5px' }}>
         <Row style={{ margin: '10px' }}>
           <Col flex={'35px'}>
-            <Button disabled={true} type={'default'}>
+            <Button type={'default'} onClick={ShareProject}>
               分享
             </Button>
           </Col>

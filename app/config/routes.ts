@@ -74,8 +74,18 @@ export default [
   },
   {
     exact: true,
+    path: '/team/ProjectDetail',
+    component: '@/pages/team/component/ProjectDetail',
+  },
+  {
+    exact: true,
     path: '/team/CreateCompetition',
     component: '@/pages/team/pages/CreateCompetition',
+  },
+  {
+    exact: true,
+    path: '/team/ManageProject',
+    component: '@/pages/team/pages/ManageProject',
   },
   {
     exact: true,
@@ -86,6 +96,11 @@ export default [
     exact: true,
     path: '/team/CreateCompetitionType',
     component: '@/pages/team/pages/CreateCompetitionType',
+  },
+  {
+    exact: true,
+    path: '/team/TestPage',
+    component: '@/pages/team/pages/TestPage',
   },
   {
     exact: true,
@@ -138,8 +153,9 @@ export default [
     exact: true,
 
     path: '/homepage/AboutUs',
-    component: '@/pages/homepage/AboutUs',},
-{
+    component: '@/pages/homepage/AboutUs',
+  },
+  {
     exact: true,
     path: '/BasicInfo',
     component: '@/pages/QianQing/BasicInfo',

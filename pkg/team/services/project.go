@@ -408,48 +408,50 @@ func (c *ProjectService) GetProjectSimples(ctx *rpc.Context,
 	var competitionNames []string
 
 	for _, project := range projects {
-		for _, j := range project.Competitions {
-			competitionNames = append(competitionNames, j.Name)
-		}
-		var typeNew models.Type
-		var positions []models.Position
-
-		tx = c.db.Begin()
-		typeNew = models.FindTypeByID(tx, project.TypeID)
-		positions = models.FindPositionsByProjectID(tx, int64(project.ID))
-		err = tx.Commit().Error
-		if err != nil {
-			res.IsFound = false
-			return err
-		}
-
-		var positionNames []string
-		for _, j := range positions {
-			var positionTemplate models.PositionTemplate
+		if project.IsAvailable {
+			for _, j := range project.Competitions {
+				competitionNames = append(competitionNames, j.Name)
+			}
+			var typeNew models.Type
+			var positions []models.Position
 
 			tx = c.db.Begin()
-			positionTemplate = models.FindPositionTemplateByID(tx, j.PositionTemplateID)
+			typeNew = models.FindTypeByID(tx, project.TypeID)
+			positions = models.FindPositionsByProjectID(tx, int64(project.ID))
 			err = tx.Commit().Error
 			if err != nil {
 				res.IsFound = false
 				return err
 			}
 
-			positionNames = append(positionNames, positionTemplate.Name)
+			var positionNames []string
+			for _, j := range positions {
+				var positionTemplate models.PositionTemplate
+
+				tx = c.db.Begin()
+				positionTemplate = models.FindPositionTemplateByID(tx, j.PositionTemplateID)
+				err = tx.Commit().Error
+				if err != nil {
+					res.IsFound = false
+					return err
+				}
+
+				positionNames = append(positionNames, positionTemplate.Name)
+			}
+			projectSimple := ProjectSimple{
+				ProjectID:          project.ID,
+				CreateTime:         project.CreatedAt,
+				UpdateTime:         project.UpdatedAt,
+				ProjectName:        project.Name,
+				ProjectDescription: project.DescribeSimple,
+				StarNum:            project.StarNum,
+				CommentNum:         project.CommentsNum,
+				PositionNames:      positionNames,
+				CompetitionNames:   competitionNames,
+				TypeName:           typeNew.Name,
+			}
+			res.ProjectSimples = append(res.ProjectSimples, projectSimple)
 		}
-		projectSimple := ProjectSimple{
-			ProjectID:          project.ID,
-			CreateTime:         project.CreatedAt,
-			UpdateTime:         project.UpdatedAt,
-			ProjectName:        project.Name,
-			ProjectDescription: project.DescribeSimple,
-			StarNum:            project.StarNum,
-			CommentNum:         project.CommentsNum,
-			PositionNames:      positionNames,
-			CompetitionNames:   competitionNames,
-			TypeName:           typeNew.Name,
-		}
-		res.ProjectSimples = append(res.ProjectSimples, projectSimple)
 	}
 	res.IsFound = true
 	return nil
@@ -531,4 +533,10 @@ func (c *ProjectService) EditAward(ctx *rpc.Context,
 		}
 	}
 	return err
+}
+
+//获取本人项目，用于管理
+
+func (c *ProjectService) GetOwnProject() {
+
 }
