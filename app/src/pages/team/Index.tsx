@@ -1,5 +1,5 @@
 import team from '@/backend/team';
-import { call } from '@/utils/client';
+import { call, hasLogged } from '@/utils/client';
 import { ProjectSimple } from '@/backend/team';
 import { Drawer, List } from 'antd';
 import { useAsync, useSetState } from 'react-use';
@@ -9,8 +9,13 @@ import ProjectDetail from './component/ProjectDetail';
 import { PubSub } from 'pubsub-ts';
 import CreateProject from '@/pages/team/pages/CreateProject';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
+import { history } from 'umi';
 
 export default function Index(key?: string) {
+  if (!hasLogged()) {
+    history.push('/auth/phone-login');
+  }
+
   const [state, setState] = useSetState({
     filter: (projectSimple: ProjectSimple): boolean => true,
     projectDetailDrawerVisible: false,
