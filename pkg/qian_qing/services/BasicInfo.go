@@ -1,6 +1,7 @@
 package services
 
 import (
+	//"github.com/lantu-dev/puki/pkg/auth"
 	"github.com/lantu-dev/puki/pkg/base/rpc"
 	"github.com/lantu-dev/puki/pkg/qian_qing/models"
 	"gorm.io/gorm"
@@ -18,18 +19,23 @@ func NewBasicInfoService(db *gorm.DB) *BasicInfoService {
 }
 
 type GetBasicInfoReq struct {
-	ID string
 }
 type GetBasicInfoRes struct {
 	BasicInfo models.BasicInfo
 }
 
 //获取基本信息
-func (b *BasicInfoService) GetBasicInfo(ctx *rpc.Context, req *GetBasicInfoReq, res *GetBasicInfoRes) error {
+/*func (b *BasicInfoService) GetBasicInfo(ctx *rpc.Context, req *GetBasicInfoReq, res *GetBasicInfoRes)(err error) {
+	var tokenUser auth.TokenUser
+	tokenUser, err = auth.ExtractTokenUser(ctx)
+	if err != nil {
+		return err
+	}
 	tx := b.db.Begin()
-	res.BasicInfo = models.GetBasicInfo(tx, req.ID)
+	var ClassNum =models.
+	res.BasicInfo = models.GetBasicInfo(tx,Token.Clas )
 	return nil
-}
+}*/
 
 type ModifyRecorderreq struct {
 	ClassNumber int16

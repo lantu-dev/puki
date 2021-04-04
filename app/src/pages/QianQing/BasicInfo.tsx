@@ -1,6 +1,8 @@
 import React from 'react';
 import { Avatar, Typography, Button, Space, message, Modal } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import QianQing from '@/backend/qian_qing';
+import { call } from '@/utils/client';
 import ProForm, {
   ModalForm,
   ProFormText,
@@ -9,7 +11,20 @@ import ProForm, {
 
 const { Title } = Typography;
 const { confirm } = Modal;
-
+/**const onFinish = (values: any) => {
+  let name = values.CompetitionTypeName;
+  let desc = values.Descriptions;
+  call(team.CompetitionService.AddCompetitionType, {
+    Description: desc,
+    Name: name,
+  }).then();
+  console.log('success');
+  history.back();
+}; */
+const onFinish = (values: any) => {
+  let src = values.ClassPic;
+  let ClassNum=values.ClassNum;
+}
 export default function BscInfo() {
   const waitTime = (time: number = 100) => {
     return new Promise((resolve) => {
