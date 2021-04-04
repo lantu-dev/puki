@@ -4,6 +4,7 @@ import { call } from '@/utils/client';
 import team, { Position } from '@/backend/team';
 import { PubSub } from 'pubsub-ts';
 import { useAsync } from 'react-use';
+import { history } from '@@/core/history';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -27,14 +28,6 @@ interface formValue {
 export default function CreateProject(props: CreateProjectProps) {
   let publisher = new PubSub.Publisher();
   publisher.add(props.subscriber);
-  const userID = useAsync(async () => {
-    const token = localStorage.getItem('token');
-    if (token != null) {
-      return JSON.parse(token).i;
-    } else {
-      return 0;
-    }
-  });
 
   const onFinish = (values: formValue) => {
     call(team.ProjectService.AddProject, {
@@ -50,13 +43,15 @@ export default function CreateProject(props: CreateProjectProps) {
       if (r.IsFailed) {
         alert('创建失败！');
       } else {
-        //隐藏创建项目卡片
-        publisher.notifyUrgent('createProjectDrawerVisible', false);
-        //传数据
-        publisher.notify('projectCreateInfo', {
-          ProjectID: r.ProjectID,
-          ProjectName: values.ProjectName,
-          ProjectDescription: values.ProjectDescribeSimple,
+        history.push({
+          pathname: '/team/ProjectDetail',
+          query: {
+            ProjectID: r.ProjectID.toString(),
+            ProjectName: values.ProjectName,
+            ProjectDescription: values.ProjectDescribeSimple,
+            PositionNames: props.positionNames.join(' '),
+            CompetitionNames: props.competitionNames.join(' '),
+          },
         });
       }
     });
