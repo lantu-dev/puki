@@ -1,7 +1,9 @@
-import team from '@/backend/team';
+import team, { GetProjectDetailRes } from '@/backend/team';
 import auth from '@/backend/auth';
 import { call } from '@/utils/client';
 import style from '@/assets/team/css/expand.css';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
 import {
   EditOutlined,
   FileTextOutlined,
@@ -26,6 +28,7 @@ import {
   Row,
   Typography,
   Select,
+  message,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useAsync } from 'react-use';
@@ -44,6 +47,8 @@ interface ProjectDetailProps {
 }
 
 export default function ProjectDetail(props: ProjectDetailProps) {
+  console.log(props);
+
   const [likeNum, setLikeNum] = useState(0);
   const [isLike, setIsLike] = useState(false);
   //判断是否是创建者，用来决定”编辑按钮“的有无
@@ -79,45 +84,17 @@ export default function ProjectDetail(props: ProjectDetailProps) {
     isSinglePage = true;
   }
 
+  let URL = window.location.href + '/ProjectDetailSingle?';
+  URL += 'ProjectID=' + props.ProjectID.toString();
+
   const ShareProject = () => {
-    let URL = window.location.href + '/ProjectDetail?';
-    URL += 'ProjectID=' + props.ProjectID.toString() + '&';
-    URL += 'ProjectName=' + props.ProjectName + '&';
-    URL += 'ProjectDescription=' + props.ProjectDescription + '&';
-    URL += 'PositionNames=' + props.PositionNames + '&';
-    URL += 'CompetitionNames=' + props.CompetitionNames;
-    console.log(URL);
+    message.success('分享链接已复制到剪贴板！');
   };
 
   //项目详情信息
-  const [projectDetailState, setProjectDetailState] = useState({
-    DescribeDetail: '',
-    LinkURL: '',
-    EndTime: '',
-    CreatorName: '',
-    CreatorSchool: '',
-    CreatorGrade: '',
-    CreatorAvatarURI: '',
-    CreatorAward: [
-      {
-        CompetitionID: 0,
-        CompetitionName: '',
-        AwardRanking: '',
-        ProveImgURL: '',
-      },
-    ],
-    Comments: [{ CreatorName: '', Content: '' }],
-    Positions: [
-      {
-        ID: 0,
-        Name: '',
-        NowPeople: 0,
-        NeedPeople: 0,
-        InterestPeople: 0,
-        Describe: '',
-      },
-    ],
-  });
+  const [projectDetailState, setProjectDetailState] = useState(
+    {} as GetProjectDetailRes,
+  );
 
   const [editPositionInitialVal, setEditPositionInitialVal] = useState({
     positionNeedNum: [0],
@@ -438,6 +415,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
 
   //--------------------------------------------------------------------------------------------------------------------
 
+  const [commentForm] = Form.useForm();
   const onCommentFinish = (value: any) => {
     call(team.CommentService.CreateComment, {
       ProjectID: props.ProjectID,
@@ -445,6 +423,8 @@ export default function ProjectDetail(props: ProjectDetailProps) {
     }).then((r) => {
       if (r.IsFailed) {
       } else {
+        // @ts-ignore
+        commentForm.resetFields();
         call(team.ProjectService.GetProjectDetail, {
           ProjectID: props.ProjectID,
         }).then((r) => {
@@ -471,8 +451,9 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         <Col flex={'10px'}> </Col>
         <Col flex={'30%'}>
           <Image
+            preview={false}
             width={'100%'}
-            src={`https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1870521716,857441283&fm=26&gp=0.jpg`}
+            src={projectDetailState.ImgURL}
           />
         </Col>
         <Col flex={'10px'}> </Col>
@@ -632,19 +613,20 @@ export default function ProjectDetail(props: ProjectDetailProps) {
             ? projectDetailState.Positions.map((value, index) => (
                 <div key={index} style={{ marginTop: '10px' }}>
                   <Row wrap={false}>
-                    <Col flex={'25%'}>
+                    <Col flex={'20%'}>
                       <Text strong>{value.Name}</Text>
                     </Col>
-                    <Col flex={'42%'}>
+                    <Col flex={'40%'}>
                       <Progress
                         percent={(value.NowPeople / value.NeedPeople) * 100}
                         steps={value.NeedPeople}
                         showInfo={false}
                       />
                     </Col>
-                    <Col flex={'15%'}>录用：{value.NowPeople}</Col>
-                    <Col flex={'3%'}> </Col>
-                    <Col flex={'15%'}>投递：{value.InterestPeople}</Col>
+                    <Col flex={'5%'}> </Col>
+                    <Col flex={'20%'}>录用: {value.NowPeople}</Col>
+                    <Col flex={'1%'}> </Col>
+                    <Col flex={'20%'}>投递: {value.InterestPeople}</Col>
                   </Row>
                   <Paragraph
                     style={{ fontSize: '16px', color: 'gray' }}
@@ -721,6 +703,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
                 <Title level={5}>{user.RealName}</Title>
                 <div style={{ marginTop: '-10px' }}>
                   <Form
+                    form={commentForm}
                     style={{ marginTop: '15px' }}
                     name="basic"
                     initialValues={{ remember: true }}
@@ -750,9 +733,9 @@ export default function ProjectDetail(props: ProjectDetailProps) {
       <div className={style.Box} style={{ marginTop: '5px' }}>
         <Row style={{ margin: '10px' }}>
           <Col flex={'35px'}>
-            <Button type={'default'} onClick={ShareProject}>
-              分享
-            </Button>
+            <CopyToClipboard text={URL} onCopy={ShareProject}>
+              <Button type={'default'}>分享</Button>
+            </CopyToClipboard>
           </Col>
           <Col flex={'2%'}> </Col>
           <Col flex={'105px'}>
@@ -764,7 +747,11 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           <Col flex={'20px'}>
             <Button
               onClick={() => {
-                setSignUpVisible(true);
+                if (projectDetailState.IsMember) {
+                  message.warning('您已是该项目的成员！');
+                } else {
+                  setSignUpVisible(true);
+                }
               }}
               type={'primary'}
             >
@@ -834,7 +821,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           onFinish={onEditPositionFinish}
           initialValues={editPositionInitialVal}
         >
-          {projectDetailState.Positions.map((value, index) => (
+          {projectDetailState.Positions?.map((value, index) => (
             <div style={{ marginBottom: '15px' }} key={index}>
               <Title level={5}>{value.Name}</Title>
               <Form.Item name={['positionNeedNum', index]}>

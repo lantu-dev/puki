@@ -40,6 +40,9 @@ type ProjectSimple struct {
 	PositionNames      []string
 	CompetitionNames   []string
 	TypeName           string
+
+	CreatorName   string
+	CreatorSchool string
 }
 
 //响应，包括一个项目对象的数组
@@ -84,6 +87,20 @@ func (c *ProjectService) GetProjectSimple(ctx *rpc.Context, req *GetProjectSimpl
 
 		positionNames = append(positionNames, positionTemplate.Name)
 	}
+
+	tx = c.db.Begin()
+	creator := models2.FindUserById(tx, project.CreatorID)
+	err = tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
+
+	tx = c.db.Begin()
+	student, err := models2.FindOrCreateStudentFromUser(tx, creator)
+	if err != nil {
+		log.Debug(err)
+	}
+
 	projectSimple := ProjectSimple{
 		ProjectID:          project.ID,
 		CreateTime:         project.CreatedAt,
@@ -95,6 +112,8 @@ func (c *ProjectService) GetProjectSimple(ctx *rpc.Context, req *GetProjectSimpl
 		PositionNames:      positionNames,
 		CompetitionNames:   competitionNames,
 		TypeName:           typeNew.Name,
+		CreatorName:        creator.RealName,
+		CreatorSchool:      student.School,
 	}
 	res.ProjectSimple = projectSimple
 	res.IsFound = true
@@ -239,6 +258,7 @@ type GetProjectDetailRes struct {
 	DescribeDetail string
 	LinkURL        string
 	EndTime        string
+	ImgURL         string
 	//2. 创建者相关信息
 	CreatorName      string
 	CreatorAvatarURI string
@@ -249,6 +269,8 @@ type GetProjectDetailRes struct {
 	Positions []PositionSimple //岗位
 	//4. 评论相关信息
 	Comments []CommentSimple //评论
+	//5. 请求者与项目的关系
+	IsMember bool
 }
 
 func (c *ProjectService) GetProjectDetail(ctx *rpc.Context, req *GetProjectDetailReq, res *GetProjectDetailRes) error {
@@ -259,7 +281,22 @@ func (c *ProjectService) GetProjectDetail(ctx *rpc.Context, req *GetProjectDetai
 	var creator models2.User
 	var pCreatorStudent *models2.Student
 
+	//获取创建者信息
+	var tokenUser auth.TokenUser
+	tokenUser, err := auth.ExtractTokenUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	//查询是否已经是项目成员
 	tx := c.db.Begin()
+	res.IsMember = models.IsInProject(tx, tokenUser.ID, req.ProjectID)
+	err = tx.Commit().Error
+	if err != nil {
+		log.Debug(err)
+	}
+
+	tx = c.db.Begin()
 	project = models.FindProjectByID(tx, uint(req.ProjectID))
 	//招募岗位，查找Position中ProjectID匹配的所有岗位对象
 	positions = models.FindPositionsByProjectID(tx, int64(project.ID))
@@ -267,7 +304,7 @@ func (c *ProjectService) GetProjectDetail(ctx *rpc.Context, req *GetProjectDetai
 	comments = models.FindCommentsByProjectID(tx, int64(project.ID))
 	//根据项目中CreatorID查找用户，并获取用户相关信息
 	creator = *models2.FindUserById(tx, project.CreatorID)
-	pCreatorStudent, err := models2.FindOrCreateStudentFromUser(tx, &creator)
+	pCreatorStudent, err = models2.FindOrCreateStudentFromUser(tx, &creator)
 	//根据项目ID查找所有奖项【CompetitionProject】
 	competitionProjects = models.FindCompetitionProjectByProjectID(tx, int64(project.ID))
 	err = tx.Commit().Error
@@ -327,6 +364,7 @@ func (c *ProjectService) GetProjectDetail(ctx *rpc.Context, req *GetProjectDetai
 
 	res.DescribeDetail = project.DescribeDetail
 	res.LinkURL = project.LinkURL
+	res.ImgURL = project.ImgURL
 	res.EndTime = project.EndTime.Format("2006-01-02")
 	res.CreatorName = creator.RealName
 	res.CreatorAvatarURI = creator.AvatarURI
@@ -438,6 +476,20 @@ func (c *ProjectService) GetProjectSimples(ctx *rpc.Context,
 
 				positionNames = append(positionNames, positionTemplate.Name)
 			}
+
+			tx = c.db.Begin()
+			creator := models2.FindUserById(tx, project.CreatorID)
+			err = tx.Commit().Error
+			if err != nil {
+				log.Debug(err)
+			}
+
+			tx = c.db.Begin()
+			student, err := models2.FindOrCreateStudentFromUser(tx, creator)
+			if err != nil {
+				log.Debug(err)
+			}
+
 			projectSimple := ProjectSimple{
 				ProjectID:          project.ID,
 				CreateTime:         project.CreatedAt,
@@ -449,6 +501,8 @@ func (c *ProjectService) GetProjectSimples(ctx *rpc.Context,
 				PositionNames:      positionNames,
 				CompetitionNames:   competitionNames,
 				TypeName:           typeNew.Name,
+				CreatorName:        creator.RealName,
+				CreatorSchool:      student.School,
 			}
 			res.ProjectSimples = append(res.ProjectSimples, projectSimple)
 		}
@@ -535,8 +589,206 @@ func (c *ProjectService) EditAward(ctx *rpc.Context,
 	return err
 }
 
+//获取自己所拥有的项目【用于项目管理中心】
+/*需要：
+- OwnProject[] 				拥有的项目
+	- ProjectName			项目名称
+	- OwnPosition[]			拥有的项目下的岗位
+		- PositionMember[]	岗位下的已经录取的人员名单
+			- MemberName	人员姓名
+			- Tag[]			人员标签【来自于个人信息，如：“19届”， “男”， “大佬”】
+		- PositionResume[]	岗位下收到的还未查阅的简历，在查看简历后，可选择录用或是拒绝
+			- SenderName	简历投递者姓名
+			- Content		简历内容
+*/
+type PositionResume struct {
+	ResumeID   int64
+	SenderName string
+	Content    string
+}
+type Tag struct {
+	Name string
+}
+type PositionMember struct {
+	MemberName string
+	Tags       []Tag
+}
+type OwnPosition struct {
+	PositionName    string
+	PositionMembers []PositionMember
+	PositionResumes []PositionResume
+}
+type OwnProject struct {
+	ProjectName  string
+	ProjectID    int64
+	IsAvailable  bool
+	OwnPositions []OwnPosition
+}
+type GetOwnProjectsReq struct {
+}
+type GetOwnProjectsRes struct {
+	OwnProjects []OwnProject
+	IsFailed    bool
+}
+
+func (c *ProjectService) GetOwnProjects(ctx *rpc.Context,
+	req *GetOwnProjectsReq, res *GetOwnProjectsRes) (err error) {
+	//获取创建者信息
+	var tokenUser auth.TokenUser
+	tokenUser, err = auth.ExtractTokenUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	//获取属于该用户的所有项目
+	tx := c.db.Begin()
+	projects := models.FindOwnProjects(tx, int64(tokenUser.ID))
+	err = tx.Commit().Error
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+
+	var ownProjects []OwnProject
+	for _, project := range projects {
+		var ownProject OwnProject
+		ownProject.ProjectName = project.Name
+		ownProject.ProjectID = int64(project.ID)
+		ownProject.IsAvailable = project.IsAvailable
+
+		//获取该项目下的所有岗位
+		tx := c.db.Begin()
+		positions := models.FindPositionsByProjectID(tx, int64(project.ID))
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+
+		var ownPositions []OwnPosition
+		for _, position := range positions {
+			var ownPosition OwnPosition
+
+			//获取岗位名称
+			tx := c.db.Begin()
+			ownPosition.PositionName = models.FindPositionTemplateByID(tx, models.FindPositionByID(tx, int64(position.ID)).PositionTemplateID).Name
+			err = tx.Commit().Error
+			if err != nil {
+				res.IsFailed = true
+				return err
+			}
+
+			//获取所有属于该岗位的成员
+			var positionMembers []PositionMember
+			tx = c.db.Begin()
+			users := models.FindMembersByPositionID(tx, int64(position.ID))
+			err = tx.Commit().Error
+			if err != nil {
+				res.IsFailed = true
+				return err
+			}
+
+			//获取岗位下所有已录取的人员信息
+			for _, user := range users {
+				var tags []Tag
+				tx := c.db.Begin()
+				student, err := models2.FindOrCreateStudentFromUser(tx, &user)
+				if err != nil {
+					res.IsFailed = true
+					return err
+				}
+				tags = append(tags, Tag{Name: student.School})
+				positionMember := PositionMember{
+					MemberName: user.RealName,
+					Tags:       tags,
+				}
+				positionMembers = append(positionMembers, positionMember)
+			}
+			ownPosition.PositionMembers = positionMembers
+
+			//获取所有投递给该岗位的简历
+			var positionResumes []PositionResume
+			tx = c.db.Begin()
+			resumes := models.FindResumesByPositionID(tx, int64(position.ID))
+			err = tx.Commit().Error
+			if err != nil {
+				res.IsFailed = true
+				return err
+			}
+			for _, resume := range resumes {
+				tx = c.db.Begin()
+				sender := models2.FindUserById(tx, resume.SenderID)
+				err = tx.Commit().Error
+				if err != nil {
+					res.IsFailed = true
+					return err
+				}
+				positionResume := PositionResume{
+					ResumeID:   int64(resume.ID),
+					SenderName: sender.RealName,
+					Content:    resume.Content,
+				}
+				positionResumes = append(positionResumes, positionResume)
+			}
+			ownPosition.PositionResumes = positionResumes
+
+			ownPositions = append(ownPositions, ownPosition)
+		}
+
+		ownProject.OwnPositions = ownPositions
+
+		ownProjects = append(ownProjects, ownProject)
+	}
+
+	res.OwnProjects = ownProjects
+	return err
+}
+
 //获取本人项目，用于管理
 
 func (c *ProjectService) GetOwnProject() {
 
+}
+
+type SwitchProjectStateReq struct {
+	ProjectID int64
+}
+
+type SwitchProjectStateRes struct {
+	IsFailed bool
+}
+
+// SwitchProjectState 操作项目上线/下线
+func (c *ProjectService) SwitchProjectState(ctx *rpc.Context,
+	req *SwitchProjectStateReq, res *SwitchProjectStateRes) (err error) {
+
+	//获取创建者信息
+	var tokenUser auth.TokenUser
+	tokenUser, err = auth.ExtractTokenUser(ctx)
+	if err != nil {
+		return err
+	}
+
+	tx := c.db.Begin()
+	project := models.FindProjectByID(tx, uint(req.ProjectID))
+	err = tx.Commit().Error
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+
+	if project.CreatorID != tokenUser.ID {
+		res.IsFailed = true
+		return err
+	} else {
+		tx := c.db.Begin()
+		err = models.SwitchProjectState(tx, int64(project.ID))
+		err = tx.Commit().Error
+		if err != nil {
+			res.IsFailed = true
+			return err
+		}
+	}
+
+	return err
 }

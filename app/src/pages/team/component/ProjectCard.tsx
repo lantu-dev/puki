@@ -1,4 +1,4 @@
-import { MoreOutlined } from '@ant-design/icons';
+import { BankOutlined, MoreOutlined, UserOutlined } from '@ant-design/icons';
 import { Col, Row, Space, Tag, Typography } from 'antd';
 import style from '@/assets/team/css/expand.css';
 
@@ -8,6 +8,9 @@ interface CardProps {
   ProjectName: string;
   ProjectDescription: string;
   PositionNames: string[];
+
+  CreatorName: string;
+  CreatorSchool: string;
   onClick: () => void;
 }
 
@@ -68,6 +71,16 @@ export default function ProjectCard(props: CardProps) {
             right: '5px',
           }}
         />
+      </Row>
+      <Row wrap={false}>
+        <Col>
+          <UserOutlined />：{props.CreatorName}
+        </Col>
+        <Col flex={'20px'} />
+        <Col flex={'20px'}>|</Col>
+        <Col>
+          <BankOutlined />：{props.CreatorSchool}
+        </Col>
       </Row>
     </div>
   );

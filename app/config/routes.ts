@@ -79,6 +79,16 @@ export default [
   },
   {
     exact: true,
+    path: '/team/ManageProject',
+    component: '@/pages/team/pages/ManageProject',
+  },
+  {
+    exact: true,
+    path: '/team/ProjectDetailSingle',
+    component: '@/pages/team/pages/ProjectDetailSingle',
+  },
+  {
+    exact: true,
     path: '/team/CreateCompetition',
     component: '@/pages/team/pages/CreateCompetition',
   },
@@ -138,6 +148,11 @@ export default [
     exact: true,
     path: '/studyBuild',
     component: '@/pages/QianQing/studyBuild',
+  },
+  {
+    exact: true,
+    path: '/test/test',
+    component: '@/pages/team/pages/Test',
   },
   {
     exact: true,

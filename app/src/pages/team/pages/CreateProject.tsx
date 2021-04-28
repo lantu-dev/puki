@@ -44,13 +44,9 @@ export default function CreateProject(props: CreateProjectProps) {
         alert('创建失败！');
       } else {
         history.push({
-          pathname: '/team/ProjectDetail',
+          pathname: '/team/ProjectDetailSingle',
           query: {
             ProjectID: r.ProjectID.toString(),
-            ProjectName: values.ProjectName,
-            ProjectDescription: values.ProjectDescribeSimple,
-            PositionNames: props.positionNames.join(' '),
-            CompetitionNames: props.competitionNames.join(' '),
           },
         });
       }

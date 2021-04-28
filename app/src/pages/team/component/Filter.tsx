@@ -116,15 +116,16 @@ export default function Filter(props: FilterProps) {
   return (
     <div>
       <Row align="middle" wrap={false}>
-        <Col flex="50px">
-          <Link to="team">
-            <img alt={logo} width="50" src={logo} />
+        <Col flex="150px">
+          <Link to="team/ManageProject">
+            <img alt={logo} width="150" src={logo} />
           </Link>
         </Col>
         <Col flex="auto">
           <div style={{ width: '100%', textAlign: 'center' }}>
             <Space direction="vertical" style={{ width: '98%' }}>
               <Search
+                disabled={true}
                 placeholder="请输入关键词查询"
                 onSearch={onSearchChange}
                 size="large"

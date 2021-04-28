@@ -9,10 +9,11 @@ import ProjectDetail from './component/ProjectDetail';
 import { PubSub } from 'pubsub-ts';
 import CreateProject from '@/pages/team/pages/CreateProject';
 import { DownOutlined, RightOutlined } from '@ant-design/icons';
-import { history } from 'umi';
+import { history } from '@@/core/history';
 
 export default function Index(key?: string) {
   if (!hasLogged()) {
+    //若为游客登录，则逻辑上不能创建项目，跳转至登录页
     history.push('/auth/phone-login');
   }
 
@@ -67,6 +68,8 @@ export default function Index(key?: string) {
             ProjectName={item.ProjectName}
             ProjectDescription={item.ProjectDescription}
             PositionNames={item.PositionNames}
+            CreatorName={item.CreatorName}
+            CreatorSchool={item.CreatorSchool}
             onClick={() => {
               setState({
                 projectSimple: item,

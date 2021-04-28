@@ -34,6 +34,9 @@ export interface ProjectSimple {
   CompetitionNames: string[];
   TypeName: string;
   PositionNames: string[];
+
+  CreatorName: string;
+  CreatorSchool: string;
 }
 export interface GetProjectSimpleReq {
   ProjectID: number;
@@ -72,6 +75,7 @@ export interface GetProjectDetailRes {
   //1.Project本身信息
   DescribeDetail: string;
   LinkURL: string;
+  ImgURL: string;
   EndTime: string;
   //2. 创建者相关信息
   CreatorName: string;
@@ -83,6 +87,8 @@ export interface GetProjectDetailRes {
   Positions: PositionSimple[]; //岗位
   //4. 评论相关信息
   Comments: Comment[]; //评论
+  //5. 请求者与项目的关系
+  IsMember: boolean;
 }
 
 //添加新的项目【创建项目】
@@ -263,6 +269,65 @@ export interface CreatePositionTemplateRes {
   IsFailed: boolean;
 }
 
+// LookUpResumeReq
+// 查阅简历，需要信息：ResumeID, IsAccepted
+export interface LookUpResumeReq {
+  ResumeID: number;
+  IsEnrolled: boolean;
+}
+export interface LookUpResumeRes {
+  IsFailed: boolean;
+}
+
+//获取自己所拥有的项目【用于项目管理中心】
+/*需要：
+- OwnProject[] 				拥有的项目
+	- ProjectName			项目名称
+	- OwnPosition[]			拥有的项目下的岗位
+		- PositionMember[]	岗位下的已经录取的人员名单
+			- MemberName	人员姓名
+			- Tag[]			人员标签【来自于个人信息，如：“19届”， “男”， “大佬”】
+		- PositionResume[]	岗位下收到的还未查阅的简历，在查看简历后，可选择录用或是拒绝
+			- SenderName	简历投递者姓名
+			- Content		简历内容
+*/
+export interface PositionResume {
+  ResumeID: number;
+  SenderName: string;
+  Content: string;
+}
+export interface Tag {
+  Name: string;
+}
+export interface PositionMember {
+  MemberName: string;
+  Tags: Tag[];
+}
+export interface OwnPosition {
+  PositionName: string;
+  PositionMembers: PositionMember[];
+  PositionResumes: PositionResume[];
+}
+export interface OwnProject {
+  ProjectName: string;
+  IsAvailable: boolean;
+  ProjectID: number;
+  OwnPositions: OwnPosition[];
+}
+export interface GetOwnProjectsReq {}
+export interface GetOwnProjectsRes {
+  OwnProjects: OwnProject[];
+  IsFailed: boolean;
+}
+
+export interface SwitchProjectStateReq {
+  ProjectID: number;
+}
+
+export interface SwitchProjectStateRes {
+  IsFailed: boolean;
+}
+
 export default {
   CommentService: {
     CreateComment: 'team/CommentService.CreateComment' as Endpoint<
@@ -306,6 +371,10 @@ export default {
       EditResumeReq,
       EditResumeRes
     >,
+    LookUpResume: 'team/ResumeService.LookUpResume' as Endpoint<
+      LookUpResumeReq,
+      LookUpResumeRes
+    >,
   },
   FileService: {},
   PositionService: {
@@ -330,6 +399,14 @@ export default {
     EditAward: 'team/ProjectService.EditAward' as Endpoint<
       EditAwardReq,
       EditAwardRes
+    >,
+    GetOwnProjects: 'team/ProjectService.GetOwnProjects' as Endpoint<
+      GetOwnProjectsReq,
+      GetOwnProjectsRes
+    >,
+    SwitchProjectState: 'team/ProjectService.GetOwnProjects' as Endpoint<
+      SwitchProjectStateReq,
+      SwitchProjectStateRes
     >,
     EditProjectDetail: 'team/ProjectService.EditProjectDetail' as Endpoint<
       EditProjectDetailReq,

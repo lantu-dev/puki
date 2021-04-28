@@ -36,8 +36,8 @@ type Type struct {
 }
 
 type CompetitionProject struct {
-	ProjectID     int64
-	CompetitionID int64
+	ProjectID     int64 `gorm:"primaryKey"`
+	CompetitionID int64 `gorm:"primaryKey"`
 
 	//奖项名次， 如一等奖就等于1，二等奖就等于2
 	AwardRanking string

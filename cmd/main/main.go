@@ -49,7 +49,8 @@ func main() {
 	rds := redis.NewClient(&redis.Options{Addr: mrds.Addr()})
 
 	var db *gorm.DB
-	pgUrl := os.Getenv("PG_URL")
+	//pgUrl := os.Getenv("PG_URL")
+	pgUrl := "host=119.3.183.125 user=postgres password=postgres dbname=puki port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	if pgUrl != "" {
 		db, err = gorm.Open(postgres.Open(pgUrl), &gorm.Config{})
 		log.Info("using pg")

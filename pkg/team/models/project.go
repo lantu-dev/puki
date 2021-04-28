@@ -48,6 +48,9 @@ type Project struct {
 	//项目招募结束时间，可作为首屏项目卡片排序的参照属性之一
 	EndTime time.Time
 
+	//项目图片，用于在项目详情页展示
+	ImgURL string `gorm:"default: https://picsum.photos/200"`
+
 	//项目需要的岗位，一对多关系
 	Positions []Position
 	//项目评论，一个项目可以有多个评论
@@ -57,6 +60,11 @@ type Project struct {
 	CommentsNum int64 `gorm:"default:0"`
 	//项目Star数
 	StarNum int64 `gorm:"default:0"`
+}
+
+type UserProject struct {
+	UserID    int64 `gorm:"primaryKey"`
+	ProjectID int64 `gorm:"primaryKey"`
 }
 
 //通过项目ID查找项目
@@ -120,4 +128,47 @@ func UpdateProjectByID(tx *gorm.DB, projectID uint, key string, value string) (e
 		tx.Rollback()
 	}
 	return err
+}
+
+//获取所有该用户拥有的项目
+func FindOwnProjects(tx *gorm.DB, userID int64) []Project {
+	var projects []Project
+	result := tx.Where(&Project{CreatorID: userID}).Find(&projects)
+	if result.Error != nil {
+		log.Debug(result.Error)
+		tx.Rollback()
+	}
+	return projects
+}
+
+func SwitchProjectState(tx *gorm.DB, projectID int64) (err error) {
+	var project Project
+	err = tx.First(&project, projectID).Error
+	if err != nil {
+		log.Debug(err)
+		tx.Rollback()
+	}
+
+	project.IsAvailable = !project.IsAvailable
+
+	err = tx.Save(&project).Error
+	if err != nil {
+		log.Debug(err)
+		tx.Rollback()
+	}
+	return err
+}
+
+//根据userID和projectID查找用户是否在项目中
+func IsInProject(tx *gorm.DB, userID int64, projectID int64) bool {
+	var userProject UserProject
+	err := tx.Where(&UserProject{
+		UserID:    userID,
+		ProjectID: projectID,
+	}).First(&userProject).Error
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
 }
