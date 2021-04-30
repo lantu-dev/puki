@@ -17,6 +17,9 @@ export default function Index(key?: string) {
     history.push('/auth/phone-login');
   }
 
+  //@ts-ignore
+  console.log(PUBLIC_PATH);
+
   const [state, setState] = useSetState({
     filter: (projectSimple: ProjectSimple): boolean => true,
     projectDetailDrawerVisible: false,

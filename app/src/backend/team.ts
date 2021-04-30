@@ -67,6 +67,7 @@ export interface AwardSimple {
 export interface Comment {
   CreatorName: string;
   Content: string;
+  AvatarURI: string;
 }
 export interface GetProjectDetailReq {
   ProjectID: number;
@@ -328,6 +329,14 @@ export interface SwitchProjectStateRes {
   IsFailed: boolean;
 }
 
+export interface UpdateProjectImgReq {
+  ProjectID: number;
+  ImgURL: string;
+}
+export interface UpdateProjectImgRes {
+  IsFailed: boolean;
+}
+
 export default {
   CommentService: {
     CreateComment: 'team/CommentService.CreateComment' as Endpoint<
@@ -404,7 +413,7 @@ export default {
       GetOwnProjectsReq,
       GetOwnProjectsRes
     >,
-    SwitchProjectState: 'team/ProjectService.GetOwnProjects' as Endpoint<
+    SwitchProjectState: 'team/ProjectService.SwitchProjectState' as Endpoint<
       SwitchProjectStateReq,
       SwitchProjectStateRes
     >,
@@ -431,6 +440,10 @@ export default {
     GetProjectID: 'team/ProjectService.GetProjectID' as Endpoint<
       GetProjectIDReq,
       GetProjectIDRes
+    >,
+    UpdateProjectImg: 'team/ProjectService.UpdateProjectImg' as Endpoint<
+      UpdateProjectImgReq,
+      UpdateProjectImgRes
     >,
   },
 };

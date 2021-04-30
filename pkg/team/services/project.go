@@ -252,6 +252,7 @@ type PositionSimple struct {
 type CommentSimple struct {
 	CreatorName string
 	Content     string
+	AvatarURI   string
 }
 type GetProjectDetailRes struct {
 	//1.Project本身信息
@@ -356,6 +357,7 @@ func (c *ProjectService) GetProjectDetail(ctx *rpc.Context, req *GetProjectDetai
 		commentSimple := CommentSimple{
 			CreatorName: creator.RealName,
 			Content:     item.Content,
+			AvatarURI:   creator.AvatarURI,
 		}
 		commentSimples = append(commentSimples, commentSimple)
 	}
@@ -788,6 +790,31 @@ func (c *ProjectService) SwitchProjectState(ctx *rpc.Context,
 			res.IsFailed = true
 			return err
 		}
+	}
+
+	return err
+}
+
+type UpdateProjectImgReq struct {
+	ProjectID int64
+	ImgURL    string
+}
+type UpdateProjectImgRes struct {
+	IsFailed bool
+}
+
+func (c *ProjectService) UpdateProjectImg(ctx *rpc.Context, req *UpdateProjectImgReq, res *UpdateProjectImgRes) (err error) {
+
+	tx := c.db.Begin()
+	err = models.UpdateProjectImg(tx, req.ProjectID, req.ImgURL)
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+	err = tx.Commit().Error
+	if err != nil {
+		res.IsFailed = true
+		return err
 	}
 
 	return err

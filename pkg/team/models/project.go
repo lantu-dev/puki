@@ -172,3 +172,19 @@ func IsInProject(tx *gorm.DB, userID int64, projectID int64) bool {
 		return true
 	}
 }
+
+func UpdateProjectImg(tx *gorm.DB, projectID int64, imgURL string) (err error) {
+	var project Project
+	err = tx.First(&project, projectID).Error
+	if err != nil {
+		log.Debug(err)
+		tx.Rollback()
+	}
+	project.ImgURL = imgURL
+	err = tx.Save(&project).Error
+	if err != nil {
+		log.Debug(err)
+		tx.Rollback()
+	}
+	return err
+}

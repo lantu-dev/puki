@@ -1,7 +1,7 @@
 import { defineConfig } from 'umi';
 import routes from './routes';
 
-const publicPath = (process.env.PUBLIC_PATH || '') + '/';
+const publicPath = './';
 export default defineConfig({
   base: publicPath,
   define: {
@@ -25,10 +25,11 @@ export default defineConfig({
       changeOrigin: true,
     },
   },
+  history: { type: 'hash' },
   publicPath: publicPath,
   routes,
-  ssr: {
-    devServerRender: false,
-  },
+  // ssr: {
+  //   devServerRender: false,
+  // },
   hash: true,
 });

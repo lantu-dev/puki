@@ -12,6 +12,7 @@ import {
   Select,
   Typography,
   Modal,
+  message,
 } from 'antd';
 import { call } from '@/utils/client';
 import team, {
@@ -19,6 +20,7 @@ import team, {
   GetOwnProjectsRes,
   OwnProject,
   Position,
+  SwitchProjectStateReq,
 } from '@/backend/team';
 import { PubSub } from 'pubsub-ts';
 import { useAsync } from 'react-use';
@@ -166,6 +168,24 @@ export default function ManageProject(props: ManageProjectProps) {
     },
   ];
 
+  // 切换项目上线/下线状态
+  const switchProjectState = (project: OwnProject, projectIndex: number) => {
+    call(team.ProjectService.SwitchProjectState, {
+      ProjectID: project.ProjectID,
+    }).then((r) => {
+      if (r.IsFailed) {
+        message.error('切换失败');
+      } else {
+        let ProjectsTmp = [...ownProjects];
+        ProjectsTmp[projectIndex].IsAvailable = !ProjectsTmp[projectIndex]
+          .IsAvailable;
+        setOwnProjects(ProjectsTmp);
+        console.log(ownProjects);
+        message.success('成功切换状态');
+      }
+    });
+  };
+
   console.log(ownProjects);
 
   return (
@@ -185,9 +205,9 @@ export default function ManageProject(props: ManageProjectProps) {
       >
         <CloseOutlined />
       </div>
-      {ownProjects?.map((ownproject, projectIndex) => (
+      {ownProjects?.map((ownProject, projectIndex) => (
         <div key={projectIndex} className={style.CardManageProject}>
-          <Title level={4}>{ownproject.ProjectName}</Title>
+          <Title level={4}>{ownProject.ProjectName}</Title>
           <Title level={5}>操作：</Title>
           <Row wrap={false} style={{ marginTop: '-5px', marginBottom: '5px' }}>
             <Col span={8} style={{ paddingRight: '10px' }}>
@@ -196,7 +216,7 @@ export default function ManageProject(props: ManageProjectProps) {
                   block={true}
                   onClick={() => {
                     history.replace(
-                      'ProjectDetailSingle?ProjectID=' + ownproject.ProjectID,
+                      'ProjectDetailSingle?ProjectID=' + ownProject.ProjectID,
                     );
                   }}
                   icon={<EditOutlined />}
@@ -208,17 +228,27 @@ export default function ManageProject(props: ManageProjectProps) {
             </Col>
             <Col span={8} style={{ paddingRight: '10px' }}>
               <div style={{ textAlign: 'center' }}>
-                {ownproject.IsAvailable ? (
+                {ownProject.IsAvailable ? (
                   <Button
                     block={true}
                     danger={true}
                     icon={<VerticalAlignBottomOutlined />}
                     type={'primary'}
+                    onClick={() => {
+                      switchProjectState(ownProject, projectIndex);
+                    }}
                   >
                     下线
                   </Button>
                 ) : (
-                  <Button type={'primary'} icon={<ToTopOutlined />}>
+                  <Button
+                    block={true}
+                    type={'primary'}
+                    icon={<ToTopOutlined />}
+                    onClick={() => {
+                      switchProjectState(ownProject, projectIndex);
+                    }}
+                  >
                     上线
                   </Button>
                 )}
@@ -237,7 +267,7 @@ export default function ManageProject(props: ManageProjectProps) {
               </div>
             </Col>
           </Row>
-          {ownproject.OwnPositions?.map((ownPosition, positionIndex) => (
+          {ownProject.OwnPositions?.map((ownPosition, positionIndex) => (
             <div
               key={positionIndex}
               className={style.CardManageProjectPosition}

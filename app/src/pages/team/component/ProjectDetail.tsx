@@ -14,6 +14,8 @@ import {
   MessageOutlined,
   ArrowLeftOutlined,
   CloseOutlined,
+  UploadOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import {
   Avatar,
@@ -28,6 +30,7 @@ import {
   Row,
   Typography,
   Select,
+  Upload,
   message,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -36,6 +39,7 @@ import { useAsync } from 'react-use';
 const { Title, Paragraph, Text } = Typography;
 import { Anchor } from 'antd';
 import { history } from 'umi';
+import { uploadFile } from '@/utils/uploadFile';
 const { Link } = Anchor;
 //来自ProjectCard的项目简略信息，这部分信息不需要再从数据库重新获取
 interface ProjectDetailProps {
@@ -121,6 +125,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
       })
       .then((r) => {
         setProjectDetailState(r);
+        setImgURL(r.ImgURL);
         return call(team.ResumeService.GetResumes, {
           ProjectID: props.ProjectID,
         });
@@ -354,7 +359,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
 
   //--------------------------------------------------------------------------------------------------------------------
 
-  //报名 ---------------------------------------------------------------------------------------------------------
+  //报名 ----------------------------------------------------------------------------------------------------------------
   const [signUpVisible, setSignUpVisible] = useState(false);
 
   const showSignUpModal = () => {
@@ -415,6 +420,46 @@ export default function ProjectDetail(props: ProjectDetailProps) {
 
   //--------------------------------------------------------------------------------------------------------------------
 
+  //编辑项目图片 ---------------------------------------------------------------------------------------------------------
+  const [changeImgVisible, setChangeImgVisible] = useState(false);
+  const [imgURL, setImgURL] = useState(projectDetailState.ImgURL);
+  const [changeImgLoading, setChangeImgLoading] = useState(false);
+
+  console.log(imgURL);
+
+  const showChangeImgModal = () => {
+    setChangeImgVisible(true);
+  };
+  const onChangeImgCancel = () => {
+    setImgURL(projectDetailState.ImgURL);
+    setChangeImgVisible(false);
+  };
+
+  const handleChangeImg = (value: any) => {
+    setChangeImgLoading(true);
+    console.log(value.file.originFileObj);
+    uploadFile(value.file.originFileObj).then((r) => {
+      setImgURL(r + '?x-image-process=style/mid');
+      setChangeImgLoading(false);
+    });
+  };
+
+  const onChangeImgFinish = () => {
+    //将imgURL传到后端更新数据库
+    call(team.ProjectService.UpdateProjectImg, {
+      ImgURL: imgURL,
+      ProjectID: props.ProjectID,
+    }).then((r) => {
+      setChangeImgVisible(false);
+      if (r.IsFailed) {
+        message.error('图片修改失败');
+      } else {
+        message.success('图片修改成功');
+      }
+    });
+  };
+
+  //--------------------------------------------------------------------------------------------------------------------
   const [commentForm] = Form.useForm();
   const onCommentFinish = (value: any) => {
     call(team.CommentService.CreateComment, {
@@ -451,9 +496,12 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         <Col flex={'10px'}> </Col>
         <Col flex={'30%'}>
           <Image
+            onClick={() => {
+              setChangeImgVisible(true);
+            }}
             preview={false}
             width={'100%'}
-            src={projectDetailState.ImgURL}
+            src={imgURL}
           />
         </Col>
         <Col flex={'10px'}> </Col>
@@ -676,7 +724,11 @@ export default function ProjectDetail(props: ProjectDetailProps) {
                 ).map((value, index) => (
                   <Row key={index}>
                     <Col flex={'35px'}>
-                      <Avatar style={{ margin: '10px' }} size={35}>
+                      <Avatar
+                        style={{ margin: '10px' }}
+                        src={value.AvatarURI}
+                        size={35}
+                      >
                         {' '}
                       </Avatar>
                     </Col>
@@ -901,7 +953,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           <Form.Item>
             <Row wrap={false}>
               <Col flex={'30%'}>
-                <Button onClick={onEditProjectDetailCancel} block={true}>
+                <Button onClick={onEditPositionCancel} block={true}>
                   取消
                 </Button>
               </Col>
@@ -1104,7 +1156,54 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           <Form.Item>
             <Row wrap={false}>
               <Col flex={'30%'}>
-                <Button onClick={onEditAwardCancel} block={true}>
+                <Button onClick={onSignUpCancel} block={true}>
+                  取消
+                </Button>
+              </Col>
+              <Col flex={'5%'}> </Col>
+              <Col flex={'65%'}>
+                <Button block={true} type="primary" htmlType="submit">
+                  确认
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="修改图片"
+        visible={changeImgVisible}
+        footer={null}
+        onCancel={onChangeImgCancel}
+      >
+        <div style={{ marginTop: '-30px', marginBottom: '10px' }}>
+          <Text type={'secondary'}>点击更换项目图片</Text>
+        </div>
+        <Form name="signUp" onFinish={onChangeImgFinish}>
+          <Form.Item>
+            <Upload
+              listType={'picture-card'}
+              showUploadList={false}
+              onChange={handleChangeImg}
+            >
+              {imgURL != projectDetailState.ImgURL ? (
+                <Image
+                  width={'100%'}
+                  src={imgURL + '?x-image-process=style/mid'}
+                />
+              ) : (
+                <div>
+                  {changeImgLoading ? <LoadingOutlined /> : <PlusOutlined />}
+                  <div style={{ marginTop: 8 }}>Upload</div>
+                </div>
+              )}
+            </Upload>
+          </Form.Item>
+          <Form.Item>
+            <Row wrap={false}>
+              <Col flex={'30%'}>
+                <Button onClick={onChangeImgCancel} block={true}>
                   取消
                 </Button>
               </Col>

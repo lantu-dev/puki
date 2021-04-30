@@ -27,7 +27,7 @@ type User struct {
 	RealName string `gorm:"not null"`
 
 	// 「头像」 URL 未设置为空字符串
-	AvatarURI string `gorm:"not null"`
+	AvatarURI string `gorm:"not null;default:https://picsum.photos/50'"`
 
 	// 「昵称」用于对外展示
 	NickName string `gorm:"not null"`
