@@ -146,9 +146,13 @@ export default [
   },
   {
     exact: true,
-
     path: '/homepage/AboutUs',
     component: '@/pages/homepage/AboutUs',
+  },
+  {
+    exact: true,
+    path: '/homepage/:name',
+    component: '@/pages/MarkDownPages/[MarkDownPages]',
   },
   {
     exact: true,

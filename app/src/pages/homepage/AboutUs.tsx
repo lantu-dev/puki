@@ -1,8 +1,9 @@
 import './AboutUs.less';
 /*import logoSrc from '@/pages/zj/bq/lantu_blue.png'*/
 import { Link } from 'umi';
-import { Layout, Menu, Button, Card, Avatar, Input } from 'antd';
+import { Layout, Menu, Button, Card, Avatar, Input, Divider } from 'antd';
 const { Header, Content, Footer } = Layout;
+import Homepageheader from '@/components/Homepageheader'
 import {
   WechatOutlined,
   WeiboCircleOutlined,
@@ -13,7 +14,9 @@ import {
   EditOutlined,
   EllipsisOutlined,
   SettingOutlined,
+  ArrowUpOutlined
 } from '@ant-design/icons';
+import ProCardDivider from '@ant-design/pro-card/lib/components/Divider';
 const { Meta } = Card;
 const { TextArea } = Input;
 
@@ -21,30 +24,7 @@ export default function IndexPage() {
   return (
     <div>
       <Layout className="layout">
-        <Header className="header">
-          <Menu
-            theme="dark"
-            className="menu"
-            mode="horizontal"
-            defaultSelectedKeys={['1']}
-          >
-            <Button className="menu-item" type="text">
-              蓝图首页
-            </Button>
-            <Button className="menu-item" type="text">
-              <Link to="/tech-fes">社区</Link>
-            </Button>
-            <Button className="menu-item" type="text">
-              <Link to="/tech-fes">功能模块</Link>
-            </Button>
-            <Button className="menu-item" type="text">
-              <Link to="/about-us">关于我们</Link>
-            </Button>
-          </Menu>
-          <Button className="logins">
-            <Link to="/login">注册/登录</Link>
-          </Button>
-        </Header>
+        <Homepageheader />
 
         <Content className="content">
           <div className="site-layout-content">
@@ -65,8 +45,9 @@ export default function IndexPage() {
               </div>
             </section>
           </div>
+          <Divider><ArrowUpOutlined /></Divider>
           <section className="about-us2">
-            <br></br>
+            {/* <br></br> */}
             <div className="tu"></div>
             <div className="passage">
               <div className="title">
