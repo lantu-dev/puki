@@ -43,7 +43,7 @@ export default function InputPhoneNumber(props: PhoneProps) {
                     message: '请输入手机号',
                     required: true,
                     validator: (_, value) =>
-                      /^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/.test(
+                      /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(
                         value,
                       )
                         ? Promise.resolve()

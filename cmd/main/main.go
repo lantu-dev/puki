@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
+
 	"github.com/alicebob/miniredis/v2"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/go-redis/redis/v8"
@@ -15,11 +17,8 @@ import (
 	"github.com/lantu-dev/puki/pkg/storage"
 	teamSetup "github.com/lantu-dev/puki/pkg/team/setup"
 	log "github.com/sirupsen/logrus"
-	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"net/http"
-	"os"
 )
 
 var buildTag string = "dev"
@@ -50,14 +49,8 @@ func main() {
 
 	var db *gorm.DB
 	//pgUrl := os.Getenv("PG_URL")
-	pgUrl := "host=119.3.183.125 user=postgres password=postgres dbname=puki port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	if pgUrl != "" {
-		db, err = gorm.Open(postgres.Open(pgUrl), &gorm.Config{})
-		log.Info("using pg")
-	} else {
-		db, err = gorm.Open(sqlite.Open("dev.db"), &gorm.Config{})
-		log.Info("using sqlite")
-	}
+	db, err = gorm.Open(sqlite.Open("dev.db"), &gorm.Config{})
+	log.Info("using sqlite")
 
 	reg := rpc.NewServiceRegistry("api")
 
@@ -75,22 +68,22 @@ func main() {
 
 	var smsSender *hwcloud.SMSSender = nil
 
-	hwSmsEndpoint := os.Getenv("HWCLOUD_SMS_ENDPOINT")
+	hwSmsEndpoint := HWCLOUD_SMS_ENDPOINT
 
 	log.Infof("hw sms endpoint: %s", hwSmsEndpoint)
 	if hwSmsEndpoint != "" {
 		smsSender = &hwcloud.SMSSender{
 			URL:       hwSmsEndpoint,
-			AppKey:    os.Getenv("HWCLOUD_SMS_APP_KEY"),
-			AppSecret: os.Getenv("HWCLOUD_SMS_APP_SECRET"),
-			Channel:   os.Getenv("HWCLOUD_SMS_CHANNEL_ID"),
-			Signature: os.Getenv("HWCLOUD_SMS_SIGN_NAME"),
+			AppKey:    HWCLOUD_SMS_APP_KEY,
+			AppSecret: HWCLOUD_SMS_APP_SECRET,
+			Channel:   HWCLOUD_SMS_CHANNEL_ID,
+			Signature: HWCLOUD_SMS_SIGN_NAME,
 		}
 	}
 
 	auth.SetupSMSLogin(func(phoneNumber int64, code string) error {
 		if smsSender != nil {
-			_, err := smsSender.SendMessage(os.Getenv("HWCLOUD_SMS_TEMPLATE_ID"), fmt.Sprintf("+%d", phoneNumber), code)
+			_, err := smsSender.SendMessage(HWCLOUD_SMS_TEMPLATE_ID, fmt.Sprintf("+%d", phoneNumber), code)
 			if err != nil {
 				log.Errorf("hwcloud send message %+v", err)
 			}

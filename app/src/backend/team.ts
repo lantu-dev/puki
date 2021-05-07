@@ -75,6 +75,7 @@ export interface GetProjectDetailReq {
 export interface GetProjectDetailRes {
   //1.Project本身信息
   DescribeDetail: string;
+  DescribeSimple: string;
   LinkURL: string;
   ImgURL: string;
   EndTime: string;
@@ -90,6 +91,15 @@ export interface GetProjectDetailRes {
   Comments: Comment[]; //评论
   //5. 请求者与项目的关系
   IsMember: boolean;
+}
+
+//编辑项目简介
+export interface EditProjectSimpleReq {
+  ProjectID: number;
+  Content: string;
+}
+export interface EditProjectSimpleRes {
+  IsFailed: boolean;
 }
 
 //添加新的项目【创建项目】
@@ -416,6 +426,10 @@ export default {
     SwitchProjectState: 'team/ProjectService.SwitchProjectState' as Endpoint<
       SwitchProjectStateReq,
       SwitchProjectStateRes
+    >,
+    EditProjectSimple: 'team/ProjectService.EditProjectSimple' as Endpoint<
+      EditProjectSimpleReq,
+      EditProjectSimpleRes
     >,
     EditProjectDetail: 'team/ProjectService.EditProjectDetail' as Endpoint<
       EditProjectDetailReq,

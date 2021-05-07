@@ -51,8 +51,6 @@ interface ProjectDetailProps {
 }
 
 export default function ProjectDetail(props: ProjectDetailProps) {
-  console.log(props);
-
   const [likeNum, setLikeNum] = useState(0);
   const [isLike, setIsLike] = useState(false);
   //判断是否是创建者，用来决定”编辑按钮“的有无
@@ -224,6 +222,33 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           setProjectDetailState(r);
         });
         setEditProjectDetailVisible(false);
+      }
+    });
+  };
+
+  //编辑项目简介 -------------------------------------------------------------------------------------------------------
+  const [editProjectSimpleVisible, setEditProjectSimpleVisible] = useState(
+    false,
+  );
+  const showEditProjectSimpleModal = () => {
+    setEditProjectSimpleVisible(true);
+  };
+  const onEditProjectSimpleCancel = () => {
+    setEditProjectSimpleVisible(false);
+  };
+  const onEditProjectSimpleFinish = (value: any) => {
+    call(team.ProjectService.EditProjectSimple, {
+      Content: value.projectSimple,
+      ProjectID: props.ProjectID,
+    }).then((r) => {
+      if (r.IsFailed) {
+      } else {
+        call(team.ProjectService.GetProjectDetail, {
+          ProjectID: props.ProjectID,
+        }).then((r) => {
+          setProjectDetailState(r);
+        });
+        setEditProjectSimpleVisible(false);
       }
     });
   };
@@ -425,8 +450,6 @@ export default function ProjectDetail(props: ProjectDetailProps) {
   const [imgURL, setImgURL] = useState(projectDetailState.ImgURL);
   const [changeImgLoading, setChangeImgLoading] = useState(false);
 
-  console.log(imgURL);
-
   const showChangeImgModal = () => {
     setChangeImgVisible(true);
   };
@@ -480,6 +503,8 @@ export default function ProjectDetail(props: ProjectDetailProps) {
     });
   };
 
+  console.log(projectDetailState);
+
   return (
     <div style={{ margin: '2%', minWidth: '300px' }}>
       <Title level={3}>{props.ProjectName}</Title>
@@ -510,8 +535,19 @@ export default function ProjectDetail(props: ProjectDetailProps) {
             style={{ fontSize: '16px' }}
             ellipsis={{ rows: 4, expandable: true, symbol: '展开' }}
           >
-            {props.ProjectDescription}
+            {projectDetailState.DescribeSimple}
           </Paragraph>
+          {isCreator ? (
+            <Button
+              style={{ position: 'absolute', bottom: '0px', right: '-5px' }}
+              type={'link'}
+              onClick={() => {
+                setEditProjectSimpleVisible(true);
+              }}
+            >
+              <EditOutlined />
+            </Button>
+          ) : null}
         </Col>
       </Row>
       <Row style={{ width: '100%', minWidth: '300px' }} wrap={false}>
@@ -820,7 +856,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         footer={null}
         onCancel={onEditProjectDetailCancel}
       >
-        <div style={{ marginTop: '-30px', marginBottom: '20px' }}>
+        <div style={{ marginTop: '-20px', marginBottom: '20px' }}>
           <Text type={'secondary'}>请输入项目的具体介绍</Text>
         </div>
         <Form
@@ -835,7 +871,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
           <Form.Item name="projectDetail">
             <Input.TextArea
               placeholder={'请输入项目详情'}
-              autoSize={{ minRows: 3, maxRows: 12 }}
+              autoSize={{ minRows: 7, maxRows: 12 }}
             />
           </Form.Item>
           <Form.Item>
@@ -857,12 +893,54 @@ export default function ProjectDetail(props: ProjectDetailProps) {
       </Modal>
 
       <Modal
+        title="编辑项目简介"
+        visible={editProjectSimpleVisible}
+        footer={null}
+        onCancel={onEditProjectSimpleCancel}
+      >
+        <div style={{ marginTop: '-20px', marginBottom: '20px' }}>
+          <Text type={'secondary'}>请输入项目的简略介绍</Text>
+        </div>
+        <Form
+          name="projectSimple"
+          initialValues={{
+            projectSimple: projectDetailState.DescribeSimple
+              ? projectDetailState.DescribeSimple
+              : '',
+          }}
+          onFinish={onEditProjectSimpleFinish}
+        >
+          <Form.Item name="projectSimple">
+            <Input.TextArea
+              placeholder={'请输入项目简介'}
+              autoSize={{ minRows: 3, maxRows: 12 }}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Row wrap={false}>
+              <Col flex={'30%'}>
+                <Button onClick={onEditProjectSimpleCancel} block={true}>
+                  取消
+                </Button>
+              </Col>
+              <Col flex={'5%'}> </Col>
+              <Col flex={'65%'}>
+                <Button block={true} type="primary" htmlType="submit">
+                  确认
+                </Button>
+              </Col>
+            </Row>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
         title="编辑岗位"
         visible={editPositionVisible}
         footer={null}
         onCancel={onEditPositionCancel}
       >
-        <div style={{ marginTop: '-30px' }}>
+        <div style={{ marginTop: '-20px' }}>
           <Text type={'secondary'}>第一个输入框输入岗位需求人数</Text>
         </div>
         <div style={{ marginBottom: '20px' }}>
@@ -974,7 +1052,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         footer={null}
         onCancel={onEditAwardCancel}
       >
-        <div style={{ marginTop: '-30px' }}>
+        <div style={{ marginTop: '-20px' }}>
           <Text type={'secondary'}>第一个选择框选择该比赛所获奖项</Text>
         </div>
         <div style={{ marginBottom: '20px' }}>
@@ -1090,7 +1168,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         footer={null}
         onCancel={onSignUpCancel}
       >
-        <div style={{ marginTop: '-30px' }}>
+        <div style={{ marginTop: '-20px' }}>
           <Text type={'secondary'}>第一个选择框选择报名岗位</Text>
         </div>
         <div style={{ marginBottom: '20px' }}>
@@ -1177,7 +1255,7 @@ export default function ProjectDetail(props: ProjectDetailProps) {
         footer={null}
         onCancel={onChangeImgCancel}
       >
-        <div style={{ marginTop: '-30px', marginBottom: '10px' }}>
+        <div style={{ marginTop: '-20px', marginBottom: '10px' }}>
           <Text type={'secondary'}>点击更换项目图片</Text>
         </div>
         <Form name="signUp" onFinish={onChangeImgFinish}>

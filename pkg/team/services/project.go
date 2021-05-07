@@ -257,6 +257,7 @@ type CommentSimple struct {
 type GetProjectDetailRes struct {
 	//1.Project本身信息
 	DescribeDetail string
+	DescribeSimple string
 	LinkURL        string
 	EndTime        string
 	ImgURL         string
@@ -365,6 +366,7 @@ func (c *ProjectService) GetProjectDetail(ctx *rpc.Context, req *GetProjectDetai
 	creatorStudent := *pCreatorStudent
 
 	res.DescribeDetail = project.DescribeDetail
+	res.DescribeSimple = project.DescribeSimple
 	res.LinkURL = project.LinkURL
 	res.ImgURL = project.ImgURL
 	res.EndTime = project.EndTime.Format("2006-01-02")
@@ -448,6 +450,20 @@ func (c *ProjectService) GetProjectSimples(ctx *rpc.Context,
 	var competitionNames []string
 
 	for _, project := range projects {
+		// 若结束时间已经晚于现在，则设为不可报名状态
+		if project.EndTime.After(time.Now()) {
+			tx = c.db.Begin()
+			err = models.SetProjectUnavailable(tx, int64(project.ID))
+			if err != nil {
+				res.IsFound = false
+				return err
+			}
+			err = tx.Commit().Error
+			if err != nil {
+				res.IsFound = false
+				return err
+			}
+		}
 		if project.IsAvailable {
 			for _, j := range project.Competitions {
 				competitionNames = append(competitionNames, j.Name)
@@ -527,6 +543,32 @@ func (c *ProjectService) EditProjectDetail(ctx *rpc.Context,
 
 	tx := c.db.Begin()
 	err = models.UpdateProjectByID(tx, req.ProjectID, "DescribeDetail", req.Content)
+	if err != nil {
+		res.IsFailed = true
+		return err
+	}
+	if err = tx.Commit().Error; err != nil {
+		res.IsFailed = true
+		return err
+	}
+
+	return err
+}
+
+//编辑项目简介
+type EditProjectSimpleReq struct {
+	ProjectID uint
+	Content   string
+}
+type EditProjectSimpleRes struct {
+	IsFailed bool
+}
+
+func (c *ProjectService) EditProjectSimple(ctx *rpc.Context,
+	req *EditProjectSimpleReq, res *EditProjectSimpleRes) (err error) {
+
+	tx := c.db.Begin()
+	err = models.UpdateProjectByID(tx, req.ProjectID, "DescribeSimple", req.Content)
 	if err != nil {
 		res.IsFailed = true
 		return err

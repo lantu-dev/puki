@@ -188,3 +188,19 @@ func UpdateProjectImg(tx *gorm.DB, projectID int64, imgURL string) (err error) {
 	}
 	return err
 }
+
+func SetProjectUnavailable(tx *gorm.DB, projectID int64) (err error) {
+	var project Project
+	err = tx.First(&project, projectID).Error
+	if err != nil {
+		log.Debug(err)
+		tx.Rollback()
+	}
+	project.IsAvailable = false
+	err = tx.Save(&project).Error
+	if err != nil {
+		log.Debug(err)
+		tx.Rollback()
+	}
+	return err
+}

@@ -69,19 +69,19 @@ export default function CreateProject(props: CreateProjectProps) {
         创建招募卡片
       </Title>
       <Form.Item
-        label="项目名称"
+        label="项目(团队)名称"
         name="ProjectName"
         required={true}
-        rules={[{ required: true, message: '请输入项目名称!' }]}
+        rules={[{ required: true, message: '请输入项目(团队)名称!' }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
-        label="项目类型"
+        label="项目(团队)类型"
         name="ProjectType"
         hasFeedback
         required={true}
-        rules={[{ required: true, message: '请选择项目类型!' }]}
+        rules={[{ required: true, message: '请选择项目(团队)类型!' }]}
       >
         <Select>
           {props.competitionTypes
@@ -94,19 +94,19 @@ export default function CreateProject(props: CreateProjectProps) {
         </Select>
       </Form.Item>
       <Form.Item
-        label="项目简介"
+        label="项目(团队)简介"
         name="ProjectDescribeSimple"
         required={true}
-        rules={[{ required: true, message: '请输入项目简介!' }]}
+        rules={[{ required: true, message: '请输入项目(团队)简介!' }]}
       >
         <Input.TextArea autoSize={true} />
       </Form.Item>
       <Form.Item
-        label="项目所需的岗位"
+        label="项目(团队)所需的岗位"
         name="ProjectPositions"
         hasFeedback
         required={true}
-        rules={[{ required: true, message: '请选择项目所属的岗位' }]}
+        rules={[{ required: true, message: '请选择项目(团队)所属的岗位' }]}
       >
         <Select mode={'multiple'}>
           {props.positionNames
@@ -119,11 +119,11 @@ export default function CreateProject(props: CreateProjectProps) {
         </Select>
       </Form.Item>
       <Form.Item
-        label="项目所属比赛/活动"
+        label="项目(团队)所属比赛/活动"
         name="ProjectCompetitions"
         hasFeedback
         required={true}
-        rules={[{ required: true, message: '请选择项目所属比赛!' }]}
+        rules={[{ required: true, message: '请选择项目(团队)所属比赛!' }]}
       >
         <Select mode={'multiple'}>
           {props.competitionNames
@@ -137,7 +137,7 @@ export default function CreateProject(props: CreateProjectProps) {
       </Form.Item>
 
       <Form.Item
-        label="项目报名截止日期"
+        label="项目(团队)报名截止日期"
         name="ProjectEndTime"
         required={true}
         rules={[{ required: true, message: '请输入报名截止日期!' }]}
@@ -146,7 +146,7 @@ export default function CreateProject(props: CreateProjectProps) {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-          创建项目
+          创建项目(团队)
         </Button>
       </Form.Item>
     </Form>

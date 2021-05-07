@@ -3,7 +3,7 @@ export default [
   {
     exact: true,
     path: '/',
-    component: '@/pages/Index',
+    component: '@/pages/team/Index',
   },
   {
     exact: true,

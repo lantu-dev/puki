@@ -4,6 +4,7 @@ import {
   Button,
   Checkbox,
   Col,
+  Divider,
   Form,
   Input,
   message,
@@ -64,7 +65,16 @@ export default function Register() {
 
   return (
     <>
-      <Title level={3}>用户注册</Title>
+      <div
+        style={{
+          fontSize: '24px',
+          textAlign: 'center',
+          marginTop: '150px',
+          marginBottom: '100px',
+        }}
+      >
+        完善用户信息
+      </div>
       <Form
         form={form}
         scrollToFirstError
@@ -271,12 +281,13 @@ export default function Register() {
           </Form.Item>
 
           <Row justify="center">
-            <Col>
+            <Col span={24}>
               <Form.Item>
                 <Button
                   disabled={state.registered}
                   type="primary"
                   size="large"
+                  block={true}
                   htmlType="submit"
                 >
                   注册
@@ -286,6 +297,9 @@ export default function Register() {
           </Row>
         </Space>
       </Form>
+      <br />
+      <br />
+      <Divider plain>蓝图统一认证平台</Divider>
     </>
   );
 }
