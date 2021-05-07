@@ -6,62 +6,17 @@
 }
 
 .layout {
-  background-color: @theme-color;
+  background-color: #fff;
   padding: 0;
 
-  .header {
-    background-color: #ffffff;
-    display: flex;
-    justify-content: flex-end;
-    position: relative;
-    z-index: 999;
-
-    .logo {
-      margin-left: 90px;
-      margin-right: auto;
-      width: auto;
-      height: auto;
-      max-width: 184px;
-    }
-
-    .menu {
-      background-color: transparent;
-
-      .menu-item {
-        margin: 0px 20px;
-        font-size: 14px;
-        height: 40px;
-        padding: 0 24px;
-        color: black;
-        border-radius: 20px;
-        font-weight: bold;
-        transition: background-color 0.5s;
-      }
-
-      .menu-item:hover {
-        background-color: #d7f2ff;
-        color: blue;
-      }
-    }
-
-    .logins {
-      align-self: center;
-      margin-left: 30px;
-      height: 40px;
-      width: 115px;
-      border-radius: 20px;
-      font-weight: 600;
-      background-color: @theme-color;
-      color: white;
-    }
-  }
-
   .content {
+    min-height: 1400px;
     .about-us {
       justify-content: flex-start;
       background-color: @theme-color;
+      //margin-top: 60px;
       height: 400px;
-      /* background-image: url(./zj/bq/v2_qa0rs5.jpg);*/
+      background-image: url(https://cdn-file.blueprint.org.cn/v2_qa0rs5.jpg);
       background-repeat: repeat;
       opacity: 0.85;
       z-index: -1;
@@ -77,7 +32,8 @@
 
       .passage {
         position: absolute;
-        margin-top: 0px;
+        width: 100%;
+        margin-top: 60px;
         opacity: 100;
         top: 0;
         color: #ffffff;
@@ -102,7 +58,7 @@
 
     .about-us2 {
       position: relative;
-      height: 800px;
+      height: 260px;
       background-color: #ffffff;
 
       .tu {
@@ -116,12 +72,14 @@
       }
 
       .passage {
+        width: 100%;
         position: absolute;
-        margin-top: 400px;
+        margin-top: 10px;
+        margin-bottom: 50px;
         opacity: 100;
         top: 0;
         color: black;
-        height: 400px;
+        height: 200px;
         z-index: 100;
 
         .title {
@@ -177,14 +135,18 @@
 
     .jiaru {
       margin-bottom: 40px;
-      height: 800px;
+      margin-top: 200px;
+      height: 400px;
       width: 100%;
       background-color: white;
       float: left;
-
+      .logo {
+        width: 400px;
+      }
       .text {
         float: left;
         width: 30%;
+        margin-left: 10%;
 
         .title {
           margin-top: -150px;
@@ -226,10 +188,10 @@
 
       .tianru {
         margin-top: -8%;
-        margin-left: 10%;
+        margin-right: 10%;
         width: 40%;
         position: relative;
-        float: left;
+        float: right;
       }
     }
 
