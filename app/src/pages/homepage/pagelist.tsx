@@ -12,7 +12,7 @@ import {
   Input,
   Divider,
 } from 'antd';
-import React from 'React';
+import React from 'react';
 const { Header, Content, Sider, Footer } = Layout;
 
 import { PubSub } from 'pubsub-ts';
