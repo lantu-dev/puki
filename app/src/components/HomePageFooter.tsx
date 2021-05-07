@@ -1,5 +1,5 @@
 import { Col, Row, Layout } from 'antd';
-const { Footer } = Layout
+const { Footer } = Layout;
 import {
   GithubOutlined,
   WechatOutlined,

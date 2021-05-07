@@ -1,10 +1,10 @@
 import './AboutUs.less';
-import "./header.less";
+import './header.less';
 /*import logoSrc from '@/pages/zj/bq/lantu_blue.png'*/
 import { Link } from 'umi';
 import { Layout, Menu, Button, Card, Avatar, Input, Divider } from 'antd';
 const { Header, Content, Footer } = Layout;
-import HomePageheader from '@/components/HomePageheader'
+import HomePageheader from '@/components/HomePageheader';
 import {
   WechatOutlined,
   WeiboCircleOutlined,
@@ -15,7 +15,7 @@ import {
   EditOutlined,
   EllipsisOutlined,
   SettingOutlined,
-  ArrowUpOutlined
+  ArrowUpOutlined,
 } from '@ant-design/icons';
 import ProCardDivider from '@ant-design/pro-card/lib/components/Divider';
 import HomePageFooter from '@/components/HomePageFooter';
@@ -26,7 +26,7 @@ export default function IndexPage() {
   return (
     <div>
       <Layout className="layout">
-        <HomePageheader nowPage={3}/>
+        <HomePageheader nowPage={3} />
 
         <Content className="content">
           <div className="site-layout-content">
@@ -47,7 +47,9 @@ export default function IndexPage() {
               </div>
             </section>
           </div>
-          <Divider><ArrowUpOutlined /></Divider>
+          <Divider>
+            <ArrowUpOutlined />
+          </Divider>
           <section className="about-us2">
             {/* <br></br> */}
             <div className="tu"></div>
@@ -58,11 +60,10 @@ export default function IndexPage() {
               </div>
               <div className="description">
                 <p>
-                  位于北京市海淀区上地信息路26号1层0106-597室，注册于 2021 年 01 月 08 日
+                  位于北京市海淀区上地信息路26号1层0106-597室，注册于 2021 年 01
+                  月 08 日
                 </p>
-                <p>
-                  是一家由社团创立，主要经营软件开发和服务的有限责任公司。
-                </p>
+                <p>是一家由社团创立，主要经营软件开发和服务的有限责任公司。</p>
               </div>
             </div>
           </section>
@@ -238,7 +239,10 @@ export default function IndexPage() {
               </div>
             </div>
             <div className="tianru">
-              <img src="https://cdn-file.blueprint.org.cn/%E8%93%9D%E5%9B%BElogo.jpg" className="logo" />
+              <img
+                src="https://cdn-file.blueprint.org.cn/%E8%93%9D%E5%9B%BElogo.jpg"
+                className="logo"
+              />
               {/*<TextArea placeholder="您怎么称呼" autoSize />*/}
               {/*<div style={{ margin: '28px 0' }} />*/}
               {/*<TextArea placeholder="请输入您的邮箱" autoSize />*/}
@@ -255,7 +259,7 @@ export default function IndexPage() {
             </div>
           </section>
         </Content>
-        <HomePageFooter/>
+        <HomePageFooter />
       </Layout>
     </div>
   );

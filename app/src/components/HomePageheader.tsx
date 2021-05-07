@@ -11,7 +11,7 @@ export default function HomePageheader(props: MyHeaderProps) {
   console.log(props.nowPage);
   return (
     <>
-      <Row style={{ backgroundColor: '#3B43F2', padding: '5px'}}>
+      <Row style={{ backgroundColor: '#3B43F2', padding: '5px' }}>
         <Col flex={'10%'} />
         <Col flex={'auto'}>
           <img
@@ -29,10 +29,13 @@ export default function HomePageheader(props: MyHeaderProps) {
               fontSize: '16px',
             }}
           >
-            <Button className="top-button" style={{
-              fontWeight: props.nowPage === 1 ? 600 : 400,
-            }}>
-              <Link to='/'>首页</Link>
+            <Button
+              className="top-button"
+              style={{
+                fontWeight: props.nowPage === 1 ? 600 : 400,
+              }}
+            >
+              <Link to="/">首页</Link>
             </Button>
           </div>
         </Col>
@@ -44,10 +47,13 @@ export default function HomePageheader(props: MyHeaderProps) {
               fontSize: '16px',
             }}
           >
-            <Button className="top-button" style={{
-              fontWeight: props.nowPage === 2 ? 600 : 400,
-            }}>
-            功能模块
+            <Button
+              className="top-button"
+              style={{
+                fontWeight: props.nowPage === 2 ? 600 : 400,
+              }}
+            >
+              功能模块
             </Button>
           </div>
         </Col>
@@ -59,10 +65,13 @@ export default function HomePageheader(props: MyHeaderProps) {
               fontSize: '16px',
             }}
           >
-            <Button className="top-button" style={{
-              fontWeight: props.nowPage === 3 ? 600 : 400,
-            }}>
-            <Link to='/Homepage/AboutUs'>关于我们</Link>
+            <Button
+              className="top-button"
+              style={{
+                fontWeight: props.nowPage === 3 ? 600 : 400,
+              }}
+            >
+              <Link to="/Homepage/AboutUs">关于我们</Link>
             </Button>
           </div>
         </Col>
@@ -74,10 +83,13 @@ export default function HomePageheader(props: MyHeaderProps) {
               fontSize: '16px',
             }}
           >
-            <Button className="top-button" style={{
-              fontWeight: props.nowPage === 4 ? 600 : 400,
-            }}>
-            <Link to='/Homepage/pagelist'>文章</Link>
+            <Button
+              className="top-button"
+              style={{
+                fontWeight: props.nowPage === 4 ? 600 : 400,
+              }}
+            >
+              <Link to="/Homepage/pagelist">文章</Link>
             </Button>
           </div>
         </Col>

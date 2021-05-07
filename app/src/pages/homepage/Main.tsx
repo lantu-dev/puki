@@ -1,11 +1,11 @@
 import { Col, Layout, Row } from 'antd';
-import HomePageheader from "@/components/HomePageheader";
+import HomePageheader from '@/components/HomePageheader';
 import HomePageFooter from '@/components/HomePageFooter';
-import "./header.less"
+import './header.less';
 export default function Main() {
   return (
     <Layout>
-      <HomePageheader nowPage={1}/>
+      <HomePageheader nowPage={1} />
       <div
         style={{
           backgroundColor: '#3B43F2',
@@ -17,10 +17,14 @@ export default function Main() {
           <Col flex={'10%'} />
           <Col flex={'auto'}>
             <div style={{ marginTop: '120px' }}>
-              <div style={{ color: 'white', fontSize: '32px', fontWeight: 700 }}>
+              <div
+                style={{ color: 'white', fontSize: '32px', fontWeight: 700 }}
+              >
                 蓝图创新工作室
               </div>
-              <div style={{ color: 'white', fontSize: '30px', fontWeight: 700 }}>
+              <div
+                style={{ color: 'white', fontSize: '30px', fontWeight: 700 }}
+              >
                 LEAD THE FUTURE
               </div>
               <div
@@ -104,16 +108,20 @@ export default function Main() {
             <img
               style={{ position: 'absolute', zIndex: 1 }}
               width={'100%'}
-              src={'https://puki.obs.cn-north-4.myhuaweicloud.com/v2_qnj26c.png'}
+              src={
+                'https://puki.obs.cn-north-4.myhuaweicloud.com/v2_qnj26c.png'
+              }
             />
             <img
               width={'100%'}
-              src={'https://puki.obs.cn-north-4.myhuaweicloud.com/v2_qnj26c.png'}
+              src={
+                'https://puki.obs.cn-north-4.myhuaweicloud.com/v2_qnj26c.png'
+              }
             />
           </Col>
         </Row>
       </div>
-    <HomePageFooter/>
+      <HomePageFooter />
     </Layout>
   );
 }
