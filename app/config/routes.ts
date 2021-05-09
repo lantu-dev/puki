@@ -123,7 +123,6 @@ export default [
     path: '/SanHuiLiangZhi',
     component: '@/pages/QianQing/SanHuiLiangZhi',
   },
-
   {
     exact: true,
     path: '/community/Community',
@@ -131,8 +130,28 @@ export default [
   },
   {
     exact: true,
-    path: '/homepage/Homepage',
-    component: '@/pages/homepage/Homepage',
+    path: '/homepage/Login',
+    component: '@/pages/homepage/Login',
+  },
+  {
+    exact: true,
+    path: '/homepage/AboutUs',
+    component: '@/pages/homepage/AboutUs',
+  },
+  {
+    exact: true,
+    path: '/homepage/index',
+    component: '@/pages/homepage/Main',
+  },
+  {
+    exact: true,
+    path: '/homepage/pagelist',
+    component: '@/pages/homepage/pagelist',
+  },
+  {
+    exact: true,
+    path: '/homepage/:name',
+    component: '@/pages/MarkDownPages/[MarkDownPages]',
   },
   {
     exact: true,
@@ -143,12 +162,6 @@ export default [
     exact: true,
     path: '/classBuild',
     component: '@/pages/QianQing/classBuild',
-  },
-  {
-    exact: true,
-
-    path: '/homepage/AboutUs',
-    component: '@/pages/homepage/AboutUs',
   },
   {
     exact: true,

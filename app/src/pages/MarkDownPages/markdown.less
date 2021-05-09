@@ -1,0 +1,80 @@
+.site-layout-content {
+  min-height: 280px;
+  background: #fff;
+}
+
+.layout {
+  padding: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+}
+
+.layout .header {
+  background-color: #ffffff;
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 999;
+}
+
+.layout .header .logo {
+  margin-left: 90px;
+  margin-right: auto;
+  width: auto;
+  height: auto;
+  max-width: 184px;
+}
+
+.layout .header .menu {
+  background-color: transparent;
+}
+
+.layout .header .menu .ant-menu-item .menu-item {
+  margin: 0px 20px;
+  font-size: 14px;
+  height: 40px;
+  padding: 0 24px;
+  color: black;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: background-color 0.5s;
+}
+
+.layout .header .menu .ant-menu-item .menu-item:hover {
+  background-color: #d7f2ff;
+  color: blue;
+}
+
+.layout .header .logins {
+  align-self: center;
+  margin-left: 30px;
+  height: 40px;
+  width: 115px;
+  border-radius: 20px;
+  font-weight: 600;
+  background-color: #3b43f2;
+  color: white;
+}
+
+.markdown-body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+  background-color: #fff;
+}
+
+.TextPart {
+  flex: auto;
+  min-height: auto;
+}
+
+@media (max-width: 767px) {
+  .markdown-body {
+    padding: 15px;
+  }
+}

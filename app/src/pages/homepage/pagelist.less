@@ -1,0 +1,112 @@
+@theme-color: #3b43f2;
+
+.layout {
+  background-color: #fff;
+
+  .content {
+    min-height: 1600px;
+    .pagelist {
+      justify-content: flex-start;
+      background-color: @theme-color;
+      height: 260px;
+      background-image: url(https://cdn-file.blueprint.org.cn/v2_qa0rs5.jpg);
+      background-repeat: repeat;
+      opacity: 0.85;
+      z-index: -1;
+
+      .passag {
+        background-color: #101cf1d2;
+        opacity: 1;
+        position: relative;
+        top: 0;
+        color: #fff;
+        height: 260px;
+      }
+
+      .passage {
+        position: absolute;
+        margin-top: 60px;
+        opacity: 100;
+        top: 0;
+        color: #ffffff;
+        height: 260px;
+        width: 100%;
+        z-index: 100;
+
+        .title {
+          opacity: 1.9;
+          margin-top: 0px;
+          font-size: 58px;
+          text-align: center;
+        }
+
+        .description {
+          font-size: 16px;
+          text-align: center;
+          width: 40%;
+          margin-left: 30%;
+        }
+      }
+    }
+
+    .main {
+      margin-top: 40px;
+      position: relative;
+      height: 800px;
+      background-color: #ffffff;
+      margin-left: 10%;
+      margin-right: 10%;
+
+      .sider {
+        background-color: #fff;
+        flex: 0 0 200px !important;
+        min-width: 0px !important;
+        .ant-spin-container {
+          margin-left: 50px;
+          border-radius: 0px 0px 0px 25px;
+          border-right: 1px solid rgba(222, 222, 222, 53);
+          border-left: 1px solid rgba(222, 222, 222, 53);
+          border-bottom: 1px solid rgba(222, 222, 222, 53);
+        }
+        .ant-list-bordered {
+          border: 0px solid #d9d9d9;
+          .ant-list-item {
+            border: 0px solid #d9d9d9;
+            justify-content: flex-end;
+            padding-right: 10px;
+          }
+          .ant-list-header {
+            border: 0px solid #d9d9d9;
+            padding-right: 0px;
+            padding-bottom: 0px;
+          }
+        }
+        .title {
+          height: 65px;
+          line-height: 65px;
+          font-size: 20px;
+          color: rgba(255, 255, 255, 100);
+          border-radius: 25px 0px 0px 25px;
+          background-color: #3c44f1;
+          text-align: center;
+          border: 0px solid #dedede;
+        }
+      }
+      .pages {
+        border-radius: 0px 25px 25px 25px;
+        //text-align: center;
+        margin-top: 12px;
+        margin-left: 10px;
+        border: 1px solid rgba(222, 222, 222, 53);
+        .ant-pagination {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+        .ant-list-item {
+          padding: 40px 44px 20px 44px;
+        }
+      }
+    }
+  }
+}

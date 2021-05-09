@@ -24,6 +24,11 @@ export default defineConfig({
       target: 'http://127.0.0.1:3000/',
       changeOrigin: true,
     },
+    '/md': {
+      target: 'https://cdn-file.blueprint.org.cn/',
+      changeOrigin: true,
+      pathRewrite: { '^/md': '' },
+    }
   },
   publicPath: publicPath,
   routes,
